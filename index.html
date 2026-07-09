@@ -157,6 +157,7 @@
   #placesMap{height:60vh;min-height:340px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#1c1030}
   .mapdot{width:15px;height:15px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.35);cursor:pointer;box-sizing:border-box}
   .mapdot.sel{width:20px;height:20px;box-shadow:0 0 0 2px #15d0c8}
+.daynum{min-width:22px;height:22px;padding:0 4px;border-radius:11px;background:#ff7a59;color:#fff;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;cursor:pointer;box-sizing:border-box}
   .maplibregl-popup-content{font-size:13px;color:#15233a;border-radius:10px}
   .maplibregl-popup-content a{color:#1f6feb}
   #mapStyleSel{padding:7px 10px}
@@ -281,6 +282,11 @@
         </select>
       </div>
       <div id="placesMap"></div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn green sm" style="flex:1" onclick="showDayOnMap(curDay)">🗺️ Paradas do dia</button>
+        <button class="btn ghost sm" style="flex:0 0 auto" onclick="clearDayOnMap()">limpar</button>
+      </div>
+      <div class="small muted" id="dayMapStatus" style="margin-top:6px"></div>
       <div class="row" style="margin-top:10px">
         <label class="btn ghost sm" style="cursor:pointer;flex:1;text-align:center">📥 Importar pins
           <input type="file" accept=".csv,.kml,.kmz,.json,.geojson" style="display:none" onchange="importPlaces(this)">
@@ -412,6 +418,11 @@
       <div id="sourcesList"></div>
       <div class="small muted" style="margin-top:6px">Edite as fontes e os saldos iniciais na aba <b>Config</b>.</div>
     </div>
+    <div class="card" id="prepaidCard">
+      <h2>🧾 Custos pré-pagos da viagem</h2>
+      <div class="small muted" style="margin-bottom:8px">Voo, carro e hotéis já pagos — <b>à parte</b> do orçamento diário de comida/gasolina/compras.</div>
+      <div id="prepaidBody"></div>
+    </div>
   </section>
 
   <!-- ============ RESUMO ============ -->
@@ -476,6 +487,11 @@
       <div id="infoConsulados"></div>
     </div>
     <div class="card">
+      <h2>🎫 Reservas & Seguro</h2>
+      <div class="small muted" style="margin-bottom:8px">Voo, carro e seguro — à mão, inclusive offline.</div>
+      <div id="reservasBox"></div>
+    </div>
+    <div class="card">
       <h2>📝 Minhas informações</h2>
       <div class="small muted" style="margin-bottom:8px">Anote aqui o que quiser ter à mão offline: seguro viagem (apólice + telefone de assistência), locadora do carro, números de reservas, contatos, etc.</div>
       <textarea id="infoNotes" rows="7" placeholder="Ex.:&#10;Seguro viagem: apólice 123456 · assistência +1 800 000 0000&#10;Locadora: Alamo · reserva ABC123 · +1 800 ...&#10;Cartão bloqueio 24h: ..." onchange="saveInfoNotes()" style="width:100%;box-sizing:border-box"></textarea>
@@ -520,7 +536,7 @@
   <section id="view-config" class="hide">
     <div class="card" style="text-align:center;padding:10px">
       <div class="small muted">Versão do app</div>
-      <div style="font-weight:700;font-size:1.05em">v4 · 09/07/2026 — 🗺️ roteiro completo · 🔒 saldo protegido (só você edita)</div>
+      <div style="font-weight:700;font-size:1.05em">v5 · 09/07/2026 — 🗺️ mapa do dia · 🎫 voo/carro/seguro · 🧾 custos pré-pagos</div>
     </div>
     <div class="card">
       <h2>Viagem</h2>
@@ -749,8 +765,8 @@ const CATS = [
 const catById = id => CATS.find(c=>c.id===id) || CATS[CATS.length-1];
 
 /* ---------------- Roteiro padrão (da planilha) ---------------- */
-const ITIN_VERSION = 7;
-const DEFAULT_ITIN = [{"date":"2026-10-02","city":"Voo para Las Vegas","miles":null,"arrival":"","stops":[],"notes":"Embarque / voo internacional"},{"date":"2026-10-03","city":"Las Vegas","miles":0,"arrival":"Chega mais ou menos meio dia","stops":["Ross Dress for Less, 3771 Las Vegas Blvd S, Las Vegas, NV 89109"],"notes":""},{"date":"2026-10-04","city":"Williams","miles":233,"arrival":"","stops":["Las Vegas, NV","Hoover Dam, Hoover Dam Access Rd, Boulder City, NV 89005","Kingman, AZ 86401","Marshalls, 3127 Stockton Hill Rd, Kingman, AZ 86401","Hackberry General Store, 11255 E State Route 66, Kingman, AZ 86401","Seligman, AZ 86337","Williams, AZ 86046"],"notes":""},{"date":"2026-10-05","city":"Bryce Canyon City","miles":350,"arrival":"","stops":["Williams, AZ 86046","Grand Canyon Village, AZ 86023","Desert View Watchtower, Grand Canyon National Park, AZ 86023","Horseshoe Bend, Page, AZ 86040","Zion National Park, Springdale, UT 84767","Red Canyon Visitor Center, Scenic Byway 12, Panguitch, UT 84759","Bryce Canyon City, UT 84764"],"notes":""},{"date":"2026-10-06","city":"Page","miles":154,"arrival":"","stops":["Bryce Canyon City, UT 84764","Zion National Park, Springdale, UT 84767","Canyon Overlook Trailhead, Zion National Park, UT 84767","Toadstool Hoodoos Trailhead, US-89, Kanab, UT 84741","Page, AZ 86040","Antelope Canyon, Page, AZ 86040"],"notes":""},{"date":"2026-10-07","city":"Moab","miles":521,"arrival":"","stops":["Page, AZ 86040","Monument Valley Navajo Tribal Park, UT 84536","Forrest Gump Point, US-163, Mexican Hat, UT 84531","Goosenecks State Park, Mexican Hat, UT 84531","Four Corners Monument, Teec Nos Pos, AZ 86514","Durango, CO 81301","Silverton, CO 81433","TJ Maxx, 800 S Camino Del Rio, Durango, CO 81301","Ouray, CO 81427","Wilson Arch, US-191, Moab, UT 84532","Moab, UT 84532"],"notes":""},{"date":"2026-10-08","city":"Denver","miles":354,"arrival":"","stops":["Moab, UT 84532","Arches National Park, Moab, UT 84532","Dead Horse Point State Park, Moab, UT 84532","Grand Junction, CO 81501","Glenwood Springs, CO 81601","Denver, CO 80202","Ross Dress for Less, 1543 Stout St, Denver, CO 80202"],"notes":""},{"date":"2026-10-09","city":"Albuquerque","miles":469,"arrival":"","stops":["Denver, CO 80202","Pikes Peak Summit, Cascade, CO 80809","Colorado Springs, CO 80903","Garden of the Gods, Colorado Springs, CO 80904","Santa Fe, NM 87501","Loretto Chapel, 207 Old Santa Fe Trail, Santa Fe, NM 87501","Albuquerque, NM 87102","Marshalls, 9500 Montgomery Blvd NE, Albuquerque, NM 87111"],"notes":""},{"date":"2026-10-10","city":"Wichita Falls","miles":511,"arrival":"","stops":["Twisters (Los Pollos Hermanos) — 4275 Isleta Blvd SW, Albuquerque, NM 87105","Jesse's House — 322 16th St SW, Albuquerque, NM 87104","Dog House Drive In — 1216 Central Ave NW, Albuquerque, NM 87102","The Breaking Bad Store & Museum — 2047 S Plaza St NW, Albuquerque, NM 87104","Crossroads Motel — 1001 Central Ave NE, Albuquerque, NM 87106","Casa do Walter White — 3828 Piermont Dr NE, Albuquerque, NM 87111","Mister Car Wash (A1A Car Wash) — 9516 Snow Heights Cir NE, Albuquerque, NM 87112","Route 66 Midpoint Cafe, Adrian, TX 79001","Cadillac Ranch, 13651 I-40 Frontage Rd, Amarillo, TX 79124","Amarillo, TX 79101","The Big Texan Steak Ranch, 7701 I-40 Access Rd, Amarillo, TX 79118","Palo Duro Canyon State Park, Canyon, TX 79015","Wichita Falls, TX 76301","TJ Maxx, 3610 Call Field Rd, Wichita Falls, TX 76308"],"notes":""},{"date":"2026-10-11","city":"Dallas","miles":140,"arrival":"","stops":["Wichita Falls, TX 76301","Dallas, TX 75201","The Sixth Floor Museum at Dealey Plaza, 411 Elm St, Dallas, TX 75202","Fort Worth, TX 76102","Fort Worth Stockyards, 131 E Exchange Ave, Fort Worth, TX 76164","Ross Dress for Less, 8560 East Fwy, Fort Worth, TX 76120"],"notes":""},{"date":"2026-10-12","city":"Bentonville","miles":458,"arrival":"","stops":["Dallas, TX 75201","Tulsa, OK 74103","Blue Whale of Catoosa, 2680 OK-66, Catoosa, OK 74015","Marshalls, 7362 S Olympia Ave, Tulsa, OK 74132","Fort Smith, AR 72901","Bentonville, AR 72712","Crystal Bridges Museum of American Art, 600 Museum Way, Bentonville, AR 72712"],"notes":""},{"date":"2026-10-13","city":"Kansas City","miles":417,"arrival":"","stops":["Bentonville, AR 72712","Lake of the Ozarks, Osage Beach, MO 65065","Ha Ha Tonka State Park, Camdenton, MO 65020","Jefferson City, MO 65101","Kansas City, MO 64106","Joe's Kansas City Bar-B-Que, 3002 W 47th Ave, Kansas City, KS 66103","TJ Maxx, 8600 Ward Pkwy, Kansas City, MO 64114"],"notes":""},{"date":"2026-10-14","city":"Chamberlain","miles":504,"arrival":"","stops":["Kansas City, MO 64106","Sioux Falls, SD 57104","Falls Park, 131 E Falls Park Dr, Sioux Falls, SD 57104","Marshalls, 2350 S Lorraine Pl, Sioux Falls, SD 57106","Chamberlain, SD 57325","Dignity of Earth & Sky, Chamberlain, SD 57325"],"notes":""},{"date":"2026-10-15","city":"Gillette","miles":387,"arrival":"","stops":["Chamberlain, SD 57325","Badlands National Park, Interior, SD 57750","Wall Drug Store, 510 Main St, Wall, SD 57790","Mount Rushmore National Memorial, Keystone, SD 57751","Crazy Horse Memorial, 12151 Ave of the Chiefs, Crazy Horse, SD 57730","Deadwood, SD 57732","Devils Tower National Monument, WY 82714","Gillette, WY 82716","Marshalls, 2610 S Douglas Hwy, Gillette, WY 82718"],"notes":""},{"date":"2026-10-16","city":"Yellowstone","miles":385,"arrival":"","stops":["Gillette, WY 82716","Ranchester, WY 82839","Shell Falls Interpretive Site, US-14, Shell, WY 82441","Cody, WY 82414","Canyon Village, Yellowstone National Park, WY 82190","Artist Point, Yellowstone National Park, WY 82190","Grand Prismatic Spring, Midway Geyser Basin, Yellowstone National Park, WY 82190","Old Faithful, Yellowstone National Park, WY 82190"],"notes":""},{"date":"2026-10-17","city":"Jackson Hole","miles":145,"arrival":"","stops":["Yellowstone National Park, WY 82190","West Thumb Geyser Basin, Yellowstone National Park, WY 82190","Grand Teton National Park, Moose, WY 83012","Oxbow Bend Turnout, Grand Teton National Park, Moran, Wyoming 83013","Mormon Row Historic District, Kelly, WY 83011","Jackson, WY 83001","Victor, ID 83455"],"notes":""},{"date":"2026-10-18","city":"Salt Lake City","miles":285,"arrival":"","stops":["Victor, ID 83455","Blackfoot, ID 83221","Idaho Potato Museum, 130 NW Main St, Blackfoot, ID 83221","Ross Dress for Less, 2406 S 25th E, Idaho Falls, ID 83404","Salt Lake City, UT 84101","Temple Square, Salt Lake City, UT 84150"],"notes":""},{"date":"2026-10-19","city":"Lake Tahoe","miles":580,"arrival":"","stops":["Salt Lake City, UT 84101","West Wendover, NV 89883","Bonneville Salt Flats, Wendover, UT 84083","Reno, NV 89501","South Lake Tahoe, CA 96150","TJ Maxx, 2015 Lake Tahoe Blvd, South Lake Tahoe, CA 96150"],"notes":""},{"date":"2026-10-20","city":"San Francisco","miles":188,"arrival":"","stops":["South Lake Tahoe, CA 96150","Emerald Bay State Park, South Lake Tahoe, CA 96150","Sacramento, CA 95814","San Francisco, CA 94103","Battery Spencer (Golden Gate view), Sausalito, CA 94965","Lombard Street, San Francisco, CA 94133","Pier 39, San Francisco, CA 94133","Alcatraz Island, San Francisco, CA 94133"],"notes":""},{"date":"2026-10-21","city":"Los Angeles (Anaheim)","miles":477,"arrival":"","stops":["San Francisco, CA 94103","Monterey, CA 93940","Bixby Creek Bridge, Big Sur, CA 93920","Solvang, CA 93463","Santa Barbara, CA 93101","Anaheim, CA 92802","Ross Dress for Less, 1670 W Katella Ave, Anaheim, CA 92802"],"notes":""},{"date":"2026-10-22","city":"Los Angeles (Praias)","miles":0,"arrival":"","stops":["Anaheim, CA 92802","Topanga, CA 90290","Malibu, CA 90265","El Matador State Beach, Malibu, CA 90265","Santa Monica, CA 90401","Venice Beach Boardwalk, Venice, CA 90291","Marshalls, 11270 Olympic Blvd, Los Angeles, CA 90064","Long Beach, CA 90802","Huntington Beach, CA 92648"],"notes":""},{"date":"2026-10-23","city":"Los Angeles (Cidade)","miles":0,"arrival":"","stops":["Huntington Beach, CA 92648","Crypto.com Arena, 1111 S Figueroa St, Los Angeles, CA 90015","Beverly Hills, CA 90210","Rodeo Drive, Beverly Hills, CA 90210","Urban Light, LACMA, 5905 Wilshire Blvd, Los Angeles, CA 90036","TJ Maxx, 8500 Beverly Blvd, Los Angeles, CA 90048","Hollywood Walk of Fame, Hollywood Blvd, Los Angeles, CA 90028","Griffith Observatory, 2800 E Observatory Rd, Los Angeles, CA 90027","Anaheim, CA 92802"],"notes":""},{"date":"2026-10-24","city":"Las Vegas","miles":270,"arrival":"","stops":["Anaheim, CA 92802","Calico Ghost Town, Yermo, CA 92398","Seven Magic Mountains, Las Vegas, NV 89054","Las Vegas, NV","Marshalls, 3785 Las Vegas Blvd S, Las Vegas, NV 89109"],"notes":""},{"date":"2026-10-25","city":"Las Vegas","miles":0,"arrival":"","stops":["Ross Dress for Less, 3771 Las Vegas Blvd S, Las Vegas, NV 89109","Valley of Fire State Park, Overton, NV 89040","Red Rock Canyon National Conservation Area, Las Vegas, NV 89161"],"notes":""},{"date":"2026-10-26","city":"Las Vegas","miles":0,"arrival":"","stops":["Fremont Street Experience, 425 Fremont St, Las Vegas, NV 89101","Sphere, 255 Sphere Way, Las Vegas, NV 89169"],"notes":""},{"date":"2026-10-27","city":"Las Vegas","miles":null,"arrival":"","stops":[],"notes":""}];
+const ITIN_VERSION = 8;
+const DEFAULT_ITIN = [{"date":"2026-10-02","city":"Voo para Las Vegas","miles":null,"arrival":"","stops":[],"notes":"✈️ Voo United (conf. LEXHWF) — BSB 18:00 → GRU 19:50 (GOL) · GRU 22:20 → Chicago/ORD (UA844). Assentos 30B/30C no trecho p/ os EUA · 1ª mala grátis."},{"date":"2026-10-03","city":"Las Vegas","miles":0,"arrival":"Chega mais ou menos meio dia","stops":["Alamo Rent a Car — Aeroporto de Las Vegas (Harry Reid/LAS), 7135 Gilespie St, Las Vegas, NV 89119","Ross Dress for Less, 3771 Las Vegas Blvd S, Las Vegas, NV 89109"],"notes":"✈️ Chega Las Vegas 11:22 (UA2811, via Chicago). 🚗 Retirada do carro Alamo às 12:00 no aeroporto (voucher 898136368COUNT · cód. 6P7TK9N)."},{"date":"2026-10-04","city":"Williams","miles":233,"arrival":"","stops":["Las Vegas, NV","Hoover Dam, Hoover Dam Access Rd, Boulder City, NV 89005","Kingman, AZ 86401","Marshalls, 3127 Stockton Hill Rd, Kingman, AZ 86401","Hackberry General Store, 11255 E State Route 66, Kingman, AZ 86401","Seligman, AZ 86337","Williams, AZ 86046"],"notes":""},{"date":"2026-10-05","city":"Bryce Canyon City","miles":350,"arrival":"","stops":["Williams, AZ 86046","Grand Canyon Village, AZ 86023","Desert View Watchtower, Grand Canyon National Park, AZ 86023","Horseshoe Bend, Page, AZ 86040","Zion National Park, Springdale, UT 84767","Red Canyon Visitor Center, Scenic Byway 12, Panguitch, UT 84759","Bryce Canyon City, UT 84764"],"notes":""},{"date":"2026-10-06","city":"Page","miles":154,"arrival":"","stops":["Bryce Canyon City, UT 84764","Zion National Park, Springdale, UT 84767","Canyon Overlook Trailhead, Zion National Park, UT 84767","Toadstool Hoodoos Trailhead, US-89, Kanab, UT 84741","Page, AZ 86040","Antelope Canyon, Page, AZ 86040"],"notes":""},{"date":"2026-10-07","city":"Moab","miles":521,"arrival":"","stops":["Page, AZ 86040","Monument Valley Navajo Tribal Park, UT 84536","Forrest Gump Point, US-163, Mexican Hat, UT 84531","Goosenecks State Park, Mexican Hat, UT 84531","Four Corners Monument, Teec Nos Pos, AZ 86514","Durango, CO 81301","Silverton, CO 81433","TJ Maxx, 800 S Camino Del Rio, Durango, CO 81301","Ouray, CO 81427","Wilson Arch, US-191, Moab, UT 84532","Moab, UT 84532"],"notes":""},{"date":"2026-10-08","city":"Denver","miles":354,"arrival":"","stops":["Moab, UT 84532","Arches National Park, Moab, UT 84532","Dead Horse Point State Park, Moab, UT 84532","Grand Junction, CO 81501","Glenwood Springs, CO 81601","Denver, CO 80202","Ross Dress for Less, 1543 Stout St, Denver, CO 80202"],"notes":""},{"date":"2026-10-09","city":"Albuquerque","miles":469,"arrival":"","stops":["Denver, CO 80202","Pikes Peak Summit, Cascade, CO 80809","Colorado Springs, CO 80903","Garden of the Gods, Colorado Springs, CO 80904","Santa Fe, NM 87501","Loretto Chapel, 207 Old Santa Fe Trail, Santa Fe, NM 87501","Albuquerque, NM 87102","Marshalls, 9500 Montgomery Blvd NE, Albuquerque, NM 87111"],"notes":""},{"date":"2026-10-10","city":"Wichita Falls","miles":511,"arrival":"","stops":["Twisters (Los Pollos Hermanos) — 4275 Isleta Blvd SW, Albuquerque, NM 87105","Jesse's House — 322 16th St SW, Albuquerque, NM 87104","Dog House Drive In — 1216 Central Ave NW, Albuquerque, NM 87102","The Breaking Bad Store & Museum — 2047 S Plaza St NW, Albuquerque, NM 87104","Crossroads Motel — 1001 Central Ave NE, Albuquerque, NM 87106","Casa do Walter White — 3828 Piermont Dr NE, Albuquerque, NM 87111","Mister Car Wash (A1A Car Wash) — 9516 Snow Heights Cir NE, Albuquerque, NM 87112","Route 66 Midpoint Cafe, Adrian, TX 79001","Cadillac Ranch, 13651 I-40 Frontage Rd, Amarillo, TX 79124","Amarillo, TX 79101","The Big Texan Steak Ranch, 7701 I-40 Access Rd, Amarillo, TX 79118","Palo Duro Canyon State Park, Canyon, TX 79015","Wichita Falls, TX 76301","TJ Maxx, 3610 Call Field Rd, Wichita Falls, TX 76308"],"notes":""},{"date":"2026-10-11","city":"Dallas","miles":140,"arrival":"","stops":["Wichita Falls, TX 76301","Dallas, TX 75201","The Sixth Floor Museum at Dealey Plaza, 411 Elm St, Dallas, TX 75202","Fort Worth, TX 76102","Fort Worth Stockyards, 131 E Exchange Ave, Fort Worth, TX 76164","Ross Dress for Less, 8560 East Fwy, Fort Worth, TX 76120"],"notes":""},{"date":"2026-10-12","city":"Bentonville","miles":458,"arrival":"","stops":["Dallas, TX 75201","Tulsa, OK 74103","Blue Whale of Catoosa, 2680 OK-66, Catoosa, OK 74015","Marshalls, 7362 S Olympia Ave, Tulsa, OK 74132","Fort Smith, AR 72901","Bentonville, AR 72712","The Walmart Museum, 105 N Main St, Bentonville, AR 72712","Crystal Bridges Museum of American Art, 600 Museum Way, Bentonville, AR 72712"],"notes":""},{"date":"2026-10-13","city":"Kansas City","miles":417,"arrival":"","stops":["Bentonville, AR 72712","Lake of the Ozarks, Osage Beach, MO 65065","Ha Ha Tonka State Park, Camdenton, MO 65020","Jefferson City, MO 65101","Kansas City, MO 64106","Joe's Kansas City Bar-B-Que, 3002 W 47th Ave, Kansas City, KS 66103","TJ Maxx, 8600 Ward Pkwy, Kansas City, MO 64114"],"notes":""},{"date":"2026-10-14","city":"Chamberlain","miles":504,"arrival":"","stops":["Kansas City, MO 64106","Sioux Falls, SD 57104","Falls Park, 131 E Falls Park Dr, Sioux Falls, SD 57104","Marshalls, 2350 S Lorraine Pl, Sioux Falls, SD 57106","Chamberlain, SD 57325","Dignity of Earth & Sky, Chamberlain, SD 57325"],"notes":""},{"date":"2026-10-15","city":"Gillette","miles":387,"arrival":"","stops":["Chamberlain, SD 57325","Badlands National Park, Interior, SD 57750","Wall Drug Store, 510 Main St, Wall, SD 57790","Mount Rushmore National Memorial, Keystone, SD 57751","Crazy Horse Memorial, 12151 Ave of the Chiefs, Crazy Horse, SD 57730","Deadwood, SD 57732","Devils Tower National Monument, WY 82714","Gillette, WY 82716","Marshalls, 2610 S Douglas Hwy, Gillette, WY 82718"],"notes":""},{"date":"2026-10-16","city":"Yellowstone","miles":385,"arrival":"","stops":["Gillette, WY 82716","Ranchester, WY 82839","Shell Falls Interpretive Site, US-14, Shell, WY 82441","Cody, WY 82414","Canyon Village, Yellowstone National Park, WY 82190","Artist Point, Yellowstone National Park, WY 82190","Grand Prismatic Spring, Midway Geyser Basin, Yellowstone National Park, WY 82190","Old Faithful, Yellowstone National Park, WY 82190"],"notes":""},{"date":"2026-10-17","city":"Jackson Hole","miles":145,"arrival":"","stops":["Yellowstone National Park, WY 82190","West Thumb Geyser Basin, Yellowstone National Park, WY 82190","Grand Teton National Park, Moose, WY 83012","Oxbow Bend Turnout, Grand Teton National Park, Moran, Wyoming 83013","Mormon Row Historic District, Kelly, WY 83011","Jackson, WY 83001","Victor, ID 83455"],"notes":""},{"date":"2026-10-18","city":"Salt Lake City","miles":285,"arrival":"","stops":["Victor, ID 83455","Blackfoot, ID 83221","Idaho Potato Museum, 130 NW Main St, Blackfoot, ID 83221","Ross Dress for Less, 2406 S 25th E, Idaho Falls, ID 83404","Salt Lake City, UT 84101","Temple Square, Salt Lake City, UT 84150"],"notes":""},{"date":"2026-10-19","city":"Lake Tahoe","miles":580,"arrival":"","stops":["Salt Lake City, UT 84101","West Wendover, NV 89883","Bonneville Salt Flats, Wendover, UT 84083","Reno, NV 89501","South Lake Tahoe, CA 96150","TJ Maxx, 2015 Lake Tahoe Blvd, South Lake Tahoe, CA 96150"],"notes":""},{"date":"2026-10-20","city":"San Francisco","miles":188,"arrival":"","stops":["South Lake Tahoe, CA 96150","Emerald Bay State Park, South Lake Tahoe, CA 96150","Sacramento, CA 95814","San Francisco, CA 94103","Battery Spencer (Golden Gate view), Sausalito, CA 94965","Lombard Street, San Francisco, CA 94133","Pier 39, San Francisco, CA 94133","Alcatraz Island, San Francisco, CA 94133"],"notes":""},{"date":"2026-10-21","city":"Los Angeles (Anaheim)","miles":477,"arrival":"","stops":["San Francisco, CA 94103","Monterey, CA 93940","Bixby Creek Bridge, Big Sur, CA 93920","Solvang, CA 93463","Santa Barbara, CA 93101","Anaheim, CA 92802","Ross Dress for Less, 1670 W Katella Ave, Anaheim, CA 92802"],"notes":""},{"date":"2026-10-22","city":"Los Angeles (Praias)","miles":0,"arrival":"","stops":["Anaheim, CA 92802","Topanga, CA 90290","Malibu, CA 90265","El Matador State Beach, Malibu, CA 90265","Santa Monica, CA 90401","Venice Beach Boardwalk, Venice, CA 90291","Marshalls, 11270 Olympic Blvd, Los Angeles, CA 90064","Long Beach, CA 90802","Huntington Beach, CA 92648"],"notes":""},{"date":"2026-10-23","city":"Los Angeles (Cidade)","miles":0,"arrival":"","stops":["Huntington Beach, CA 92648","Crypto.com Arena, 1111 S Figueroa St, Los Angeles, CA 90015","Beverly Hills, CA 90210","Rodeo Drive, Beverly Hills, CA 90210","Urban Light, LACMA, 5905 Wilshire Blvd, Los Angeles, CA 90036","TJ Maxx, 8500 Beverly Blvd, Los Angeles, CA 90048","Hollywood Walk of Fame, Hollywood Blvd, Los Angeles, CA 90028","Griffith Observatory, 2800 E Observatory Rd, Los Angeles, CA 90027","Anaheim, CA 92802"],"notes":""},{"date":"2026-10-24","city":"Las Vegas","miles":270,"arrival":"","stops":["Anaheim, CA 92802","Calico Ghost Town, Yermo, CA 92398","Seven Magic Mountains, Las Vegas, NV 89054","Las Vegas, NV","Marshalls, 3785 Las Vegas Blvd S, Las Vegas, NV 89109"],"notes":""},{"date":"2026-10-25","city":"Las Vegas","miles":0,"arrival":"","stops":["Ross Dress for Less, 3771 Las Vegas Blvd S, Las Vegas, NV 89109","Valley of Fire State Park, Overton, NV 89040","Red Rock Canyon National Conservation Area, Las Vegas, NV 89161"],"notes":""},{"date":"2026-10-26","city":"Las Vegas","miles":0,"arrival":"","stops":["Fremont Street Experience, 425 Fremont St, Las Vegas, NV 89101","Sphere, 255 Sphere Way, Las Vegas, NV 89169"],"notes":""},{"date":"2026-10-27","city":"Las Vegas","miles":null,"arrival":"","stops":[],"notes":"🚗 Devolução do carro Alamo 12:00 no aeroporto (LAS). ✈️ Voo volta: LAS 11:15 → ORD (UA1583) · ORD 18:50 → GRU (UA845) chega 28/10 07:15 · GRU 08:55 → BSB 10:40."}];
 
 /* ---------------- Estado ---------------- */
 const KEY='roadtripData_v3';
@@ -1352,6 +1368,43 @@ async function geocode(q){
     if(!r.ok) return null; const j=await r.json(); if(j&&j[0]) return {lat:+j[0].lat, lng:+j[0].lon}; }catch(e){}
   return null;
 }
+/* ---- Mapa do dia: plota as paradas do dia atual (geocodifica + marcadores numerados) ---- */
+let dayRouteMarkers=[], geoCache=null;
+function loadGeoCache(){ if(!geoCache){ try{ geoCache=JSON.parse(localStorage.getItem('rt_geocache')||'{}'); }catch(e){ geoCache={}; } } return geoCache; }
+function saveGeoCache(){ try{ localStorage.setItem('rt_geocache', JSON.stringify(geoCache||{})); }catch(e){} }
+function clearDayOnMap(){ dayRouteMarkers.forEach(m=>{try{m.remove();}catch(e){}}); dayRouteMarkers=[]; const s=document.getElementById('dayMapStatus'); if(s) s.textContent=''; }
+async function showDayOnMap(date){
+  const status=document.getElementById('dayMapStatus');
+  if(typeof maplibregl==='undefined'){ if(status) status.textContent='O mapa precisa de internet na 1ª vez.'; return; }
+  ensureMap();
+  if(!placesMap || !mapReady){ if(status) status.textContent='Mapa carregando… toque de novo em 1s.'; return; }
+  const it=(S.config.itinerary||[]).find(d=>d.date===date);
+  const stops = it ? (it.stops||[]).map(s=>cleanStop(String(s))).filter(Boolean) : [];
+  const h=dayHotel(date); if(h) stops.push(h.name+', '+h.addr);
+  if(!stops.length){ if(status) status.textContent='Este dia não tem paradas.'; return; }
+  clearDayOnMap(); loadGeoCache();
+  try{ placesMap.resize(); }catch(e){}
+  const pts=[]; let done=0;
+  for(let i=0;i<stops.length;i++){
+    const q=stops[i]; let c=geoCache[q];
+    if(!c){ if(status) status.textContent='Localizando paradas do dia… ('+(i+1)+'/'+stops.length+')'; c=await geocode(q); if(c){ geoCache[q]=c; saveGeoCache(); } await sleep(1100); }
+    if(c){
+      const isHotel = h && i===stops.length-1;
+      const el=document.createElement('div'); el.className='daynum'; el.textContent=isHotel?'🏨':(i+1);
+      if(isHotel) el.style.background='#e0b34a';
+      const link='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q);
+      const m=new maplibregl.Marker({element:el}).setLngLat([c.lng,c.lat])
+        .setPopup(new maplibregl.Popup({offset:14}).setHTML('<b>'+(isHotel?'🏨 ':(i+1)+'. ')+escapeHtml(q)+'</b><br><a href="'+link+'" target="_blank" rel="noopener">Abrir no Google Maps</a>'));
+      m.addTo(placesMap); dayRouteMarkers.push(m); pts.push([c.lng,c.lat]); done++;
+    }
+  }
+  if(pts.length){
+    let m1=Infinity,m2=Infinity,M1=-Infinity,M2=-Infinity;
+    pts.forEach(([lng,lat])=>{m1=Math.min(m1,lng);M1=Math.max(M1,lng);m2=Math.min(m2,lat);M2=Math.max(M2,lat);});
+    try{ if(pts.length===1) placesMap.easeTo({center:pts[0],zoom:12,duration:0}); else placesMap.fitBounds([[m1,m2],[M1,M2]],{padding:50,maxZoom:13,duration:0}); }catch(e){}
+    if(status) status.textContent='Mostrando '+done+' de '+stops.length+' paradas do dia '+fmtDate(date)+(done<stops.length?' — algumas não foram localizadas':'')+'.';
+  } else if(status) status.textContent='Não consegui localizar as paradas (tente com internet).';
+}
 function coordsFromURL(url){
   if(!url) return null;
   const m = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/)
@@ -1835,6 +1888,25 @@ function renderSaldos(){
         <span class="muted">Gasto ${money(spent,s.currency)}</span></div>
     </div>`;
   }).join('') || '<div class="muted small">Nenhuma fonte cadastrada.</div>';
+
+  renderPrepaid();
+}
+// Custos pré-pagos: voo (R$) + carro (US$) + hotéis pagos (allHotels), total em US$ e R$.
+function renderPrepaid(){
+  const el=document.getElementById('prepaidBody'); if(!el) return;
+  const rate=(S.rate&&S.rate.usdToBrl)||5.2;
+  const vooBRL = (RESERVAS&&RESERVAS.voo&&RESERVAS.voo.valorBRL)||0;
+  const carroUSD = (RESERVAS&&RESERVAS.carro&&RESERVAS.carro.valorUSD)||0;
+  const hotPagoBRL = allHotels().reduce((s,h)=>s+(Number(h.pago)||0),0);   // hotéis já pagos (R$)
+  const vooUSD = vooBRL/rate, hotUSD = hotPagoBRL/rate;
+  const totUSD = vooUSD + carroUSD + hotUSD;
+  const totBRL = totUSD*rate;
+  const row=(nome,us,br)=>`<div class="statline small" style="padding:6px 0"><span>${nome}</span><span class="muted">US$ ${us.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})} · R$ ${br.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>`;
+  el.innerHTML = row('✈️ Voo', vooUSD, vooBRL)
+    + row('🚗 Carro (Alamo)', carroUSD, carroUSD*rate)
+    + row('🏨 Hotéis pagos', hotUSD, hotPagoBRL)
+    + `<div class="statline" style="border-top:1px solid rgba(255,255,255,.15);margin-top:6px;padding-top:8px"><span style="font-weight:800">Total pré-pago</span><span style="font-weight:800;color:var(--accent2)">${usd(totUSD)}</span></div>`
+    + `<div class="small muted right">≈ ${brl(totBRL)} · câmbio R$ ${rate.toFixed(2)}</div>`;
 }
 
 /* ---------------- Render: Hotéis ---------------- */
@@ -1983,7 +2055,53 @@ const CONSULADOS = [
   {nome:'Houston', tel:'+12813844996', telfmt:'(281) 384-4996', cobre:'Texas, Colorado, Novo México, Oklahoma, Kansas e Arkansas', addr:'1233 West Loop South, Suite 1150, Houston, TX'},
   {nome:'Chicago', tel:'+13122130293', telfmt:'(312) 213-0293', cobre:'Missouri, Dakota do Sul e Meio-Oeste', addr:'401 N Michigan Ave, Suite 1850, Chicago, IL'},
 ];
+// Reservas fixas (voo, carro, seguro) — dados dos PDFs. Só leitura.
+const RESERVAS = {
+  voo:{ cia:'United', conf:'LEXHWF', valorBRL:6764.52,
+    ida:['02/10 18:00 Brasília (BSB) → 19:50 São Paulo (GRU) · GOL','02/10 22:20 GRU → Chicago (ORD) chega 03/10 06:45 · UA844','03/10 09:15 ORD → Las Vegas (LAS) chega 11:22 · UA2811'],
+    volta:['27/10 11:15 LAS → Chicago (ORD) 17:01 · UA1583','27/10 18:50 ORD → São Paulo (GRU) chega 28/10 07:15 · UA845','28/10 08:55 GRU → Brasília (BSB) 10:40 · GOL'],
+    assentos:'ORD-LAS / LAS-ORD: 30B (Francisco) e 30C (Renata)' },
+  carro:{ locadora:'Alamo (via Rentcars)', voucher:'898136368COUNT', cod:'6P7TK9N', tel:'+18443707395', telfmt:'+1 844-370-7395',
+    retirada:'03/10 12:00 — Aeroporto de Las Vegas (Harry Reid/LAS), 7135 Gilespie St', devolucao:'27/10 12:00 — mesmo local',
+    veiculo:'Chevrolet Tahoe (ou similar) · SUV · km livre · 1 condutor adicional', valorUSD:1681.32 },
+  seguro:{ seguradora:'AIG Seguros do Brasil (Visa Infinite)', cert1:'16011-0001-69-269244065 (CER-6761951) — Francisco', cert2:'16011-0001-69-269244066 — Rita de Cássia Pires Souza',
+    vigencia:'19/03/2026 a 19/03/2027 · até 60 dias por viagem', cobertura:'Saúde no exterior US$ 175.000 · bagagem · cancelamento',
+    telEUA:'+18003969665', telEUAfmt:'+1 800-396-9665 (EUA/Canadá, grátis)', telBR:'08008913679', telBRfmt:'0800 891 3679 (Brasil)', telColeto:'+13039671098', email:'Benefits@ap-visa.com' }
+};
+function renderReservas(){
+  const el=document.getElementById('reservasBox'); if(!el) return;
+  const R=RESERVAS;
+  const li=a=>a.map(x=>'<div class="small" style="margin:2px 0">• '+escapeHtml(x)+'</div>').join('');
+  el.innerHTML=`
+    <div class="card" style="background:rgba(12,6,24,.4);margin-bottom:8px">
+      <div style="font-weight:700">✈️ Voo ${escapeHtml(R.voo.cia)} · conf. ${escapeHtml(R.voo.conf)}</div>
+      <div class="small muted" style="margin:4px 0 2px">Ida</div>${li(R.voo.ida)}
+      <div class="small muted" style="margin:6px 0 2px">Volta</div>${li(R.voo.volta)}
+      <div class="small muted" style="margin-top:6px">Assentos: ${escapeHtml(R.voo.assentos)}</div>
+      <div class="small" style="margin-top:4px">Valor: R$ ${R.voo.valorBRL.toLocaleString('pt-BR',{minimumFractionDigits:2})}</div>
+    </div>
+    <div class="card" style="background:rgba(12,6,24,.4);margin-bottom:8px">
+      <div style="font-weight:700">🚗 Carro · ${escapeHtml(R.carro.locadora)}</div>
+      <div class="small" style="margin:4px 0">${escapeHtml(R.carro.veiculo)}</div>
+      <div class="small">Retirada: ${escapeHtml(R.carro.retirada)}</div>
+      <div class="small">Devolução: ${escapeHtml(R.carro.devolucao)}</div>
+      <div class="small muted" style="margin-top:4px">Voucher ${escapeHtml(R.carro.voucher)} · cód. ${escapeHtml(R.carro.cod)}</div>
+      <a href="tel:${R.carro.tel}" class="btn ghost sm" style="width:100%;margin-top:6px">📞 Alamo: ${escapeHtml(R.carro.telfmt)}</a>
+      <div class="small" style="margin-top:4px">Valor: US$ ${R.carro.valorUSD.toLocaleString('en-US',{minimumFractionDigits:2})} (pago online)</div>
+    </div>
+    <div class="card" style="background:rgba(12,6,24,.4)">
+      <div style="font-weight:700">🛡️ Seguro · ${escapeHtml(R.seguro.seguradora)}</div>
+      <div class="small" style="margin:4px 0">${escapeHtml(R.seguro.cobertura)}</div>
+      <div class="small muted">Cert.: ${escapeHtml(R.seguro.cert1)}</div>
+      <div class="small muted">Cert.: ${escapeHtml(R.seguro.cert2)}</div>
+      <div class="small muted" style="margin-bottom:6px">Vigência: ${escapeHtml(R.seguro.vigencia)}</div>
+      <a href="tel:${R.seguro.telEUA}" class="btn sm" style="width:100%;background:#1f7a4d;color:#fff">📞 Assistência 24h: ${escapeHtml(R.seguro.telEUAfmt)}</a>
+      <a href="tel:${R.seguro.telBR}" class="btn ghost sm" style="width:100%;margin-top:6px">📞 ${escapeHtml(R.seguro.telBRfmt)}</a>
+      <div class="small muted" style="margin-top:6px">Coleto/exterior: ${escapeHtml(R.seguro.telColeto)} · ${escapeHtml(R.seguro.email)}</div>
+    </div>`;
+}
 function renderInfo(){
+  renderReservas();
   const el=document.getElementById('infoConsulados');
   if(el) el.innerHTML = CONSULADOS.map(c=>`
     <div class="card" style="background:rgba(12,6,24,.4);margin-bottom:8px">
