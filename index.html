@@ -564,6 +564,8 @@
       <label>Código da viagem</label>
       <input id="cfgTrip" placeholder="ex: vegas2026">
       <button class="btn green sm" style="margin-top:10px" onclick="cloudConnectUI()">🔗 Conectar / Sincronizar</button>
+      <button class="btn ghost sm" style="margin-top:8px;width:100%" onclick="forcePushAll()">☁️⬆️ Enviar meus dados para a nuvem</button>
+      <div class="small muted" style="margin-top:6px">Use se este aparelho tem os dados certos e você quer garantir que a nuvem (e o outro celular) fiquem iguais a ele.</div>
       <div class="small" id="cloudStatus" style="margin-top:8px">Status: ⚪ Desligada</div>
     </div>
     <div class="card">
@@ -2070,6 +2072,39 @@ function seedBudgetOnce(){
     if(!document.getElementById('view-saldos').classList.contains('hide')) renderSaldos(); }
   localStorage.setItem('rt_budgetSeeded_v1','1');
 }
+// Recuperação do saldo das fontes (perdido na troca de hospedagem). Só age se o saldo estiver ZERADO —
+// se já houver saldo, não mexe. Uma única vez por aparelho; sobe o resultado para a nuvem.
+function restoreSourcesOnce(){
+  if(localStorage.getItem('rt_restoreSaldo_v2')) return;
+  if(!S.config) return;
+  const cur=(S.config.sources||[]);
+  const tot=cur.reduce((s,x)=>s+(Number(x.initial)||0),0);
+  if(tot>0){ localStorage.setItem('rt_restoreSaldo_v2','1'); return; }   // já tem saldo: preserva
+  S.config.sources=[
+    {id:'bb',    name:'BB Americas',      currency:'USD', initial:6783.38},
+    {id:'nomad', name:'Nomad',            currency:'USD', initial:240.40},
+    {id:'inter', name:'Banco Inter',      currency:'USD', initial:1616.54},
+    {id:'cash',  name:'Dinheiro (papel)', currency:'USD', initial:1030.00},
+    {id:'euro',  name:'Euro',             currency:'USD', initial:180.00}
+  ];
+  if(!(+S.config.budgetUSD>0)) S.config.budgetUSD=9000;
+  save();
+  if(db && tripCode){ tripRef().set({config:S.config},{merge:true}).catch(()=>{}); }   // grava na nuvem
+  localStorage.setItem('rt_restoreSaldo_v2','1');
+  rerender();
+}
+// Reenvia TUDO deste aparelho para a nuvem (config + coleções). Botão manual em Configurações.
+function forcePushAll(){
+  if(!db || !tripCode){ toast('Conecte-se à nuvem primeiro'); return; }
+  tripRef().set({config:S.config, rate:S.rate},{merge:true}).catch(()=>{});
+  (S.expenses||[]).forEach(e=> tripRef().collection('expenses').doc(e.id).set(e).catch(()=>{}));
+  (S.shoppingList||[]).forEach(i=> tripRef().collection('shopping').doc(i.id).set(i).catch(()=>{}));
+  (S.places||[]).forEach(p=> tripRef().collection('places').doc(p.id).set(p).catch(()=>{}));
+  (S.routes||[]).forEach(r=> tripRef().collection('routes').doc(r.id).set(r).catch(()=>{}));
+  (S.hotels||[]).forEach(h=> tripRef().collection('hotels').doc(h.id).set(h).catch(()=>{}));
+  (S.foods||[]).forEach(f=> tripRef().collection('foods').doc(f.id).set(f).catch(()=>{}));
+  toast('Enviado para a nuvem ✓');
+}
 // Lojas Marshalls/Ross/TJ Maxx a inserir no roteiro (uma única vez), sem apagar as paradas já existentes.
 const STORE_STOPS = [
   {date:'2026-10-03', label:'Ross Dress for Less, 3771 Las Vegas Blvd S, Las Vegas, NV 89109', near:'Las Vegas'},
@@ -2789,8 +2824,16 @@ function cloudConnect(code){
     cloudState = snap.metadata.fromCache ? 'offline':'online'; updateCloudUI();
     const d=snap.data(); if(!d) return;
     applyingRemote=true;
+    let _repushSaldo=false;
     try{
-      if(d.config) S.config=d.config;
+      if(d.config){
+        // TRAVA DE SEGURANÇA: se a nuvem vier SEM saldo (fontes zeradas) mas este aparelho
+        // AINDA TEM saldo, não deixa a nuvem apagar — preserva o local e reenvia pra nuvem.
+        const inTot =((d.config.sources)||[]).reduce((s,x)=>s+(Number(x.initial)||0),0);
+        const curTot=((S.config&&S.config.sources)||[]).reduce((s,x)=>s+(Number(x.initial)||0),0);
+        if(inTot===0 && curTot>0){ _repushSaldo=true; }   // ignora a nuvem vazia
+        else { S.config=d.config; }
+      }
       // só aceita a cotação da nuvem se for igual ou mais recente que a local (evita reverter a busca automática)
       if(d.rate && (Number(d.rate.ts)||0) >= (Number(S.rate&&S.rate.ts)||0)) S.rate=d.rate;
       save(); updateHeader();
@@ -2798,9 +2841,11 @@ function cloudConnect(code){
     } finally {
       applyingRemote=false;   // SEMPRE libera — se travar em true, as edições param de salvar na nuvem
     }
+    if(_repushSaldo && db && tripCode){ tripRef().set({config:S.config},{merge:true}).catch(()=>{}); }   // reenvia o saldo bom pra nuvem
     applyItinUpdate();   // se o roteiro embutido for mais novo, atualiza e sobe p/ a nuvem
     normalizeItin();     // mantém os dias em ordem de data (conserta roteiro fora de ordem)
     seedBudgetOnce();    // define o orçamento inicial (US$ 9.000) uma única vez
+    restoreSourcesOnce();// recupera o saldo das fontes se estiver zerado (perda na troca de hospedagem)
     seedStoresOnce();    // adiciona as lojas (Marshalls/Ross/TJ Maxx) no roteiro, uma única vez
     fixStoreAddressesOnce();  // troca os nomes genéricos das lojas por endereço completo (e remove a de SF)
     seedTouristOnce();   // adiciona os pontos turísticos sugeridos no dia/ordem certos, sem duplicar
