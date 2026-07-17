@@ -398,6 +398,20 @@
       </div>
     </div>
 
+    <!-- SUB-TELA: CONFIGURAR ITEM (compras e desejos) -->
+    <div id="shopItemCfg" class="hide">
+      <div class="card">
+        <div class="row" style="align-items:center">
+          <button class="btn ghost sm" style="flex:0 0 64px" onclick="closeItemCfg()">‹ Voltar</button>
+          <div style="font-weight:700;text-align:center;flex:1" id="cfgItemTitle">Configurar item</div>
+          <span style="flex:0 0 64px"></span>
+        </div>
+      </div>
+      <div class="card">
+        <div id="cfgBody"></div>
+      </div>
+    </div>
+
   </section>
 
   <!-- ============ SALDOS (fontes) ============ -->
@@ -1704,19 +1718,10 @@ function renderShopDetailList(){
       <div class="top">
         <span class="nm">${escapeHtml(it.nome)}${badge}</span>
         <div class="acts">
-          <button class="iconbtn" onclick="shopEdit('${it.id}')">✏️</button>
-          <button class="iconbtn" onclick="shopDelete('${it.id}')">🗑️</button>
+          <button class="iconbtn" onclick="openItemCfg('${it.id}')" title="Meta, detalhe e opções">⚙️</button>
         </div>
       </div>
-      ${it.obs
-        ? `<div class="small muted" style="margin-top:2px;cursor:pointer" onclick="shopEditObs('${it.id}')">📝 ${escapeHtml(it.obs)} <span style="opacity:.55">(editar)</span></div>`
-        : `<button class="iconbtn" style="margin-top:2px;font-size:12px;opacity:.75" onclick="shopEditObs('${it.id}')">＋ detalhe (tamanho, cor, pra quem…)</button>`}
-      <div class="qtyrow">
-        <span class="lbl">Quero (meta)</span>
-        <div class="qty">
-          <input type="number" inputmode="numeric" min="0" value="${alvo>0?alvo:''}" placeholder="—" onchange="shopSetAlvo('${it.id}',this.value)" style="width:70px;text-align:center">
-        </div>
-      </div>
+      ${it.obs?`<div class="small muted" style="margin-top:2px">📝 ${escapeHtml(it.obs)}</div>`:''}
       <div class="qtyrow">
         <span class="lbl">Quantidade comprada</span>
         <div class="qty">
@@ -1730,6 +1735,74 @@ function renderShopDetailList(){
 }
 // Um item de compra está "concluído" quando atinge a meta (se houver meta); sem meta, basta ter pego 1+
 function compraDone(it){ const q=it.quantidade_comprada||0, a=+it.alvo||0; return a>0 ? q>=a : q>0; }
+
+// ---- Tela de configuração de um item (compras e desejos) ----
+let cfgItemId=null;
+function openItemCfg(id){
+  const it=shopFind(id); if(!it) return;
+  cfgItemId=id;
+  buildItemCfg(id);
+  document.getElementById('shopDetail').classList.add('hide');
+  document.getElementById('shopItemCfg').classList.remove('hide');
+  window.scrollTo(0,0);
+}
+function refreshItemCfg(){
+  if(!cfgItemId) return;
+  const scr=document.getElementById('shopItemCfg');
+  if(!scr || scr.classList.contains('hide')) return;
+  buildItemCfg(cfgItemId);
+}
+function buildItemCfg(id){
+  const it=shopFind(id); if(!it) return;
+  const body=document.getElementById('cfgBody');
+  document.getElementById('cfgItemTitle').textContent = isDesejo(it) ? '✨ Configurar desejo' : '🛒 Configurar item';
+  const nameField=`<label class="small muted">Nome</label>
+      <input value="${escapeAttr(it.nome||'')}" onchange="cfgSetName('${id}',this.value)" style="width:100%;margin:4px 0 14px">`;
+  const delBtn=`<button class="btn ghost sm" style="width:100%;margin-top:18px;color:#e11d48" onclick="cfgDeleteItem()">🗑️ Excluir item</button>`;
+  if(isDesejo(it)){
+    const v=+it.valor||0;
+    const foto = it.foto
+      ? `<div style="margin-top:6px"><img src="${it.foto}" onclick="openWishPhoto('${id}')" style="max-width:100%;max-height:200px;border-radius:10px;border:1px solid var(--line);cursor:pointer">
+           <div style="display:flex;gap:6px;margin-top:6px"><button class="btn ghost sm" style="flex:1" onclick="pickWishPhoto('${id}')">Trocar foto</button><button class="btn ghost sm" style="flex:1" onclick="removeWishPhoto('${id}')">Remover foto</button></div></div>`
+      : `<button class="attachbtn" style="margin-top:6px" onclick="pickWishPhoto('${id}')"><span>📷</span><span class="small">Anexar foto do produto</span></button>`;
+    body.innerHTML = nameField
+      + `<label class="small muted">Valor estimado lá (US$)</label>
+      <input type="number" inputmode="decimal" min="0" step="0.01" value="${v>0?v:''}" placeholder="ex.: 10" onchange="wishSetVal('${id}',this.value)" style="width:100%;margin:4px 0 4px">
+      <div class="small muted" style="margin-bottom:14px">≈ ${brl(v*S.rate.usdToBrl)}</div>
+      <label class="small muted">Preço no Brasil (R$)</label>
+      <input type="number" inputmode="decimal" min="0" step="0.01" value="${it.precoBR>0?it.precoBR:''}" placeholder="ex.: 200" onchange="wishSetBR('${id}',this.value)" style="width:100%;margin:4px 0 10px">
+      ${wishCompareHTML(it)}
+      <label class="small muted" style="display:block;margin-top:14px">Foto do produto</label>
+      ${foto}`
+      + delBtn;
+  } else {
+    body.innerHTML = nameField
+      + `<label class="small muted">Meta — quantos você quer levar</label>
+      <input type="number" inputmode="numeric" min="0" value="${(+it.alvo>0)?it.alvo:''}" placeholder="ex.: 3 (vazio = sem meta)" onchange="shopSetAlvo('${id}',this.value)" style="width:100%;margin:4px 0 4px">
+      <div class="small muted" style="margin-bottom:14px">Ao atingir a meta, o item é marcado como concluído.</div>
+      <label class="small muted">Detalhe (tamanho, cor, modelo, pra quem…)</label>
+      <textarea rows="3" onchange="cfgSetObs('${id}',this.value)" placeholder="ex.: camiseta tamanho M, azul — presente pra Renata" style="width:100%;margin:4px 0 4px;resize:vertical">${escapeHtml(it.obs||'')}</textarea>`
+      + delBtn;
+  }
+}
+function closeItemCfg(){
+  cfgItemId=null;
+  document.getElementById('shopItemCfg').classList.add('hide');
+  document.getElementById('shopDetail').classList.remove('hide');
+  renderShopDetailList();
+  window.scrollTo(0,0);
+}
+function cfgSetName(id,val){ const it=shopFind(id); if(!it) return; const t=(val||'').trim(); if(!t) return; if(!it.dono) it.dono=ownerOf(it); it.nome=t; save(); cloudPushShop(it); renderLista(); }
+function cfgSetObs(id,val){ const it=shopFind(id); if(!it) return; const t=(val||'').trim(); if(t) it.obs=t; else delete it.obs; if(!it.dono) it.dono=ownerOf(it); save(); cloudPushShop(it); renderLista(); }
+function cfgDeleteItem(){
+  const it=shopFind(cfgItemId); if(!it){ closeItemCfg(); return; }
+  if(!confirm('Excluir "'+it.nome+'" da lista?')) return;
+  cloudDeleteShop(it.id);
+  S.shoppingList = S.shoppingList.filter(i=>i.id!==it.id);
+  save();
+  toast('Item excluído');
+  closeItemCfg();
+}
 function renderDesejoList(){
   const o=shopDetailOwner;
   const list=desejosItems(o);
@@ -1740,16 +1813,14 @@ function renderDesejoList(){
   const el=document.getElementById('shopList');
   if(!list.length){ el.innerHTML='<div class="muted small">Nenhum desejo ainda. Escreva o item e o valor estimado acima.</div>'; return; }
   el.innerHTML=list.map(it=>{ const v=+it.valor||0;
-    const foto = it.foto
-      ? `<div style="margin-top:8px"><img src="${it.foto}" onclick="openWishPhoto('${it.id}')" style="max-width:100%;max-height:190px;border-radius:10px;border:1px solid var(--line);cursor:pointer">
-           <div style="text-align:right"><button class="iconbtn" onclick="removeWishPhoto('${it.id}')" style="font-size:12px">remover foto</button></div></div>`
-      : `<button class="attachbtn" style="margin-top:8px" onclick="pickWishPhoto('${it.id}')"><span>📷</span><span class="small">Anexar foto do produto</span></button>`;
+    const fotoThumb = it.foto
+      ? `<div style="margin-top:8px"><img src="${it.foto}" onclick="openWishPhoto('${it.id}')" style="max-width:100%;max-height:190px;border-radius:10px;border:1px solid var(--line);cursor:pointer"></div>`
+      : '';
     return `<div class="shopitem">
       <div class="top">
         <span class="nm">${escapeHtml(it.nome)}</span>
         <div class="acts">
-          <button class="iconbtn" onclick="shopEdit('${it.id}')">✏️</button>
-          <button class="iconbtn" onclick="shopDelete('${it.id}')">🗑️</button>
+          <button class="iconbtn" onclick="openItemCfg('${it.id}')" title="Preço no Brasil, foto e opções">⚙️</button>
         </div>
       </div>
       <div class="qtyrow">
@@ -1759,14 +1830,8 @@ function renderDesejoList(){
         </div>
       </div>
       <div class="small muted" style="text-align:right;margin-top:2px">≈ ${brl(v*S.rate.usdToBrl)}</div>
-      <div class="qtyrow" style="margin-top:6px">
-        <span class="lbl">Preço no Brasil (R$)</span>
-        <div class="qty">
-          <input type="number" inputmode="decimal" min="0" step="0.01" value="${it.precoBR>0?it.precoBR:''}" placeholder="ex.: 200" onchange="wishSetBR('${it.id}',this.value)" style="width:96px;text-align:center">
-        </div>
-      </div>
       ${wishCompareHTML(it)}
-      ${foto}
+      ${fotoThumb}
       <button class="btn green sm" style="width:100%;margin-top:10px" onclick="wishMarkBought('${it.id}')">✓ Comprei — mover p/ Compras</button>
     </div>`; }).join('');
 }
@@ -1792,7 +1857,7 @@ async function onWishPhoto(input){
     if(data.length>ATTACH_MAX) data=resizeImg(img,700,0.5);
     if(data.length>ATTACH_MAX) data=resizeImg(img,560,0.45);
     if(data.length>ATTACH_MAX){ toast('Foto muito grande — tente uma imagem menor.'); wishPhotoTarget=null; return; }
-    it.foto=data; save(); cloudPushShop(it); renderLista(); toast('Foto anexada ✔️');
+    it.foto=data; save(); cloudPushShop(it); renderLista(); refreshItemCfg(); toast('Foto anexada ✔️');
   }catch(e){ toast('Não consegui ler essa imagem.'); }
   wishPhotoTarget=null;
 }
@@ -1804,12 +1869,14 @@ function openWishPhoto(id){
 function removeWishPhoto(id){
   const it=shopFind(id); if(!it) return;
   if(!confirm('Remover a foto deste item?')) return;
-  delete it.foto; save(); cloudPushShop(it); renderLista();
+  delete it.foto; save(); cloudPushShop(it); renderLista(); refreshItemCfg();
 }
 function shopFind(id){ return (S.shoppingList||[]).find(i=>i.id===id); }
 function addItemFor(owner, nome){
   nome=(nome||'').trim(); if(!nome) return false;
   const item={ id:'sl'+Date.now()+Math.random().toString(36).slice(2,6), nome, quantidade_comprada:0, dono:owner, tipo:'compra' };
+  const metaStr=prompt('Quantos "'+nome+'" você quer levar? (meta — deixe em branco se não quiser definir)','');
+  if(metaStr!==null){ const m=parseInt(metaStr,10); if(m>0) item.alvo=m; }
   S.shoppingList.push(item); save(); cloudPushShop(item);   // salva no localStorage + nuvem na hora
   toast('Item adicionado!'); renderLista();
   return true;
@@ -1837,13 +1904,13 @@ function addShopDetail(){               // adicionar de dentro da sub-tela (comp
 function wishSetVal(id,val){
   const it=shopFind(id); if(!it) return;
   it.valor = Math.max(0, parseFloat(val)||0);
-  save(); cloudPushShop(it); renderLista();
+  save(); cloudPushShop(it); renderLista(); refreshItemCfg();
 }
 function wishSetBR(id,val){
   const it=shopFind(id); if(!it) return;
   const n=Math.max(0, parseFloat(val)||0);
   if(n>0) it.precoBR=n; else delete it.precoBR;
-  save(); cloudPushShop(it); renderLista();
+  save(); cloudPushShop(it); renderLista(); refreshItemCfg();
 }
 // Compara o preço lá (US$ convertido p/ R$) com o preço no Brasil (R$)
 function wishCompareHTML(it){
@@ -1885,7 +1952,7 @@ function shopSetAlvo(id,val){
   if(!it.dono) it.dono=ownerOf(it);
   const n=Math.max(0, parseInt(val,10)||0);
   if(n>0) it.alvo=n; else delete it.alvo;
-  save(); cloudPushShop(it); renderLista();
+  save(); cloudPushShop(it); renderLista(); refreshItemCfg();
 }
 function shopEditObs(id){
   const it=shopFind(id); if(!it) return;
