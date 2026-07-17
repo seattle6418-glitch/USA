@@ -1688,17 +1688,33 @@ function renderShopDetailList(){
   const o=shopDetailOwner;
   document.getElementById('shopDetailTitle').textContent='Lista '+o;
   if(shopMode==='desejo'){ renderDesejoList(); return; }
-  const list=comprasItems(o), got=list.filter(i=>i.quantidade_comprada>0).length;
-  document.getElementById('shopSummary').textContent = list.length ? `${got} de ${list.length} itens já comprados` : '';
+  const list=comprasItems(o);
+  const got=list.filter(compraDone).length;
+  document.getElementById('shopSummary').textContent = list.length ? `${got} de ${list.length} itens concluídos` : '';
   const el=document.getElementById('shopList');
   if(!list.length){ el.innerHTML='<div class="muted small">Lista vazia. Adicione itens no campo acima.</div>'; return; }
-  el.innerHTML=list.map(it=>{ const q=it.quantidade_comprada||0;
-    return `<div class="shopitem ${q>0?'got':''}">
+  // pendentes primeiro, concluídos por último (mantém a ordem original dentro de cada grupo)
+  const ordered=list.map((it,i)=>({it,i})).sort((a,b)=>{
+    const da=compraDone(a.it)?1:0, db=compraDone(b.it)?1:0;
+    return (da-db) || (a.i-b.i);
+  }).map(x=>x.it);
+  el.innerHTML=ordered.map(it=>{ const q=it.quantidade_comprada||0; const alvo=+it.alvo||0; const done=compraDone(it);
+    const badge = alvo>0 ? `<span class="badgegot">${q}/${alvo}${done?' ✓':''}</span>` : (q>0?`<span class="badgegot">${q}✓</span>`:'');
+    return `<div class="shopitem ${done?'got':''}">
       <div class="top">
-        <span class="nm">${escapeHtml(it.nome)}${q>0?`<span class="badgegot">${q}✓</span>`:''}</span>
+        <span class="nm">${escapeHtml(it.nome)}${badge}</span>
         <div class="acts">
           <button class="iconbtn" onclick="shopEdit('${it.id}')">✏️</button>
           <button class="iconbtn" onclick="shopDelete('${it.id}')">🗑️</button>
+        </div>
+      </div>
+      ${it.obs
+        ? `<div class="small muted" style="margin-top:2px;cursor:pointer" onclick="shopEditObs('${it.id}')">📝 ${escapeHtml(it.obs)} <span style="opacity:.55">(editar)</span></div>`
+        : `<button class="iconbtn" style="margin-top:2px;font-size:12px;opacity:.75" onclick="shopEditObs('${it.id}')">＋ detalhe (tamanho, cor, pra quem…)</button>`}
+      <div class="qtyrow">
+        <span class="lbl">Quero (meta)</span>
+        <div class="qty">
+          <input type="number" inputmode="numeric" min="0" value="${alvo>0?alvo:''}" placeholder="—" onchange="shopSetAlvo('${it.id}',this.value)" style="width:70px;text-align:center">
         </div>
       </div>
       <div class="qtyrow">
@@ -1712,6 +1728,8 @@ function renderShopDetailList(){
       ${it.foto?`<div style="margin-top:8px"><img src="${it.foto}" onclick="openWishPhoto('${it.id}')" style="max-width:100%;max-height:150px;border-radius:10px;border:1px solid var(--line);cursor:pointer"></div>`:''}
     </div>`; }).join('');
 }
+// Um item de compra está "concluído" quando atinge a meta (se houver meta); sem meta, basta ter pego 1+
+function compraDone(it){ const q=it.quantidade_comprada||0, a=+it.alvo||0; return a>0 ? q>=a : q>0; }
 function renderDesejoList(){
   const o=shopDetailOwner;
   const list=desejosItems(o);
@@ -1860,6 +1878,22 @@ function shopSet(id,val){
   const it=shopFind(id); if(!it) return;
   if(!it.dono) it.dono=ownerOf(it);
   it.quantidade_comprada = Math.max(0, parseInt(val,10) || 0);
+  save(); cloudPushShop(it); renderLista();
+}
+function shopSetAlvo(id,val){
+  const it=shopFind(id); if(!it) return;
+  if(!it.dono) it.dono=ownerOf(it);
+  const n=Math.max(0, parseInt(val,10)||0);
+  if(n>0) it.alvo=n; else delete it.alvo;
+  save(); cloudPushShop(it); renderLista();
+}
+function shopEditObs(id){
+  const it=shopFind(id); if(!it) return;
+  const novo=prompt('Detalhe do item (tamanho, cor, modelo, pra quem…):', it.obs||'');
+  if(novo===null) return;
+  const t=novo.trim();
+  if(t) it.obs=t; else delete it.obs;
+  if(!it.dono) it.dono=ownerOf(it);
   save(); cloudPushShop(it); renderLista();
 }
 function shopEdit(id){
