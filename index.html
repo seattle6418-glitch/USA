@@ -1886,6 +1886,7 @@ function addWishFor(owner, nome, valor){
   const item={ id:'sl'+Date.now()+Math.random().toString(36).slice(2,6), nome, dono:owner, tipo:'desejo', valor:parseFloat(valor)||0 };
   S.shoppingList.push(item); save(); cloudPushShop(item);
   toast('Desejo adicionado!'); renderLista();
+  openItemCfg(item.id);   // abre já a página de infos do produto (preço Brasil, foto…) sem precisar rolar a lista
   return true;
 }
 function addShopFrom(owner){            // adicionar a partir da tela-menu (só compras)
