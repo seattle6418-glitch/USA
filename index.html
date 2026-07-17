@@ -358,19 +358,15 @@
       <div class="card">
         <div class="row" style="align-items:center">
           <button class="btn ghost sm" style="flex:0 0 64px" onclick="closeFood()">‹ Voltar</button>
-          <div style="font-weight:700;text-align:center;flex:1" id="foodDetailTitle">🍔 Comidas & Redes</div>
+          <div style="font-weight:700;text-align:center;flex:1">🍔 Comidas & Redes</div>
           <span style="flex:0 0 64px"></span>
-        </div>
-        <div style="display:flex;gap:6px;margin-top:10px">
-          <button id="segComidas" class="btn sm" style="flex:1" onclick="setFoodMode('comida')">🍔 Comidas</button>
-          <button id="segLugares" class="btn ghost sm" style="flex:1" onclick="setFoodMode('lugar')">📍 Lugares</button>
         </div>
         <div class="small muted" id="foodSummary" style="margin-top:8px;text-align:center"></div>
       </div>
       <div class="card">
         <div class="row" style="margin-bottom:6px">
-          <input id="foodNew" placeholder="Adicionar comida ou rede…" onkeydown="if(event.key==='Enter')addFoodDispatch()">
-          <button class="btn sm" style="flex:0 0 auto" onclick="addFoodDispatch()">＋</button>
+          <input id="foodNew" placeholder="Adicionar comida ou rede…" onkeydown="if(event.key==='Enter')addFood()">
+          <button class="btn sm" style="flex:0 0 auto" onclick="addFood()">＋</button>
         </div>
         <div id="foodList"></div>
       </div>
@@ -1578,29 +1574,25 @@ function foodMerged(){
   const vezesOf=(o)=> o.vezes!=null ? (+o.vezes||0) : (o.comi?1:0);   // compat: quem já tinha "comi" vira 1 vez
   const seeds = FOOD_SEED
     .filter(s=>{ const o=foodOverride(s.id); return !(o && o.hidden); })   // itens da lista original "excluídos" ficam ocultos
-    .map(s=>{ const o=foodOverride(s.id)||{}; const v=vezesOf(o); return {id:s.id,name:s.name,reg:s.reg,tip:s.tip,vezes:v,comi:v>0,note:o.note||'',custom:false}; });
-  const customs = (S.foods||[]).filter(f=>f.custom && !f.spot).map(f=>{ const v=vezesOf(f); return {id:f.id,name:f.name,reg:f.reg||'',tip:f.tip||'',vezes:v,comi:v>0,note:f.note||'',custom:true}; });
+    .map(s=>{ const o=foodOverride(s.id)||{}; const v=vezesOf(o); const loc=o.locais||[]; return {id:s.id,name:s.name,reg:s.reg,tip:s.tip,vezes:v,comi:v>0||loc.length>0,note:o.note||'',locais:loc,custom:false}; });
+  const customs = (S.foods||[]).filter(f=>f.custom).map(f=>{ const v=vezesOf(f); const loc=f.locais||[]; return {id:f.id,name:f.name,reg:f.reg||'',tip:f.tip||'',vezes:v,comi:v>0||loc.length>0,note:f.note||'',locais:loc,custom:true}; });
   return seeds.concat(customs);
 }
 function foodHiddenCount(){ return (S.foods||[]).filter(f=>f.hidden && FOOD_SEED.some(s=>s.id===f.id)).length; }
 function openFood(){
-  foodMode='comida';
   document.getElementById('shopMenu').classList.add('hide');
   document.getElementById('shopDetail').classList.add('hide');
   document.getElementById('foodDetail').classList.remove('hide');
   renderFood(); window.scrollTo(0,0);
 }
 function closeFood(){ document.getElementById('foodDetail').classList.add('hide'); showShopMenu(); window.scrollTo(0,0); }
-let foodMode='comida';
 function renderFood(){
-  applyFoodModeUI();
-  if(foodMode==='lugar'){ renderMealPlaces(); return; }
   const all=foodMerged();
   const quero=all.filter(f=>!f.comi), comi=all.filter(f=>f.comi);
   document.getElementById('foodSummary').innerHTML = `<b style="color:var(--gold)">${comi.length}</b> de ${all.length} provados`;
   const item=(f)=>`<div class="shopitem ${f.comi?'got':''}">
      <div class="top">
-       <span class="nm">${escapeHtml(f.name)}${f.vezes>0?` <span class="badgegot">${f.vezes}x</span>`:''}${f.reg?` <span class="small muted">· ${escapeHtml(f.reg)}</span>`:''}</span>
+       <span class="nm">${escapeHtml(f.name)}${f.vezes>0?` <span class="badgegot">${f.vezes}x</span>`:''}${(f.locais&&f.locais.length)?` <span class="badgegot">📍${f.locais.length}</span>`:''}${f.reg?` <span class="small muted">· ${escapeHtml(f.reg)}</span>`:''}</span>
        <div class="acts"><button class="iconbtn" onclick="foodDelete('${f.id}')" title="Excluir da lista">🗑️</button></div>
      </div>
      ${f.tip?`<div class="small muted" style="margin-top:2px">💡 ${escapeHtml(f.tip)}</div>`:''}
@@ -1612,7 +1604,18 @@ function renderFood(){
          <button onclick="foodVezes('${f.id}',1)">＋</button>
        </div>
      </div>
-     <input placeholder="Onde comeram / nota (opcional)" value="${escapeAttr(f.note)}" onchange="foodSetNote('${f.id}',this.value)" style="width:100%;box-sizing:border-box;margin-top:8px;font-size:13px">
+     <div style="margin-top:10px">
+       <div class="small muted" style="margin-bottom:4px">📍 Onde comi (cidades/lugares)</div>
+       ${(f.locais&&f.locais.length)? f.locais.map((loc,idx)=>`<div class="row" style="gap:6px;align-items:center;margin-bottom:4px">
+            <span class="small" style="flex:1">• ${escapeHtml(loc)}</span>
+            <button class="iconbtn" style="font-size:13px" onclick="foodPlaceDel('${f.id}',${idx})" title="Remover">✕</button>
+          </div>`).join('') : ''}
+       <div class="row" style="gap:6px;margin-top:2px">
+         <input id="fp_${f.id}" placeholder="Adicionar cidade/lugar…" onkeydown="if(event.key==='Enter')foodPlaceAdd('${f.id}')" style="flex:1;font-size:13px">
+         <button class="btn sm" style="flex:0 0 auto" onclick="foodPlaceAdd('${f.id}')">＋</button>
+       </div>
+     </div>
+     <input placeholder="Nota (opcional)" value="${escapeAttr(f.note)}" onchange="foodSetNote('${f.id}',this.value)" style="width:100%;box-sizing:border-box;margin-top:8px;font-size:13px">
    </div>`;
   const el=document.getElementById('foodList');
   const hiddenN=foodHiddenCount();
@@ -1621,45 +1624,6 @@ function renderFood(){
     ((quero.length?`<div class="small muted" style="margin:6px 0 8px">🍽️ Quero provar (${quero.length})</div>`+quero.map(item).join(''):'')
    +(comi.length?`<div class="small muted" style="margin:16px 0 8px">✅ Já comi (${comi.length})</div>`+comi.map(item).join(''):'')
    || '<div class="muted small">Lista vazia.</div>') + restore;
-}
-// ---- Aba "Lugares onde comi" (registro manual, dentro da tela de Comidas) ----
-function setFoodMode(m){ foodMode=(m==='lugar')?'lugar':'comida'; renderFood(); }
-function applyFoodModeUI(){
-  const lugar=foodMode==='lugar';
-  const segC=document.getElementById('segComidas'), segL=document.getElementById('segLugares');
-  if(segC) segC.className='btn sm'+(lugar?' ghost':'');
-  if(segL) segL.className='btn sm'+(lugar?'':' ghost');
-  const inp=document.getElementById('foodNew'); if(inp) inp.placeholder=lugar?'Adicionar lugar onde comeu…':'Adicionar comida ou rede…';
-  const t=document.getElementById('foodDetailTitle'); if(t) t.textContent=lugar?'📍 Lugares onde comi':'🍔 Comidas & Redes';
-}
-function addFoodDispatch(){ if(foodMode==='lugar') placeAdd(); else addFood(); }
-function mealSpots(){ return (S.foods||[]).filter(f=>f.spot); }
-function renderMealPlaces(){
-  const list=mealSpots();
-  document.getElementById('foodSummary').innerHTML = list.length
-    ? `<b style="color:var(--gold)">${list.length}</b> ${list.length>1?'lugares registrados':'lugar registrado'}`
-    : 'Nenhum lugar registrado ainda';
-  const el=document.getElementById('foodList');
-  if(!list.length){ el.innerHTML='<div class="muted small">Registre aqui os lugares onde você comeu. Escreva o nome no campo acima e toque em ＋.</div>'; return; }
-  el.innerHTML=list.map(p=>`<div class="shopitem got">
-     <div class="top">
-       <span class="nm">📍 ${escapeHtml(p.name)}</span>
-       <div class="acts"><button class="iconbtn" onclick="placeDelete('${p.id}')" title="Excluir">🗑️</button></div>
-     </div>
-     <input placeholder="O que comeu / nota (opcional)" value="${escapeAttr(p.note||'')}" onchange="placeSetNote('${p.id}',this.value)" style="width:100%;box-sizing:border-box;margin-top:8px;font-size:13px">
-   </div>`).join('');
-}
-function placeAdd(){
-  const inp=document.getElementById('foodNew'); const name=(inp.value||'').trim(); if(!name) return;
-  const rec={id:'ms'+Date.now()+Math.random().toString(36).slice(2,6), name, note:'', spot:true, custom:true};
-  S.foods=S.foods||[]; S.foods.push(rec); save(); cloudPushFood(rec);
-  inp.value=''; inp.focus(); renderFood();
-}
-function placeSetNote(id,val){ const p=(S.foods||[]).find(f=>f.id===id); if(!p) return; p.note=val; save(); cloudPushFood(p); }
-function placeDelete(id){
-  const p=(S.foods||[]).find(f=>f.id===id); if(!p) return;
-  if(!confirm('Excluir "'+p.name+'" dos lugares?')) return;
-  S.foods=(S.foods||[]).filter(f=>f.id!==id); save(); cloudDeleteFood(id); renderFood();
 }
 function foodEnsureDoc(id){
   let d=foodOverride(id);
@@ -1680,6 +1644,19 @@ function foodSetVezes(id,val){
 function foodSetNote(id,val){
   const d=foodEnsureDoc(id); if(!d) return;
   d.note=val; save(); cloudPushFood(d);
+}
+// Cidades/lugares onde comi aquele prato (ex.: Shake Shack em várias cidades)
+function foodPlaceAdd(id){
+  const inp=document.getElementById('fp_'+id); if(!inp) return;
+  const name=(inp.value||'').trim(); if(!name) return;
+  const d=foodEnsureDoc(id); if(!d) return;
+  d.locais=d.locais||[]; d.locais.push(name);
+  save(); cloudPushFood(d); renderFood(); renderLista();
+}
+function foodPlaceDel(id,idx){
+  const d=foodEnsureDoc(id); if(!d||!Array.isArray(d.locais)) return;
+  d.locais.splice(idx,1);
+  save(); cloudPushFood(d); renderFood(); renderLista();
 }
 function addFood(){
   const inp=document.getElementById('foodNew'); const name=(inp.value||'').trim(); if(!name) return;
