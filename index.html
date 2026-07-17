@@ -393,7 +393,7 @@
           <button class="btn sm" style="flex:0 0 auto" onclick="addShopDetail()">＋</button>
         </div>
         <div id="shopDesejoHint" class="small muted hide" style="margin:-4px 0 10px">Valor só uma estimativa — não entra nos gastos reais.</div>
-        <input type="file" id="wishPhotoInput" accept="image/*" capture="environment" style="display:none" onchange="onWishPhoto(this)">
+        <input type="file" id="wishPhotoInput" accept="image/*" style="display:none" onchange="onWishPhoto(this)">
         <div id="shopList"></div>
       </div>
     </div>
@@ -1741,6 +1741,13 @@ function renderDesejoList(){
         </div>
       </div>
       <div class="small muted" style="text-align:right;margin-top:2px">≈ ${brl(v*S.rate.usdToBrl)}</div>
+      <div class="qtyrow" style="margin-top:6px">
+        <span class="lbl">Preço no Brasil (R$)</span>
+        <div class="qty">
+          <input type="number" inputmode="decimal" min="0" step="0.01" value="${it.precoBR>0?it.precoBR:''}" placeholder="ex.: 200" onchange="wishSetBR('${it.id}',this.value)" style="width:96px;text-align:center">
+        </div>
+      </div>
+      ${wishCompareHTML(it)}
       ${foto}
       <button class="btn green sm" style="width:100%;margin-top:10px" onclick="wishMarkBought('${it.id}')">✓ Comprei — mover p/ Compras</button>
     </div>`; }).join('');
@@ -1813,6 +1820,35 @@ function wishSetVal(id,val){
   const it=shopFind(id); if(!it) return;
   it.valor = Math.max(0, parseFloat(val)||0);
   save(); cloudPushShop(it); renderLista();
+}
+function wishSetBR(id,val){
+  const it=shopFind(id); if(!it) return;
+  const n=Math.max(0, parseFloat(val)||0);
+  if(n>0) it.precoBR=n; else delete it.precoBR;
+  save(); cloudPushShop(it); renderLista();
+}
+// Compara o preço lá (US$ convertido p/ R$) com o preço no Brasil (R$)
+function wishCompareHTML(it){
+  const v=+it.valor||0, br=+it.precoBR||0;
+  if(v<=0 || br<=0) return '';
+  const laBRL = v*S.rate.usdToBrl;          // quanto custa lá, em reais
+  const diff  = br - laBRL;                  // >0: mais barato comprar lá
+  const perc  = br>0 ? Math.abs(diff)/br*100 : 0;
+  let cor, txt;
+  if(diff > 0.005){
+    cor='var(--green,#16a34a)';
+    txt=`✅ Compensa comprar lá — economia de <b>${brl(diff)}</b> (${perc.toFixed(0)}% mais barato)`;
+  } else if(diff < -0.005){
+    cor='#e11d48';
+    txt=`❌ Mais barato no Brasil — <b>${brl(Math.abs(diff))}</b> a mais lá (${perc.toFixed(0)}%)`;
+  } else {
+    cor='var(--gold)';
+    txt=`≈ Preço equivalente nos dois lugares`;
+  }
+  return `<div class="small" style="margin-top:6px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;line-height:1.4">
+      <div style="color:var(--muted,#888)">Lá: ${usd(v)} = <b>${brl(laBRL)}</b> · Brasil: <b>${brl(br)}</b></div>
+      <div style="color:${cor};margin-top:2px">${txt}</div>
+    </div>`;
 }
 function shopQty(id,delta){
   const it=shopFind(id); if(!it) return;
