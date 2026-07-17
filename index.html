@@ -1704,7 +1704,10 @@ function renderShopDetailList(){
   if(shopMode==='desejo'){ renderDesejoList(); return; }
   const list=comprasItems(o);
   const got=list.filter(compraDone).length;
-  document.getElementById('shopSummary').textContent = list.length ? `${got} de ${list.length} itens concluídos` : '';
+  const estTot=list.reduce((s,i)=>s+compraEstTotal(i),0);
+  document.getElementById('shopSummary').innerHTML = list.length
+    ? `${got} de ${list.length} concluídos · Estimativa total: <b style="color:var(--gold)">${usd(estTot)}</b> ≈ ${brl(estTot*S.rate.usdToBrl)}`
+    : '';
   const el=document.getElementById('shopList');
   if(!list.length){ el.innerHTML='<div class="muted small">Lista vazia. Adicione itens no campo acima.</div>'; return; }
   // pendentes primeiro, concluídos por último (mantém a ordem original dentro de cada grupo)
@@ -1733,11 +1736,6 @@ function renderShopDetailList(){
       ${(+it.estUnit>0)?`<div class="small muted" style="text-align:right;margin-top:6px">Estimativa: <b style="color:var(--gold)">${usd(compraEstTotal(it))}</b> ≈ ${brl(compraEstTotal(it)*S.rate.usdToBrl)}</div>`:''}
       ${it.foto?`<div style="margin-top:8px"><img src="${it.foto}" onclick="openWishPhoto('${it.id}')" style="max-width:100%;max-height:150px;border-radius:10px;border:1px solid var(--line);cursor:pointer"></div>`:''}
     </div>`; }).join('');
-  const estTot=list.reduce((s,i)=>s+compraEstTotal(i),0);
-  el.innerHTML += `<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line);text-align:right">
-      <span class="small muted">Estimativa total das compras</span><br>
-      <b style="color:var(--gold);font-size:17px">${usd(estTot)}</b> <span class="small muted">≈ ${brl(estTot*S.rate.usdToBrl)}</span>
-    </div>`;
 }
 // Um item de compra está "concluído" quando atinge a meta (se houver meta); sem meta, basta ter pego 1+
 function compraDone(it){ const q=it.quantidade_comprada||0, a=+it.alvo||0; return a>0 ? q>=a : q>0; }
