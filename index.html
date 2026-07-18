@@ -1878,12 +1878,10 @@ function renderFood(){
      <input placeholder="Nota (opcional)" value="${escapeAttr(f.note)}" onchange="foodSetNote('${f.id}',this.value)" style="width:100%;box-sizing:border-box;margin-top:8px;font-size:13px">
    </div>`;
   const el=document.getElementById('foodList');
-  const hiddenN=foodHiddenCount();
-  const restore = hiddenN ? `<button class="btn ghost sm" style="width:100%;margin-top:14px" onclick="foodRestoreHidden()">↩︎ Restaurar ${hiddenN} item(ns) da lista original</button>` : '';
   el.innerHTML =
     ((quero.length?`<div class="small muted" style="margin:6px 0 8px">🍽️ Quero provar (${quero.length})</div>`+quero.map(item).join(''):'')
    +(comi.length?`<div class="small muted" style="margin:16px 0 8px">✅ Já comi (${comi.length})</div>`+comi.map(item).join(''):'')
-   || '<div class="muted small">Lista vazia.</div>') + restore;
+   || '<div class="muted small">Lista vazia.</div>');
 }
 function foodEnsureDoc(id){
   let d=foodOverride(id);
