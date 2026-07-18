@@ -897,6 +897,7 @@ const HOTELS = [
   {ci:'2026-10-05', co:'2026-10-06', city:'Hatch, UT',                    name:'The Riverside Ranch RV Park, Motel & Campground',addr:'594 US Highway 89, Mile Marker 117, Hatch, UT 84735',   total:448.87,  pago:448.87, due:0},
   {ci:'2026-10-06', co:'2026-10-07', city:'Page, AZ',                     name:'Super 8 by Wyndham Page/Lake Powell',           addr:'649 S Lake Powell Blvd, Page, AZ 86040',                total:514.77,  pago:514.77, due:0},
   {ci:'2026-10-07', co:'2026-10-08', city:'Moab, UT',                     name:'Bowen Motel',                                   addr:'169 North Main Street, Moab, UT 84532',                 total:950.43,  pago:950.43, due:0},
+  {ci:'2026-10-08', co:'2026-10-09', city:'Englewood, CO (Denver)',       name:'Drury Inn & Suites Denver Tech Center',         addr:'9445 E Dry Creek Road, Englewood, CO 80112',            total:2.03,    pago:2.03,   due:0},
   {ci:'2026-10-09', co:'2026-10-10', city:'Belen, NM (Albuquerque)',      name:'Baymont by Wyndham Belen NM',                   addr:'2110 Camino Del Llano, Belen, NM 87002',                total:941.71,  pago:941.71, due:0},
   {ci:'2026-10-10', co:'2026-10-11', city:'Wichita Falls, TX',            name:'Comfort Inn Wichita Falls North',               addr:'1317 Kenley Avenue, Wichita Falls, TX 76306',           total:519.69,  pago:519.69, due:0},
   {ci:'2026-10-11', co:'2026-10-12', city:'Garland, TX (Dallas)',         name:'La Quinta Inn & Suites by Wyndham Dallas Northeast-Arboretum', addr:'1310 Marketplace Dr, Garland, TX 75041',      total:481.97,  pago:481.97, due:0},
@@ -2142,7 +2143,12 @@ function renderHoteis(){
   // Noites ainda sem reserva, dentro do período da viagem
   const start=S.config.start, end=S.config.end;
   const todo=[];
-  for(let d=start; d<end; d=addDays(d,1)){ if(!dayHotel(d)) todo.push(d); }
+  for(let d=start; d<end; d=addDays(d,1)){
+    if(dayHotel(d)) continue;
+    const it=(S.config.itinerary||[]).find(x=>x.date===d);
+    if(it && /voo/i.test(it.city||'')) continue; // noite em voo: sem hotel, não é pendência
+    todo.push(d);
+  }
   const todoCard=document.getElementById('hotTodoCard');
   if(!todo.length){ todoCard.classList.add('hide'); }
   else {
