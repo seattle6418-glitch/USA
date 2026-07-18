@@ -1258,11 +1258,16 @@ function suggestVisit(kind, date){
 function renderFoodSuggest(){
   const box=document.getElementById('foodSuggestList'); if(!box) return;
   const nC=foodVisitCount('Charleys'), nB=foodVisitCount("Buc-ee's");
-  const chips=`<div class="card" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center">
-    <span class="badgegot" style="background:rgba(255,208,137,.22);color:var(--gold)">🥩 Charleys ${nC}/${FOOD_CHARLEYS.length}</span>
-    <span class="badgegot" style="background:rgba(255,90,90,.20);color:#ff8a8a">🦫 Buc-ee's ${nB}/${FOOD_BUCEES.length}</span>
-    <span class="small muted">toque ✓ para registrar em Visitados</span>
+  const logicNote=`<div class="card"><div class="small" style="color:var(--muted);line-height:1.55"><b style="color:var(--txt)">Lógica dos horários:</b> café na cidade da noite anterior, almoço numa parada no meio e janta no destino. No <b style="color:var(--txt)">domingo 04/out</b> vocês assistem à corrida da NASCAR (South Point 400, 14:30 no Las Vegas Motor Speedway) e saem ~19h — dá para ver o Hoover Dam a caminho. Nos dias de 500+ milhas (07, 09, 10, 14 e 19/out), café rápido e janta já reservada no destino. Toque em ✓ para registrar em Visitados.</div></div>`;
+  const charleysCard=`<div class="card" style="border:1px solid #6b3a2a">
+    <div style="font-weight:700;color:var(--gold)">🥩 Charleys na rota <span class="small muted">(1 por cidade grande)</span> · <span class="badgegot" style="background:rgba(255,208,137,.22);color:var(--gold)">${nC}/${FOOD_CHARLEYS.length} visitados</span></div>
+    <div style="margin-top:6px">${FOOD_CHARLEYS.map(c=>`<div style="font-size:14px;margin:3px 0 3px 6px">🥩 <b>${escapeHtml(c.city)}</b> — ${escapeHtml(c.loc)}</div>`).join('')}</div>
   </div>`;
+  const buceesCard=`<div class="card" style="border:1px solid #aa3333">
+    <div style="font-weight:700;color:#ff5a5a">🦫 Buc-ee's na rota <span class="small muted">(pare sempre que der!)</span> · <span class="badgegot" style="background:rgba(255,90,90,.20);color:#ff8a8a">${nB}/${FOOD_BUCEES.length} visitados</span></div>
+    <div style="margin-top:6px">${FOOD_BUCEES.map(c=>`<div style="font-size:14px;margin:3px 0 3px 6px;color:#ff8a8a">🦫 <b style="color:#ff5a5a">${escapeHtml(c.city)}</b> — ${escapeHtml(c.loc)}</div>`).join('')}</div>
+  </div>`;
+  const chips = logicNote + charleysCard + buceesCard;
   const today=foodTodayStr();
   const days=FOOD_SUGGESTIONS.map(d=>{
     const isToday=d.date===today;
