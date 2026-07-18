@@ -1580,6 +1580,7 @@ function foodMerged(){
 }
 function foodHiddenCount(){ return (S.foods||[]).filter(f=>f.hidden && FOOD_SEED.some(s=>s.id===f.id)).length; }
 function openFood(){
+  foodDelArm=null;
   document.getElementById('shopMenu').classList.add('hide');
   document.getElementById('shopDetail').classList.add('hide');
   document.getElementById('foodDetail').classList.remove('hide');
@@ -1593,7 +1594,9 @@ function renderFood(){
   const item=(f)=>`<div class="shopitem ${f.comi?'got':''}">
      <div class="top">
        <span class="nm">${escapeHtml(f.name)}${f.vezes>0?` <span class="badgegot">${f.vezes}x</span>`:''}${(f.locais&&f.locais.length)?` <span class="badgegot">📍${f.locais.length}</span>`:''}${f.reg?` <span class="small muted">· ${escapeHtml(f.reg)}</span>`:''}</span>
-       <div class="acts"><button class="iconbtn" onclick="foodDelete('${f.id}')" title="Excluir da lista">🗑️</button></div>
+       <div class="acts">${foodDelArm===f.id
+         ? `<button class="iconbtn" style="color:#e11d48;font-weight:700;font-size:13px" onclick="foodDelete('${f.id}')" title="Confirmar exclusão">Excluir?</button><button class="iconbtn" onclick="foodDelCancel()" title="Cancelar">✕</button>`
+         : `<button class="iconbtn" onclick="foodDelete('${f.id}')" title="Excluir da lista">🗑️</button>`}</div>
      </div>
      ${f.tip?`<div class="small muted" style="margin-top:2px">💡 ${escapeHtml(f.tip)}</div>`:''}
      <div class="qtyrow" style="margin-top:8px">
@@ -1664,16 +1667,18 @@ function addFood(){
   S.foods=S.foods||[]; S.foods.push(rec); save(); cloudPushFood(rec);
   inp.value=''; inp.focus(); renderFood(); renderLista();
 }
+let foodDelArm=null;   // id do item "armado" para exclusão (confirmação de 2 toques, sem usar confirm() do navegador)
+function foodDelCancel(){ foodDelArm=null; renderFood(); }
 function foodDelete(id){
+  if(foodDelArm!==id){ foodDelArm=id; renderFood(); return; }   // 1º toque: pede confirmação na própria tela
+  foodDelArm=null;                                              // 2º toque: exclui de fato
   const custom=(S.foods||[]).find(f=>f.id===id && f.custom);
   if(custom){
-    if(!confirm('Excluir "'+custom.name+'" da lista?')) return;
-    S.foods=(S.foods||[]).filter(f=>f.id!==id); save(); cloudDeleteFood(id); renderFood(); renderLista(); return;
+    S.foods=(S.foods||[]).filter(f=>f.id!==id); save(); cloudDeleteFood(id); renderFood(); renderLista(); toast('Excluído da lista'); return;
   }
   const seed=FOOD_SEED.find(s=>s.id===id); if(!seed) return;
-  if(!confirm('Remover "'+seed.name+'" da lista?')) return;
   const d=foodEnsureDoc(id); if(!d) return;
-  d.hidden=true; save(); cloudPushFood(d); renderFood(); renderLista();
+  d.hidden=true; save(); cloudPushFood(d); renderFood(); renderLista(); toast('Removido da lista');
 }
 function foodRestoreHidden(){
   (S.foods||[]).forEach(f=>{ if(f.hidden){ f.hidden=false; cloudPushFood(f); } });
