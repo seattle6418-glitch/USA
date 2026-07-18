@@ -267,17 +267,6 @@
     <div id="roteiroList"></div>
   </section>
 
-  <!-- ============ COMIDA ============ -->
-  <section id="view-comida" class="hide">
-    <div class="card">
-      <div class="row">
-        <div><div class="small muted">Onde comer 🍔</div><div class="big" style="font-size:18px">Sugestões por cidade</div></div>
-      </div>
-      <div class="small muted" style="margin-top:6px">Café na cidade onde você acorda · almoço numa parada no meio do trajeto · janta no destino. Priorizando churrasco, sanduíche, pizza e hambúrguer.</div>
-    </div>
-    <div id="comidaList"></div>
-  </section>
-
   <!-- ============ MAPA ============ -->
   <section id="view-mapa" class="hide">
     <div class="card">
@@ -330,8 +319,13 @@
           <span class="ttl">Comidas & Redes</span>
           <span class="chev">›</span>
         </div>
-        <div class="small muted" style="margin-top:6px">O que provar na viagem e o que já comeram — pra não repetir nem perder uma rede boa.</div>
+        <div class="small muted" style="margin-top:6px">O que provar na viagem, o que já comeram e as sugestões dia a dia.</div>
+        <div style="display:flex;gap:6px;margin-top:10px">
+          <button class="btn ghost sm" style="flex:1" onclick="openFood()">✅ Visitados</button>
+          <button class="btn ghost sm" style="flex:1" onclick="openFoodSuggest()">📋 Sugestões dia a dia</button>
+        </div>
         <div class="small muted" id="sumComida" style="margin-top:8px"></div>
+        <div class="small muted" id="sumSuggest" style="margin-top:2px"></div>
       </div>
 
       <div class="card">
@@ -381,6 +375,19 @@
         </div>
         <div id="foodList"></div>
       </div>
+    </div>
+
+    <!-- SUB-TELA: SUGESTÕES DIA A DIA -->
+    <div id="foodSuggestDetail" class="hide">
+      <div class="card">
+        <div class="row" style="align-items:center">
+          <button class="btn ghost sm" style="flex:0 0 64px" onclick="closeFoodSuggest()">‹ Voltar</button>
+          <div style="font-weight:700;text-align:center;flex:1">📋 Sugestões dia a dia</div>
+          <span style="flex:0 0 64px"></span>
+        </div>
+        <div class="small muted" style="margin-top:8px;text-align:center">Café / almoço / janta por cidade · 🥩 Charleys e 🦫 Buc-ee's na rota. Toque em ✓ para registrar em Visitados.</div>
+      </div>
+      <div id="foodSuggestList"></div>
     </div>
 
     <!-- SUB-TELA DE DETALHE -->
@@ -639,7 +646,6 @@
   <button data-v="saldos" onclick="showView('saldos')"><span class="ic">💳</span>Saldos</button>
   <button data-v="lista" onclick="showView('lista')"><span class="ic">🛒</span>Lista</button>
   <button data-v="hoteis" onclick="showView('hoteis')"><span class="ic">🏨</span>Hotéis</button>
-  <button data-v="comida" onclick="showView('comida')"><span class="ic">🍔</span>Comida</button>
   <button data-v="config" onclick="showView('config')"><span class="ic">⚙️</span>Config</button>
 </nav>
 
@@ -864,9 +870,9 @@ function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg
 
 /* ---------------- Navegação ---------------- */
 const SCENES = /*SCENES*/ {"dia":"url(\"data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27800%27%20height%3D%271400%27%20viewBox%3D%270%200%20800%201400%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27s%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23241246%27/%3E%3Cstop%20offset%3D%270.42%27%20stop-color%3D%27%235a2a6a%27/%3E%3Cstop%20offset%3D%270.68%27%20stop-color%3D%27%23c85a5a%27/%3E%3Cstop%20offset%3D%270.85%27%20stop-color%3D%27%23ff9d52%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23ffd089%27/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%27d%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.66%29%27/%3E%3Cstop%20offset%3D%270.55%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.10%29%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0%29%27/%3E%3C/linearGradient%3E%3CradialGradient%20id%3D%27sun%27%20cx%3D%270.5%27%20cy%3D%270.5%27%20r%3D%270.5%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23fff0c8%27/%3E%3Cstop%20offset%3D%270.5%27%20stop-color%3D%27%23ffb24d%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%28255%2C150%2C60%2C0%29%27/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect%20width%3D%27800%27%20height%3D%271400%27%20fill%3D%27url%28%23s%29%27/%3E%3Ccircle%20cx%3D%27400%27%20cy%3D%27760%27%20r%3D%27180%27%20fill%3D%27url%28%23sun%29%27/%3E%3Ccircle%20cx%3D%27400%27%20cy%3D%27770%27%20r%3D%2795%27%20fill%3D%27%23ffd27a%27%20opacity%3D%270.95%27/%3E%3Cpath%20d%3D%27M0%20980%20Q200%20900%20420%20985%20T800%20980%20V1400%20H0%20Z%27%20fill%3D%27%233a1840%27%20opacity%3D%270.9%27/%3E%3Cpath%20d%3D%27M0%201080%20Q260%201000%20520%201085%20T800%201075%20V1400%20H0%20Z%27%20fill%3D%27%2326102e%27/%3E%3Cpath%20d%3D%27M0%201200%20Q300%201135%20600%201205%20T800%201200%20V1400%20H0%20Z%27%20fill%3D%27%23160a1c%27/%3E%3Crect%20width%3D%27800%27%20height%3D%27620%27%20fill%3D%27url%28%23d%29%27/%3E%3C/svg%3E\")","roteiro":"url(\"data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27800%27%20height%3D%271400%27%20viewBox%3D%270%200%20800%201400%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27s%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%231b1038%27/%3E%3Cstop%20offset%3D%270.4%27%20stop-color%3D%27%233a1c5c%27/%3E%3Cstop%20offset%3D%270.64%27%20stop-color%3D%27%238a2d5e%27/%3E%3Cstop%20offset%3D%270.84%27%20stop-color%3D%27%23e06a3a%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23ffb066%27/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%27d%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.66%29%27/%3E%3Cstop%20offset%3D%270.55%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.10%29%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0%29%27/%3E%3C/linearGradient%3E%3CradialGradient%20id%3D%27sun%27%20cx%3D%270.5%27%20cy%3D%270.5%27%20r%3D%270.5%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23ffe7b3%27/%3E%3Cstop%20offset%3D%270.5%27%20stop-color%3D%27%23ff9d4d%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%28255%2C140%2C60%2C0%29%27/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect%20width%3D%27800%27%20height%3D%271400%27%20fill%3D%27url%28%23s%29%27/%3E%3Ccircle%20cx%3D%27400%27%20cy%3D%27930%27%20r%3D%27150%27%20fill%3D%27url%28%23sun%29%27/%3E%3Ccircle%20cx%3D%27400%27%20cy%3D%27930%27%20r%3D%2770%27%20fill%3D%27%23ffcf85%27%20opacity%3D%270.9%27/%3E%3Cg%20fill%3D%27%232a1340%27%20opacity%3D%270.95%27%3E%3Crect%20x%3D%2740%27%20y%3D%27852%27%20width%3D%27150%27%20height%3D%2780%27%20rx%3D%275%27/%3E%3Crect%20x%3D%2770%27%20y%3D%27820%27%20width%3D%2770%27%20height%3D%2734%27%20rx%3D%274%27/%3E%3Cpolygon%20points%3D%27250%2C932%20360%2C812%20470%2C932%27/%3E%3Crect%20x%3D%27600%27%20y%3D%27858%27%20width%3D%27170%27%20height%3D%2774%27%20rx%3D%275%27/%3E%3Crect%20x%3D%27655%27%20y%3D%27828%27%20width%3D%2762%27%20height%3D%2732%27%20rx%3D%274%27/%3E%3C/g%3E%3Cpath%20d%3D%27M0%20930%20H800%20V1400%20H0%20Z%27%20fill%3D%27%233a1840%27%20opacity%3D%270.55%27/%3E%3Cpath%20d%3D%27M362%20930%20L438%20930%20L660%201400%20L140%201400%20Z%27%20fill%3D%27%23191020%27/%3E%3Cpath%20d%3D%27M362%20930%20L438%20930%20L648%201400%20L152%201400%20Z%27%20fill%3D%27%23221530%27/%3E%3Cpath%20d%3D%27M398%201000%20L402%201000%20L404%201060%20L396%201060%20Z%27%20fill%3D%27%23ffce6b%27/%3E%3Cpath%20d%3D%27M395%201075%20L405%201075%20L408%201150%20L392%201150%20Z%27%20fill%3D%27%23ffce6b%27/%3E%3Cg%20transform%3D%27translate%28400%2C1235%29%20scale%282.05%29%27%3E%3Cpath%20d%3D%27M-46%2C-58%20Q-46%2C-62%20-42%2C-62%20Q-22%2C-54%200%2C-60%20Q22%2C-54%2042%2C-62%20Q46%2C-62%2046%2C-58%20L46%2C-8%20Q46%2C40%200%2C72%20Q-46%2C40%20-46%2C-8%20Z%27%20fill%3D%27%230d0a14%27%20transform%3D%27scale%281.12%29%27/%3E%3Cpath%20d%3D%27M-46%2C-58%20Q-46%2C-62%20-42%2C-62%20Q-22%2C-54%200%2C-60%20Q22%2C-54%2042%2C-62%20Q46%2C-62%2046%2C-58%20L46%2C-8%20Q46%2C40%200%2C72%20Q-46%2C40%20-46%2C-8%20Z%27%20fill%3D%27%23f7f3ea%27/%3E%3Cpath%20d%3D%27M-46%2C-58%20Q-46%2C-62%20-42%2C-62%20Q-22%2C-54%200%2C-60%20Q22%2C-54%2042%2C-62%20Q46%2C-62%2046%2C-58%20L46%2C-8%20Q46%2C40%200%2C72%20Q-46%2C40%20-46%2C-8%20Z%27%20fill%3D%27none%27%20stroke%3D%27%230d0a14%27%20stroke-width%3D%272.4%27/%3E%3Ctext%20x%3D%270%27%20y%3D%27-34%27%20font-family%3D%27Arial%2C%20sans-serif%27%20font-size%3D%2717%27%20font-weight%3D%27700%27%20fill%3D%27%230d0a14%27%20text-anchor%3D%27middle%27%20letter-spacing%3D%271%27%3EROUTE%3C/text%3E%3Cline%20x1%3D%27-38%27%20y1%3D%27-22%27%20x2%3D%2738%27%20y2%3D%27-22%27%20stroke%3D%27%230d0a14%27%20stroke-width%3D%272.4%27/%3E%3Ctext%20x%3D%270%27%20y%3D%2740%27%20font-family%3D%27Arial%2C%20sans-serif%27%20font-size%3D%2762%27%20font-weight%3D%27800%27%20fill%3D%27%230d0a14%27%20text-anchor%3D%27middle%27%3E66%3C/text%3E%3C/g%3E%3Crect%20width%3D%27800%27%20height%3D%27620%27%20fill%3D%27url%28%23d%29%27/%3E%3C/svg%3E\")","mapa":"url(\"data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27800%27%20height%3D%271400%27%20viewBox%3D%270%200%20800%201400%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27s%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%230b1030%27/%3E%3Cstop%20offset%3D%270.45%27%20stop-color%3D%27%2313214c%27/%3E%3Cstop%20offset%3D%270.75%27%20stop-color%3D%27%2322356a%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%233a5aa0%27/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%27d%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.66%29%27/%3E%3Cstop%20offset%3D%270.55%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.10%29%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0%29%27/%3E%3C/linearGradient%3E%3CradialGradient%20id%3D%27pg%27%20cx%3D%270.5%27%20cy%3D%270.5%27%20r%3D%270.5%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23ff7ab0%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%28255%2C61%2C139%2C0%29%27/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect%20width%3D%27800%27%20height%3D%271400%27%20fill%3D%27url%28%23s%29%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27120%27%20x2%3D%27800%27%20y2%3D%27120%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27240%27%20x2%3D%27800%27%20y2%3D%27240%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27360%27%20x2%3D%27800%27%20y2%3D%27360%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27480%27%20x2%3D%27800%27%20y2%3D%27480%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27600%27%20x2%3D%27800%27%20y2%3D%27600%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27720%27%20x2%3D%27800%27%20y2%3D%27720%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27840%27%20x2%3D%27800%27%20y2%3D%27840%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27960%27%20x2%3D%27800%27%20y2%3D%27960%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%271080%27%20x2%3D%27800%27%20y2%3D%271080%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%271200%27%20x2%3D%27800%27%20y2%3D%271200%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%271320%27%20x2%3D%27800%27%20y2%3D%271320%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%2780%27%20y1%3D%270%27%20x2%3D%2780%27%20y2%3D%271400%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%27200%27%20y1%3D%270%27%20x2%3D%27200%27%20y2%3D%271400%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%27320%27%20y1%3D%270%27%20x2%3D%27320%27%20y2%3D%271400%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%27440%27%20y1%3D%270%27%20x2%3D%27440%27%20y2%3D%271400%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%27560%27%20y1%3D%270%27%20x2%3D%27560%27%20y2%3D%271400%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%27680%27%20y1%3D%270%27%20x2%3D%27680%27%20y2%3D%271400%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cpath%20d%3D%27M120%201180%20C%20260%201000%2C%20240%20820%2C%20420%20760%20S%20640%20660%2C%20600%20460%27%20fill%3D%27none%27%20stroke%3D%27%2315d0c8%27%20stroke-width%3D%277%27%20stroke-linecap%3D%27round%27%20opacity%3D%270.9%27%20stroke-dasharray%3D%272%2022%27/%3E%3Cpath%20d%3D%27M120%201180%20C%20260%201000%2C%20240%20820%2C%20420%20760%20S%20640%20660%2C%20600%20460%27%20fill%3D%27none%27%20stroke%3D%27%2315d0c8%27%20stroke-width%3D%273%27%20opacity%3D%270.5%27/%3E%3Ccircle%20cx%3D%27600%27%20cy%3D%27470%27%20r%3D%2770%27%20fill%3D%27url%28%23pg%29%27/%3E%3Cpath%20d%3D%27M400%201050%20C%20340%201050%20300%201000%20300%20945%20C%20300%20870%20400%20800%20400%20800%20C%20400%20800%20500%20870%20500%20945%20C%20500%201000%20460%201050%20400%201050%20Z%27%20fill%3D%27%23ff3d8b%27/%3E%3Ccircle%20cx%3D%27400%27%20cy%3D%27930%27%20r%3D%2734%27%20fill%3D%27%231a0f2e%27/%3E%3Crect%20width%3D%27800%27%20height%3D%27620%27%20fill%3D%27url%28%23d%29%27/%3E%3C/svg%3E\")","saldos":"url(\"data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27800%27%20height%3D%271400%27%20viewBox%3D%270%200%20800%201400%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27s%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%2307251f%27/%3E%3Cstop%20offset%3D%270.45%27%20stop-color%3D%27%230d3b2e%27/%3E%3Cstop%20offset%3D%270.72%27%20stop-color%3D%27%2313654c%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%231aa37a%27/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%27d%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.66%29%27/%3E%3Cstop%20offset%3D%270.55%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.10%29%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0%29%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%27800%27%20height%3D%271400%27%20fill%3D%27url%28%23s%29%27/%3E%3Cg%20transform%3D%27translate%28250%2C1120%29%20rotate%28-12%29%27%3E%3Crect%20x%3D%27-110%27%20y%3D%27-58%27%20width%3D%27220%27%20height%3D%27116%27%20rx%3D%2712%27%20fill%3D%27%230e3d30%27%20stroke%3D%27%231aa37a%27%20stroke-width%3D%273%27/%3E%3Ccircle%20cx%3D%270%27%20cy%3D%270%27%20r%3D%2734%27%20fill%3D%27none%27%20stroke%3D%27%231aa37a%27%20stroke-width%3D%273%27/%3E%3Ctext%20x%3D%270%27%20y%3D%2716%27%20font-family%3D%27Arial%27%20font-size%3D%2744%27%20fill%3D%27%239fe0b0%27%20text-anchor%3D%27middle%27%3E%24%3C/text%3E%3C/g%3E%3Cg%20transform%3D%27translate%28540%2C1180%29%20rotate%289%29%27%3E%3Crect%20x%3D%27-110%27%20y%3D%27-58%27%20width%3D%27220%27%20height%3D%27116%27%20rx%3D%2712%27%20fill%3D%27%230e3d30%27%20stroke%3D%27%231aa37a%27%20stroke-width%3D%273%27/%3E%3Ccircle%20cx%3D%270%27%20cy%3D%270%27%20r%3D%2734%27%20fill%3D%27none%27%20stroke%3D%27%231aa37a%27%20stroke-width%3D%273%27/%3E%3Ctext%20x%3D%270%27%20y%3D%2716%27%20font-family%3D%27Arial%27%20font-size%3D%2744%27%20fill%3D%27%239fe0b0%27%20text-anchor%3D%27middle%27%3E%24%3C/text%3E%3C/g%3E%3Cg%20transform%3D%27translate%28400%2C1010%29%20rotate%28-3%29%27%3E%3Crect%20x%3D%27-110%27%20y%3D%27-58%27%20width%3D%27220%27%20height%3D%27116%27%20rx%3D%2712%27%20fill%3D%27%230e3d30%27%20stroke%3D%27%231aa37a%27%20stroke-width%3D%273%27/%3E%3Ccircle%20cx%3D%270%27%20cy%3D%270%27%20r%3D%2734%27%20fill%3D%27none%27%20stroke%3D%27%231aa37a%27%20stroke-width%3D%273%27/%3E%3Ctext%20x%3D%270%27%20y%3D%2716%27%20font-family%3D%27Arial%27%20font-size%3D%2744%27%20fill%3D%27%239fe0b0%27%20text-anchor%3D%27middle%27%3E%24%3C/text%3E%3C/g%3E%3Crect%20width%3D%27800%27%20height%3D%27620%27%20fill%3D%27url%28%23d%29%27/%3E%3C/svg%3E\")","lista":"url(\"data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27800%27%20height%3D%271400%27%20viewBox%3D%270%200%20800%201400%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27s%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%232a0f3a%27/%3E%3Cstop%20offset%3D%270.45%27%20stop-color%3D%27%235a1a6b%27/%3E%3Cstop%20offset%3D%270.74%27%20stop-color%3D%27%23a8336b%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23ff6a9a%27/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%27d%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.66%29%27/%3E%3Cstop%20offset%3D%270.55%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.10%29%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0%29%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%27800%27%20height%3D%271400%27%20fill%3D%27url%28%23s%29%27/%3E%3Cg%20transform%3D%27translate%28150%2C980%29%27%3E%3Cpath%20d%3D%27M39.6%200%20a%2050.400000000000006%2050.400000000000006%200%200%201%20100.8%200%27%20fill%3D%27none%27%20stroke%3D%27%23ffb0cf%27%20stroke-width%3D%278%27/%3E%3Crect%20x%3D%270%27%20y%3D%2754.0%27%20width%3D%27180%27%20height%3D%27245.99999999999997%27%20rx%3D%2710%27%20fill%3D%27%237a1f55%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27126.0%27%20x2%3D%27180%27%20y2%3D%27126.0%27%20stroke%3D%27%23ff9ec6%27%20stroke-width%3D%273%27%20opacity%3D%270.5%27/%3E%3C/g%3E%3Cg%20transform%3D%27translate%28360%2C1040%29%27%3E%3Cpath%20d%3D%27M44.0%200%20a%2056.00000000000001%2056.00000000000001%200%200%201%20112.0%200%27%20fill%3D%27none%27%20stroke%3D%27%23ffb0cf%27%20stroke-width%3D%278%27/%3E%3Crect%20x%3D%270%27%20y%3D%2759.4%27%20width%3D%27200%27%20height%3D%27270.59999999999997%27%20rx%3D%2710%27%20fill%3D%27%23a8336b%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27138.6%27%20x2%3D%27200%27%20y2%3D%27138.6%27%20stroke%3D%27%23ff9ec6%27%20stroke-width%3D%273%27%20opacity%3D%270.5%27/%3E%3C/g%3E%3Cg%20transform%3D%27translate%28560%2C1000%29%27%3E%3Cpath%20d%3D%27M37.4%200%20a%2047.6%2047.6%200%200%201%2095.2%200%27%20fill%3D%27none%27%20stroke%3D%27%23ffb0cf%27%20stroke-width%3D%278%27/%3E%3Crect%20x%3D%270%27%20y%3D%2754.0%27%20width%3D%27170%27%20height%3D%27245.99999999999997%27%20rx%3D%2710%27%20fill%3D%27%235a1a6b%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27126.0%27%20x2%3D%27170%27%20y2%3D%27126.0%27%20stroke%3D%27%23ff9ec6%27%20stroke-width%3D%273%27%20opacity%3D%270.5%27/%3E%3C/g%3E%3Crect%20width%3D%27800%27%20height%3D%27620%27%20fill%3D%27url%28%23d%29%27/%3E%3C/svg%3E\")","resumo":"url(\"data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27800%27%20height%3D%271400%27%20viewBox%3D%270%200%20800%201400%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27s%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23191043%27/%3E%3Cstop%20offset%3D%270.45%27%20stop-color%3D%27%232e1a66%27/%3E%3Cstop%20offset%3D%270.75%27%20stop-color%3D%27%236a2d9a%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23b070d8%27/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%27d%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.66%29%27/%3E%3Cstop%20offset%3D%270.55%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.10%29%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0%29%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%27800%27%20height%3D%271400%27%20fill%3D%27url%28%23s%29%27/%3E%3Crect%20x%3D%27120%27%20y%3D%271120%27%20width%3D%2770%27%20height%3D%27180%27%20rx%3D%278%27%20fill%3D%27%237a2db0%27%20opacity%3D%270.92%27/%3E%3Crect%20x%3D%27240%27%20y%3D%271000%27%20width%3D%2770%27%20height%3D%27300%27%20rx%3D%278%27%20fill%3D%27%237a2db0%27%20opacity%3D%270.92%27/%3E%3Crect%20x%3D%27360%27%20y%3D%271060%27%20width%3D%2770%27%20height%3D%27240%27%20rx%3D%278%27%20fill%3D%27%237a2db0%27%20opacity%3D%270.92%27/%3E%3Crect%20x%3D%27480%27%20y%3D%27900%27%20width%3D%2770%27%20height%3D%27400%27%20rx%3D%278%27%20fill%3D%27%237a2db0%27%20opacity%3D%270.92%27/%3E%3Crect%20x%3D%27600%27%20y%3D%27970%27%20width%3D%2770%27%20height%3D%27330%27%20rx%3D%278%27%20fill%3D%27%237a2db0%27%20opacity%3D%270.92%27/%3E%3Crect%20x%3D%27700%27%20y%3D%27830%27%20width%3D%2770%27%20height%3D%27470%27%20rx%3D%278%27%20fill%3D%27%237a2db0%27%20opacity%3D%270.92%27/%3E%3Cpolyline%20points%3D%27155%2C1090%20275%2C970%20395%2C1030%20515%2C870%20635%2C940%20735%2C800%27%20fill%3D%27none%27%20stroke%3D%27%2315d0c8%27%20stroke-width%3D%276%27%20stroke-linecap%3D%27round%27/%3E%3Ccircle%20cx%3D%27155%27%20cy%3D%271090%27%20r%3D%278%27%20fill%3D%27%23ffce6b%27/%3E%3Ccircle%20cx%3D%27275%27%20cy%3D%27970%27%20r%3D%278%27%20fill%3D%27%23ffce6b%27/%3E%3Ccircle%20cx%3D%27395%27%20cy%3D%271030%27%20r%3D%278%27%20fill%3D%27%23ffce6b%27/%3E%3Ccircle%20cx%3D%27515%27%20cy%3D%27870%27%20r%3D%278%27%20fill%3D%27%23ffce6b%27/%3E%3Ccircle%20cx%3D%27635%27%20cy%3D%27940%27%20r%3D%278%27%20fill%3D%27%23ffce6b%27/%3E%3Ccircle%20cx%3D%27735%27%20cy%3D%27800%27%20r%3D%278%27%20fill%3D%27%23ffce6b%27/%3E%3Crect%20width%3D%27800%27%20height%3D%27620%27%20fill%3D%27url%28%23d%29%27/%3E%3C/svg%3E\")","config":"url(\"data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27800%27%20height%3D%271400%27%20viewBox%3D%270%200%20800%201400%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27s%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%230e1226%27/%3E%3Cstop%20offset%3D%270.5%27%20stop-color%3D%27%231a2140%27/%3E%3Cstop%20offset%3D%270.8%27%20stop-color%3D%27%232a3358%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%2346568c%27/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%27d%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.66%29%27/%3E%3Cstop%20offset%3D%270.55%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.10%29%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0%29%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%27800%27%20height%3D%271400%27%20fill%3D%27url%28%23s%29%27/%3E%3Cpolygon%20points%3D%27450.0%2C1080.0%20413.0%2C1110.3%20429.9%2C1155.0%20382.7%2C1162.7%20375.0%2C1209.9%20330.3%2C1193.0%20300.0%2C1230.0%20269.7%2C1193.0%20225.0%2C1209.9%20217.3%2C1162.7%20170.1%2C1155.0%20187.0%2C1110.3%20150.0%2C1080.0%20187.0%2C1049.7%20170.1%2C1005.0%20217.3%2C997.3%20225.0%2C950.1%20269.7%2C967.0%20300.0%2C930.0%20330.3%2C967.0%20375.0%2C950.1%20382.7%2C997.3%20429.9%2C1005.0%20413.0%2C1049.7%27%20fill%3D%27%2333406e%27/%3E%3Ccircle%20cx%3D%27300%27%20cy%3D%271080%27%20r%3D%2763.0%27%20fill%3D%27%231a2140%27/%3E%3Cpolygon%20points%3D%27670.0%2C1220.0%20641.6%2C1246.5%20649.0%2C1284.7%20610.4%2C1289.4%20594.0%2C1324.6%20560.0%2C1305.8%20526.0%2C1324.6%20509.6%2C1289.4%20471.0%2C1284.7%20478.4%2C1246.5%20450.0%2C1220.0%20478.4%2C1193.5%20471.0%2C1155.3%20509.6%2C1150.6%20526.0%2C1115.4%20560.0%2C1134.2%20594.0%2C1115.4%20610.4%2C1150.6%20649.0%2C1155.3%20641.6%2C1193.5%27%20fill%3D%27%232a3358%27/%3E%3Ccircle%20cx%3D%27560%27%20cy%3D%271220%27%20r%3D%2746.199999999999996%27%20fill%3D%27%231a2140%27/%3E%3Cpolygon%20points%3D%27620.0%2C980.0%20598.6%2C1001.3%20601.3%2C1031.4%20571.2%2C1034.0%20553.9%2C1058.8%20529.2%2C1041.5%20500.0%2C1049.3%20492.2%2C1020.1%20464.8%2C1007.4%20477.6%2C980.0%20464.8%2C952.6%20492.2%2C939.9%20500.0%2C910.7%20529.2%2C918.5%20553.9%2C901.2%20571.2%2C926.0%20601.3%2C928.6%20598.6%2C958.7%27%20fill%3D%27%233a4570%27/%3E%3Ccircle%20cx%3D%27540%27%20cy%3D%27980%27%20r%3D%2733.6%27%20fill%3D%27%231a2140%27/%3E%3Crect%20width%3D%27800%27%20height%3D%27620%27%20fill%3D%27url%28%23d%29%27/%3E%3C/svg%3E\")"};
-if(typeof SCENES!=='undefined' && SCENES){ if(!SCENES.hoteis) SCENES.hoteis = SCENES.config; if(!SCENES.info) SCENES.info = SCENES.config; if(!SCENES.prep) SCENES.prep = SCENES.config; if(!SCENES.fontes) SCENES.fontes = SCENES.config; if(!SCENES.comida) SCENES.comida = SCENES.dia; }
+if(typeof SCENES!=='undefined' && SCENES){ if(!SCENES.hoteis) SCENES.hoteis = SCENES.config; if(!SCENES.info) SCENES.info = SCENES.config; if(!SCENES.prep) SCENES.prep = SCENES.config; if(!SCENES.fontes) SCENES.fontes = SCENES.config; }
 function showView(v){
-  ['dia','roteiro','mapa','saldos','lista','hoteis','comida','resumo','info','prep','fontes','config'].forEach(x=>{
+  ['dia','roteiro','mapa','saldos','lista','hoteis','resumo','info','prep','fontes','config'].forEach(x=>{
     document.getElementById('view-'+x).classList.toggle('hide', x!==v); });
   const sc=document.getElementById('scene'); if(sc && SCENES[v]) sc.style.backgroundImage=SCENES[v];
   // Sub-páginas de Config mantêm o botão Config ativo na barra
@@ -879,7 +885,6 @@ function showView(v){
   if(v==='saldos') renderSaldos();
   if(v==='lista') showShopMenu();
   if(v==='hoteis') renderHoteis();
-  if(v==='comida') renderComida();
   if(v==='resumo') renderResumo();
   if(v==='info') renderInfo();
   if(v==='prep') renderPrep();
@@ -1192,38 +1197,103 @@ const FOOD_SUGGESTIONS = [
     janta:[`<b>Golden Steer Steakhouse</b> — bife clássico (se ainda não foram).`,`<b>Andiamo Steakhouse</b> (The D, Downtown) — bife e massas.`,`<b>Pizza Rock</b> (Downtown) — pizza premiada.`],
     charleys:''},
 ];
-function foodRow(icon,lbl,opts){
+// linha de refeição com 3 opções + botão discreto "✓ comi" (só em lugares nomeados)
+function foodRow(icon,lbl,opts,date,mealKey){
   if(!opts||!opts.length) return '';
-  const items=opts.map(o=>`<div style="font-size:14px;margin:3px 0 3px 6px">• ${o}</div>`).join('');
+  const items=opts.map((o,i)=>{
+    const named=/<b>/.test(o);
+    const btn = named? `<button onclick="suggestEat('${date}','${mealKey}',${i})" title="Marcar como comido (vai pra Visitados)" style="flex:0 0 auto;background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:1px 7px;font-size:12px;cursor:pointer;white-space:nowrap">✓ comi</button>`:'';
+    return `<div style="font-size:14px;margin:3px 0 5px 6px;display:flex;gap:6px;align-items:flex-start"><span style="flex:1">• ${o}</span>${btn}</div>`;
+  }).join('');
   return `<div style="margin:8px 0 4px"><div class="small muted" style="text-transform:uppercase;letter-spacing:.4px;font-weight:700">${icon} ${lbl}</div>${items}</div>`;
 }
-function renderComida(){
-  const box=document.getElementById('comidaList'); if(!box) return;
-  const charleysCard = `<div class="card" style="border:1px solid #6b3a2a">
-    <div style="font-weight:700;color:var(--gold)">🥩 Charleys na rota <span class="small muted">(um por cidade grande)</span></div>
-    <div style="margin-top:6px">${FOOD_CHARLEYS.map(c=>`<div style="font-size:14px;margin:3px 0 3px 6px">🥩 <b>${escapeHtml(c.city)}</b> — ${escapeHtml(c.loc)}</div>`).join('')}</div>
+function foodTodayStr(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+// conta quantas vezes uma comida/rede foi marcada (olhando a lista completa: seed + custom)
+function foodVisitCount(name){ const n=(name||'').toLowerCase(); const f=foodMerged().find(x=>(x.name||'').toLowerCase()===n); return f? (+f.vezes||0) : 0; }
+// normaliza nome (tira parênteses) e acha um item da lista original que "casa" com o nome dado
+function foodNormName(s){ return (s||'').toLowerCase().replace(/\([^)]*\)/g,'').replace(/\s+/g,' ').trim(); }
+function foodFindSeed(name){ const n=foodNormName(name); if(!n) return null;
+  return FOOD_SEED.find(s=>{ const sn=foodNormName(s.name); return sn && (sn===n || n.startsWith(sn+' ') || sn.startsWith(n+' ')); }) || null; }
+// registra (ou incrementa) uma comida/rede na lista de Visitados, somando +1 vez e guardando a cidade.
+// Se já existir na lista original (FOOD_SEED) ou como custom, incrementa esse item em vez de duplicar.
+function foodLogVisit(name, city){
+  if(!name) return;
+  S.foods=S.foods||[];
+  let d; const seed=foodFindSeed(name);
+  if(seed){ d=foodEnsureDoc(seed.id); if(d) d.hidden=false; }
+  else { const n=name.toLowerCase();
+    d=S.foods.find(x=>x.custom && (x.name||'').toLowerCase()===n);
+    if(!d){ d={id:'uf'+Date.now()+Math.random().toString(36).slice(2,6), name, custom:true, vezes:0, locais:[], note:''}; S.foods.push(d); }
+  }
+  if(!d) return;
+  d.vezes=(d.vezes!=null?+d.vezes:(d.comi?1:0))+1; d.comi=true;
+  d.locais=d.locais||[];
+  if(city && !d.locais.some(l=>l.toLowerCase()===city.toLowerCase())) d.locais.push(city);
+  save(); cloudPushFood(d);
+}
+// clicou "✓ comi" numa sugestão de refeição
+function suggestEat(date, meal, idx){
+  const day=FOOD_SUGGESTIONS.find(d=>d.date===date); if(!day) return;
+  const raw=(day[meal]||[])[idx]; if(!raw) return;
+  const nameM=raw.match(/<b>(.*?)<\/b>/);
+  let name=(nameM?nameM[1]:raw).replace(/<[^>]+>/g,'').trim();
+  // cidade: no café/almoço, o parêntese logo após o nome costuma ser a cidade; senão usa a cidade-destino do dia
+  const afterB=raw.match(/<\/b>\s*\(([^)]+)\)/);
+  const city=((meal==='cafe'||meal==='almoco') && afterB) ? afterB[1].trim() : day.city.replace(/\s*\(.*\)$/,'').trim();
+  foodLogVisit(name, city);
+  toast('✔️ '+name+' → Visitados');
+  renderFoodSuggest(); renderLista();
+}
+// clicou "visitei" num Charleys / Buc-ee's do dia
+function suggestVisit(kind, date){
+  const day=FOOD_SUGGESTIONS.find(d=>d.date===date); if(!day) return;
+  const name = kind==='bucees' ? "Buc-ee's" : 'Charleys';
+  const info = kind==='bucees' ? day.bucees : day.charleys;
+  let city = day.city.replace(/\s*\(.*\)$/,'').trim();
+  if(info){ const head=info.split('—')[0].trim(); if(head) city=head; }
+  foodLogVisit(name, city);
+  toast(name+' registrado ✔️');
+  renderFoodSuggest(); renderLista();
+}
+function renderFoodSuggest(){
+  const box=document.getElementById('foodSuggestList'); if(!box) return;
+  const nC=foodVisitCount('Charleys'), nB=foodVisitCount("Buc-ee's");
+  const chips=`<div class="card" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center">
+    <span class="badgegot" style="background:rgba(255,208,137,.22);color:var(--gold)">🥩 Charleys ${nC}/${FOOD_CHARLEYS.length}</span>
+    <span class="badgegot" style="background:rgba(255,90,90,.20);color:#ff8a8a">🦫 Buc-ee's ${nB}/${FOOD_BUCEES.length}</span>
+    <span class="small muted">toque ✓ para registrar em Visitados</span>
   </div>`;
-  const buceesCard = `<div class="card" style="border:1px solid #aa3333">
-    <div style="font-weight:700;color:#ff5a5a">🦫 Buc-ee's na rota <span class="small muted">(pare sempre que der!)</span></div>
-    <div style="margin-top:6px">${FOOD_BUCEES.map(c=>`<div style="font-size:14px;margin:3px 0 3px 6px;color:#ff8a8a">🦫 <b style="color:#ff5a5a">${escapeHtml(c.city)}</b> — ${escapeHtml(c.loc)}</div>`).join('')}</div>
-  </div>`;
-  const days = FOOD_SUGGESTIONS.map(d=>{
-    const note = d.note? `<div class="small" style="color:var(--gold);margin:2px 0 6px">📝 ${escapeHtml(d.note)}</div>`:'';
-    const bu = d.bucees? `<div style="margin:8px 0 2px"><div class="small" style="color:#ff5a5a;font-weight:700;text-transform:uppercase;letter-spacing:.4px">🦫 Buc-ee's</div><div style="font-size:14px;margin:3px 0 0 6px;color:#ff8a8a">${escapeHtml(d.bucees)}</div></div>`:'';
-    const ch = d.charleys? `<div style="margin:8px 0 2px"><div class="small" style="color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.4px">🥩 Charleys</div><div style="font-size:14px;margin:3px 0 0 6px">${escapeHtml(d.charleys)}</div></div>`:'';
-    return `<div class="card">
-      <div class="small muted">${fmtDate(d.date)} · ${weekday(d.date)}</div>
+  const today=foodTodayStr();
+  const days=FOOD_SUGGESTIONS.map(d=>{
+    const isToday=d.date===today;
+    const note=d.note?`<div class="small" style="color:var(--gold);margin:2px 0 6px">📝 ${escapeHtml(d.note)}</div>`:'';
+    const bu=d.bucees?`<div style="margin:8px 0 2px;display:flex;gap:6px;align-items:flex-start"><span style="flex:1"><span class="small" style="color:#ff5a5a;font-weight:700;text-transform:uppercase;letter-spacing:.4px">🦫 Buc-ee's</span><br><span style="font-size:14px;color:#ff8a8a">${escapeHtml(d.bucees)}</span></span><button onclick="suggestVisit('bucees','${d.date}')" style="flex:0 0 auto;background:none;border:1px solid #aa3333;color:#ff8a8a;border-radius:8px;padding:1px 7px;font-size:12px;cursor:pointer;white-space:nowrap">✓ visitei</button></div>`:'';
+    const ch=d.charleys?`<div style="margin:8px 0 2px;display:flex;gap:6px;align-items:flex-start"><span style="flex:1"><span class="small" style="color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.4px">🥩 Charleys</span><br><span style="font-size:14px">${escapeHtml(d.charleys)}</span></span><button onclick="suggestVisit('charleys','${d.date}')" style="flex:0 0 auto;background:none;border:1px solid #6b3a2a;color:var(--gold);border-radius:8px;padding:1px 7px;font-size:12px;cursor:pointer;white-space:nowrap">✓ visitei</button></div>`:'';
+    const hl=isToday?'border:2px solid var(--gold);box-shadow:0 0 14px rgba(255,208,137,.35)':'';
+    const todayTag=isToday?`<span class="badgegot" style="background:var(--gold);color:#2a1340;font-weight:800">HOJE</span> `:'';
+    return `<div class="card" id="sg_${d.date}" style="${hl}">
+      <div class="small muted">${todayTag}${fmtDate(d.date)} · ${weekday(d.date)}</div>
       <div style="font-weight:700;color:var(--gold);font-size:16px;margin-bottom:2px">${escapeHtml(d.city)}</div>
       ${note}
-      ${foodRow('☕','Café da manhã',d.cafe)}
-      ${foodRow('🍔','Almoço',d.almoco)}
-      ${foodRow('🍽️','Janta',d.janta)}
-      ${bu}
-      ${ch}
+      ${foodRow('☕','Café da manhã',d.cafe,d.date,'cafe')}
+      ${foodRow('🍔','Almoço',d.almoco,d.date,'almoco')}
+      ${foodRow('🍽️','Janta',d.janta,d.date,'janta')}
+      ${bu}${ch}
     </div>`;
   }).join('');
-  box.innerHTML = charleysCard + buceesCard + days;
+  box.innerHTML=chips+days;
 }
+function openFoodSuggest(){
+  document.getElementById('shopMenu').classList.add('hide');
+  document.getElementById('shopDetail').classList.add('hide');
+  const fd=document.getElementById('foodDetail'); if(fd) fd.classList.add('hide');
+  document.getElementById('foodSuggestDetail').classList.remove('hide');
+  renderFoodSuggest();
+  window.scrollTo(0,0);
+  const el=document.getElementById('sg_'+foodTodayStr());
+  if(el) setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+function closeFoodSuggest(){ document.getElementById('foodSuggestDetail').classList.add('hide'); showShopMenu(); window.scrollTo(0,0); }
 
 /* editor de dia do roteiro */
 let rtEditing=null;
@@ -1769,6 +1839,7 @@ function openFood(){
   foodDelArm=null;
   document.getElementById('shopMenu').classList.add('hide');
   document.getElementById('shopDetail').classList.add('hide');
+  const fs=document.getElementById('foodSuggestDetail'); if(fs) fs.classList.add('hide');
   document.getElementById('foodDetail').classList.remove('hide');
   renderFood(); window.scrollTo(0,0);
 }
@@ -1876,6 +1947,7 @@ function showShopMenu(){
   document.getElementById('shopMenu').classList.remove('hide');
   document.getElementById('shopDetail').classList.add('hide');
   const fd=document.getElementById('foodDetail'); if(fd) fd.classList.add('hide');
+  const fs=document.getElementById('foodSuggestDetail'); if(fs) fs.classList.add('hide');
   renderLista();
 }
 function openShopDetail(o, mode){
@@ -1909,8 +1981,11 @@ function renderLista(){
     if(de) de.textContent = d.length ? `${d.length} ${d.length>1?'itens':'item'} · estimativa ${usd(dtot)} (≈ ${brl(dtot*S.rate.usdToBrl)})` : 'nenhum desejo ainda';
   });
   const fAll=foodMerged(), fComi=fAll.filter(f=>f.comi).length;
-  const scEl=document.getElementById('sumComida'); if(scEl) scEl.textContent = `${fComi} de ${fAll.length} provados`;
+  const scEl=document.getElementById('sumComida'); if(scEl) scEl.textContent = `✅ Visitados: ${fComi} de ${fAll.length} provados`;
+  const ssEl=document.getElementById('sumSuggest');
+  if(ssEl) ssEl.textContent = `📋 Sugestões: ${FOOD_SUGGESTIONS.length} dias · 🥩 ${foodVisitCount('Charleys')}/${FOOD_CHARLEYS.length} · 🦫 ${foodVisitCount("Buc-ee's")}/${FOOD_BUCEES.length}`;
   if(!document.getElementById('foodDetail').classList.contains('hide')) renderFood();
+  const fsd=document.getElementById('foodSuggestDetail'); if(fsd && !fsd.classList.contains('hide')) renderFoodSuggest();
   if(shopDetailOwner) renderShopDetailList();
 }
 function renderShopDetailList(){
