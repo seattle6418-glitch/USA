@@ -267,6 +267,17 @@
     <div id="roteiroList"></div>
   </section>
 
+  <!-- ============ COMIDA ============ -->
+  <section id="view-comida" class="hide">
+    <div class="card">
+      <div class="row">
+        <div><div class="small muted">Onde comer 🍔</div><div class="big" style="font-size:18px">Sugestões por cidade</div></div>
+      </div>
+      <div class="small muted" style="margin-top:6px">Café na cidade onde você acorda · almoço numa parada no meio do trajeto · janta no destino. Priorizando churrasco, sanduíche, pizza e hambúrguer.</div>
+    </div>
+    <div id="comidaList"></div>
+  </section>
+
   <!-- ============ MAPA ============ -->
   <section id="view-mapa" class="hide">
     <div class="card">
@@ -628,6 +639,7 @@
   <button data-v="saldos" onclick="showView('saldos')"><span class="ic">💳</span>Saldos</button>
   <button data-v="lista" onclick="showView('lista')"><span class="ic">🛒</span>Lista</button>
   <button data-v="hoteis" onclick="showView('hoteis')"><span class="ic">🏨</span>Hotéis</button>
+  <button data-v="comida" onclick="showView('comida')"><span class="ic">🍔</span>Comida</button>
   <button data-v="config" onclick="showView('config')"><span class="ic">⚙️</span>Config</button>
 </nav>
 
@@ -852,9 +864,9 @@ function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg
 
 /* ---------------- Navegação ---------------- */
 const SCENES = /*SCENES*/ {"dia":"url(\"data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27800%27%20height%3D%271400%27%20viewBox%3D%270%200%20800%201400%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27s%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23241246%27/%3E%3Cstop%20offset%3D%270.42%27%20stop-color%3D%27%235a2a6a%27/%3E%3Cstop%20offset%3D%270.68%27%20stop-color%3D%27%23c85a5a%27/%3E%3Cstop%20offset%3D%270.85%27%20stop-color%3D%27%23ff9d52%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23ffd089%27/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%27d%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.66%29%27/%3E%3Cstop%20offset%3D%270.55%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.10%29%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0%29%27/%3E%3C/linearGradient%3E%3CradialGradient%20id%3D%27sun%27%20cx%3D%270.5%27%20cy%3D%270.5%27%20r%3D%270.5%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23fff0c8%27/%3E%3Cstop%20offset%3D%270.5%27%20stop-color%3D%27%23ffb24d%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%28255%2C150%2C60%2C0%29%27/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect%20width%3D%27800%27%20height%3D%271400%27%20fill%3D%27url%28%23s%29%27/%3E%3Ccircle%20cx%3D%27400%27%20cy%3D%27760%27%20r%3D%27180%27%20fill%3D%27url%28%23sun%29%27/%3E%3Ccircle%20cx%3D%27400%27%20cy%3D%27770%27%20r%3D%2795%27%20fill%3D%27%23ffd27a%27%20opacity%3D%270.95%27/%3E%3Cpath%20d%3D%27M0%20980%20Q200%20900%20420%20985%20T800%20980%20V1400%20H0%20Z%27%20fill%3D%27%233a1840%27%20opacity%3D%270.9%27/%3E%3Cpath%20d%3D%27M0%201080%20Q260%201000%20520%201085%20T800%201075%20V1400%20H0%20Z%27%20fill%3D%27%2326102e%27/%3E%3Cpath%20d%3D%27M0%201200%20Q300%201135%20600%201205%20T800%201200%20V1400%20H0%20Z%27%20fill%3D%27%23160a1c%27/%3E%3Crect%20width%3D%27800%27%20height%3D%27620%27%20fill%3D%27url%28%23d%29%27/%3E%3C/svg%3E\")","roteiro":"url(\"data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27800%27%20height%3D%271400%27%20viewBox%3D%270%200%20800%201400%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27s%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%231b1038%27/%3E%3Cstop%20offset%3D%270.4%27%20stop-color%3D%27%233a1c5c%27/%3E%3Cstop%20offset%3D%270.64%27%20stop-color%3D%27%238a2d5e%27/%3E%3Cstop%20offset%3D%270.84%27%20stop-color%3D%27%23e06a3a%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23ffb066%27/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%27d%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.66%29%27/%3E%3Cstop%20offset%3D%270.55%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.10%29%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0%29%27/%3E%3C/linearGradient%3E%3CradialGradient%20id%3D%27sun%27%20cx%3D%270.5%27%20cy%3D%270.5%27%20r%3D%270.5%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23ffe7b3%27/%3E%3Cstop%20offset%3D%270.5%27%20stop-color%3D%27%23ff9d4d%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%28255%2C140%2C60%2C0%29%27/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect%20width%3D%27800%27%20height%3D%271400%27%20fill%3D%27url%28%23s%29%27/%3E%3Ccircle%20cx%3D%27400%27%20cy%3D%27930%27%20r%3D%27150%27%20fill%3D%27url%28%23sun%29%27/%3E%3Ccircle%20cx%3D%27400%27%20cy%3D%27930%27%20r%3D%2770%27%20fill%3D%27%23ffcf85%27%20opacity%3D%270.9%27/%3E%3Cg%20fill%3D%27%232a1340%27%20opacity%3D%270.95%27%3E%3Crect%20x%3D%2740%27%20y%3D%27852%27%20width%3D%27150%27%20height%3D%2780%27%20rx%3D%275%27/%3E%3Crect%20x%3D%2770%27%20y%3D%27820%27%20width%3D%2770%27%20height%3D%2734%27%20rx%3D%274%27/%3E%3Cpolygon%20points%3D%27250%2C932%20360%2C812%20470%2C932%27/%3E%3Crect%20x%3D%27600%27%20y%3D%27858%27%20width%3D%27170%27%20height%3D%2774%27%20rx%3D%275%27/%3E%3Crect%20x%3D%27655%27%20y%3D%27828%27%20width%3D%2762%27%20height%3D%2732%27%20rx%3D%274%27/%3E%3C/g%3E%3Cpath%20d%3D%27M0%20930%20H800%20V1400%20H0%20Z%27%20fill%3D%27%233a1840%27%20opacity%3D%270.55%27/%3E%3Cpath%20d%3D%27M362%20930%20L438%20930%20L660%201400%20L140%201400%20Z%27%20fill%3D%27%23191020%27/%3E%3Cpath%20d%3D%27M362%20930%20L438%20930%20L648%201400%20L152%201400%20Z%27%20fill%3D%27%23221530%27/%3E%3Cpath%20d%3D%27M398%201000%20L402%201000%20L404%201060%20L396%201060%20Z%27%20fill%3D%27%23ffce6b%27/%3E%3Cpath%20d%3D%27M395%201075%20L405%201075%20L408%201150%20L392%201150%20Z%27%20fill%3D%27%23ffce6b%27/%3E%3Cg%20transform%3D%27translate%28400%2C1235%29%20scale%282.05%29%27%3E%3Cpath%20d%3D%27M-46%2C-58%20Q-46%2C-62%20-42%2C-62%20Q-22%2C-54%200%2C-60%20Q22%2C-54%2042%2C-62%20Q46%2C-62%2046%2C-58%20L46%2C-8%20Q46%2C40%200%2C72%20Q-46%2C40%20-46%2C-8%20Z%27%20fill%3D%27%230d0a14%27%20transform%3D%27scale%281.12%29%27/%3E%3Cpath%20d%3D%27M-46%2C-58%20Q-46%2C-62%20-42%2C-62%20Q-22%2C-54%200%2C-60%20Q22%2C-54%2042%2C-62%20Q46%2C-62%2046%2C-58%20L46%2C-8%20Q46%2C40%200%2C72%20Q-46%2C40%20-46%2C-8%20Z%27%20fill%3D%27%23f7f3ea%27/%3E%3Cpath%20d%3D%27M-46%2C-58%20Q-46%2C-62%20-42%2C-62%20Q-22%2C-54%200%2C-60%20Q22%2C-54%2042%2C-62%20Q46%2C-62%2046%2C-58%20L46%2C-8%20Q46%2C40%200%2C72%20Q-46%2C40%20-46%2C-8%20Z%27%20fill%3D%27none%27%20stroke%3D%27%230d0a14%27%20stroke-width%3D%272.4%27/%3E%3Ctext%20x%3D%270%27%20y%3D%27-34%27%20font-family%3D%27Arial%2C%20sans-serif%27%20font-size%3D%2717%27%20font-weight%3D%27700%27%20fill%3D%27%230d0a14%27%20text-anchor%3D%27middle%27%20letter-spacing%3D%271%27%3EROUTE%3C/text%3E%3Cline%20x1%3D%27-38%27%20y1%3D%27-22%27%20x2%3D%2738%27%20y2%3D%27-22%27%20stroke%3D%27%230d0a14%27%20stroke-width%3D%272.4%27/%3E%3Ctext%20x%3D%270%27%20y%3D%2740%27%20font-family%3D%27Arial%2C%20sans-serif%27%20font-size%3D%2762%27%20font-weight%3D%27800%27%20fill%3D%27%230d0a14%27%20text-anchor%3D%27middle%27%3E66%3C/text%3E%3C/g%3E%3Crect%20width%3D%27800%27%20height%3D%27620%27%20fill%3D%27url%28%23d%29%27/%3E%3C/svg%3E\")","mapa":"url(\"data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27800%27%20height%3D%271400%27%20viewBox%3D%270%200%20800%201400%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27s%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%230b1030%27/%3E%3Cstop%20offset%3D%270.45%27%20stop-color%3D%27%2313214c%27/%3E%3Cstop%20offset%3D%270.75%27%20stop-color%3D%27%2322356a%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%233a5aa0%27/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%27d%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.66%29%27/%3E%3Cstop%20offset%3D%270.55%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.10%29%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0%29%27/%3E%3C/linearGradient%3E%3CradialGradient%20id%3D%27pg%27%20cx%3D%270.5%27%20cy%3D%270.5%27%20r%3D%270.5%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23ff7ab0%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%28255%2C61%2C139%2C0%29%27/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect%20width%3D%27800%27%20height%3D%271400%27%20fill%3D%27url%28%23s%29%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27120%27%20x2%3D%27800%27%20y2%3D%27120%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27240%27%20x2%3D%27800%27%20y2%3D%27240%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27360%27%20x2%3D%27800%27%20y2%3D%27360%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27480%27%20x2%3D%27800%27%20y2%3D%27480%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27600%27%20x2%3D%27800%27%20y2%3D%27600%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27720%27%20x2%3D%27800%27%20y2%3D%27720%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27840%27%20x2%3D%27800%27%20y2%3D%27840%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27960%27%20x2%3D%27800%27%20y2%3D%27960%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%271080%27%20x2%3D%27800%27%20y2%3D%271080%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%271200%27%20x2%3D%27800%27%20y2%3D%271200%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%271320%27%20x2%3D%27800%27%20y2%3D%271320%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%2780%27%20y1%3D%270%27%20x2%3D%2780%27%20y2%3D%271400%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%27200%27%20y1%3D%270%27%20x2%3D%27200%27%20y2%3D%271400%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%27320%27%20y1%3D%270%27%20x2%3D%27320%27%20y2%3D%271400%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%27440%27%20y1%3D%270%27%20x2%3D%27440%27%20y2%3D%271400%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%27560%27%20y1%3D%270%27%20x2%3D%27560%27%20y2%3D%271400%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cline%20x1%3D%27680%27%20y1%3D%270%27%20x2%3D%27680%27%20y2%3D%271400%27%20stroke%3D%27%2339507f%27%20stroke-width%3D%271%27%20opacity%3D%270.25%27/%3E%3Cpath%20d%3D%27M120%201180%20C%20260%201000%2C%20240%20820%2C%20420%20760%20S%20640%20660%2C%20600%20460%27%20fill%3D%27none%27%20stroke%3D%27%2315d0c8%27%20stroke-width%3D%277%27%20stroke-linecap%3D%27round%27%20opacity%3D%270.9%27%20stroke-dasharray%3D%272%2022%27/%3E%3Cpath%20d%3D%27M120%201180%20C%20260%201000%2C%20240%20820%2C%20420%20760%20S%20640%20660%2C%20600%20460%27%20fill%3D%27none%27%20stroke%3D%27%2315d0c8%27%20stroke-width%3D%273%27%20opacity%3D%270.5%27/%3E%3Ccircle%20cx%3D%27600%27%20cy%3D%27470%27%20r%3D%2770%27%20fill%3D%27url%28%23pg%29%27/%3E%3Cpath%20d%3D%27M400%201050%20C%20340%201050%20300%201000%20300%20945%20C%20300%20870%20400%20800%20400%20800%20C%20400%20800%20500%20870%20500%20945%20C%20500%201000%20460%201050%20400%201050%20Z%27%20fill%3D%27%23ff3d8b%27/%3E%3Ccircle%20cx%3D%27400%27%20cy%3D%27930%27%20r%3D%2734%27%20fill%3D%27%231a0f2e%27/%3E%3Crect%20width%3D%27800%27%20height%3D%27620%27%20fill%3D%27url%28%23d%29%27/%3E%3C/svg%3E\")","saldos":"url(\"data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27800%27%20height%3D%271400%27%20viewBox%3D%270%200%20800%201400%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27s%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%2307251f%27/%3E%3Cstop%20offset%3D%270.45%27%20stop-color%3D%27%230d3b2e%27/%3E%3Cstop%20offset%3D%270.72%27%20stop-color%3D%27%2313654c%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%231aa37a%27/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%27d%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.66%29%27/%3E%3Cstop%20offset%3D%270.55%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.10%29%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0%29%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%27800%27%20height%3D%271400%27%20fill%3D%27url%28%23s%29%27/%3E%3Cg%20transform%3D%27translate%28250%2C1120%29%20rotate%28-12%29%27%3E%3Crect%20x%3D%27-110%27%20y%3D%27-58%27%20width%3D%27220%27%20height%3D%27116%27%20rx%3D%2712%27%20fill%3D%27%230e3d30%27%20stroke%3D%27%231aa37a%27%20stroke-width%3D%273%27/%3E%3Ccircle%20cx%3D%270%27%20cy%3D%270%27%20r%3D%2734%27%20fill%3D%27none%27%20stroke%3D%27%231aa37a%27%20stroke-width%3D%273%27/%3E%3Ctext%20x%3D%270%27%20y%3D%2716%27%20font-family%3D%27Arial%27%20font-size%3D%2744%27%20fill%3D%27%239fe0b0%27%20text-anchor%3D%27middle%27%3E%24%3C/text%3E%3C/g%3E%3Cg%20transform%3D%27translate%28540%2C1180%29%20rotate%289%29%27%3E%3Crect%20x%3D%27-110%27%20y%3D%27-58%27%20width%3D%27220%27%20height%3D%27116%27%20rx%3D%2712%27%20fill%3D%27%230e3d30%27%20stroke%3D%27%231aa37a%27%20stroke-width%3D%273%27/%3E%3Ccircle%20cx%3D%270%27%20cy%3D%270%27%20r%3D%2734%27%20fill%3D%27none%27%20stroke%3D%27%231aa37a%27%20stroke-width%3D%273%27/%3E%3Ctext%20x%3D%270%27%20y%3D%2716%27%20font-family%3D%27Arial%27%20font-size%3D%2744%27%20fill%3D%27%239fe0b0%27%20text-anchor%3D%27middle%27%3E%24%3C/text%3E%3C/g%3E%3Cg%20transform%3D%27translate%28400%2C1010%29%20rotate%28-3%29%27%3E%3Crect%20x%3D%27-110%27%20y%3D%27-58%27%20width%3D%27220%27%20height%3D%27116%27%20rx%3D%2712%27%20fill%3D%27%230e3d30%27%20stroke%3D%27%231aa37a%27%20stroke-width%3D%273%27/%3E%3Ccircle%20cx%3D%270%27%20cy%3D%270%27%20r%3D%2734%27%20fill%3D%27none%27%20stroke%3D%27%231aa37a%27%20stroke-width%3D%273%27/%3E%3Ctext%20x%3D%270%27%20y%3D%2716%27%20font-family%3D%27Arial%27%20font-size%3D%2744%27%20fill%3D%27%239fe0b0%27%20text-anchor%3D%27middle%27%3E%24%3C/text%3E%3C/g%3E%3Crect%20width%3D%27800%27%20height%3D%27620%27%20fill%3D%27url%28%23d%29%27/%3E%3C/svg%3E\")","lista":"url(\"data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27800%27%20height%3D%271400%27%20viewBox%3D%270%200%20800%201400%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27s%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%232a0f3a%27/%3E%3Cstop%20offset%3D%270.45%27%20stop-color%3D%27%235a1a6b%27/%3E%3Cstop%20offset%3D%270.74%27%20stop-color%3D%27%23a8336b%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23ff6a9a%27/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%27d%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.66%29%27/%3E%3Cstop%20offset%3D%270.55%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.10%29%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0%29%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%27800%27%20height%3D%271400%27%20fill%3D%27url%28%23s%29%27/%3E%3Cg%20transform%3D%27translate%28150%2C980%29%27%3E%3Cpath%20d%3D%27M39.6%200%20a%2050.400000000000006%2050.400000000000006%200%200%201%20100.8%200%27%20fill%3D%27none%27%20stroke%3D%27%23ffb0cf%27%20stroke-width%3D%278%27/%3E%3Crect%20x%3D%270%27%20y%3D%2754.0%27%20width%3D%27180%27%20height%3D%27245.99999999999997%27%20rx%3D%2710%27%20fill%3D%27%237a1f55%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27126.0%27%20x2%3D%27180%27%20y2%3D%27126.0%27%20stroke%3D%27%23ff9ec6%27%20stroke-width%3D%273%27%20opacity%3D%270.5%27/%3E%3C/g%3E%3Cg%20transform%3D%27translate%28360%2C1040%29%27%3E%3Cpath%20d%3D%27M44.0%200%20a%2056.00000000000001%2056.00000000000001%200%200%201%20112.0%200%27%20fill%3D%27none%27%20stroke%3D%27%23ffb0cf%27%20stroke-width%3D%278%27/%3E%3Crect%20x%3D%270%27%20y%3D%2759.4%27%20width%3D%27200%27%20height%3D%27270.59999999999997%27%20rx%3D%2710%27%20fill%3D%27%23a8336b%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27138.6%27%20x2%3D%27200%27%20y2%3D%27138.6%27%20stroke%3D%27%23ff9ec6%27%20stroke-width%3D%273%27%20opacity%3D%270.5%27/%3E%3C/g%3E%3Cg%20transform%3D%27translate%28560%2C1000%29%27%3E%3Cpath%20d%3D%27M37.4%200%20a%2047.6%2047.6%200%200%201%2095.2%200%27%20fill%3D%27none%27%20stroke%3D%27%23ffb0cf%27%20stroke-width%3D%278%27/%3E%3Crect%20x%3D%270%27%20y%3D%2754.0%27%20width%3D%27170%27%20height%3D%27245.99999999999997%27%20rx%3D%2710%27%20fill%3D%27%235a1a6b%27/%3E%3Cline%20x1%3D%270%27%20y1%3D%27126.0%27%20x2%3D%27170%27%20y2%3D%27126.0%27%20stroke%3D%27%23ff9ec6%27%20stroke-width%3D%273%27%20opacity%3D%270.5%27/%3E%3C/g%3E%3Crect%20width%3D%27800%27%20height%3D%27620%27%20fill%3D%27url%28%23d%29%27/%3E%3C/svg%3E\")","resumo":"url(\"data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27800%27%20height%3D%271400%27%20viewBox%3D%270%200%20800%201400%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27s%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23191043%27/%3E%3Cstop%20offset%3D%270.45%27%20stop-color%3D%27%232e1a66%27/%3E%3Cstop%20offset%3D%270.75%27%20stop-color%3D%27%236a2d9a%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%23b070d8%27/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%27d%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.66%29%27/%3E%3Cstop%20offset%3D%270.55%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.10%29%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0%29%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%27800%27%20height%3D%271400%27%20fill%3D%27url%28%23s%29%27/%3E%3Crect%20x%3D%27120%27%20y%3D%271120%27%20width%3D%2770%27%20height%3D%27180%27%20rx%3D%278%27%20fill%3D%27%237a2db0%27%20opacity%3D%270.92%27/%3E%3Crect%20x%3D%27240%27%20y%3D%271000%27%20width%3D%2770%27%20height%3D%27300%27%20rx%3D%278%27%20fill%3D%27%237a2db0%27%20opacity%3D%270.92%27/%3E%3Crect%20x%3D%27360%27%20y%3D%271060%27%20width%3D%2770%27%20height%3D%27240%27%20rx%3D%278%27%20fill%3D%27%237a2db0%27%20opacity%3D%270.92%27/%3E%3Crect%20x%3D%27480%27%20y%3D%27900%27%20width%3D%2770%27%20height%3D%27400%27%20rx%3D%278%27%20fill%3D%27%237a2db0%27%20opacity%3D%270.92%27/%3E%3Crect%20x%3D%27600%27%20y%3D%27970%27%20width%3D%2770%27%20height%3D%27330%27%20rx%3D%278%27%20fill%3D%27%237a2db0%27%20opacity%3D%270.92%27/%3E%3Crect%20x%3D%27700%27%20y%3D%27830%27%20width%3D%2770%27%20height%3D%27470%27%20rx%3D%278%27%20fill%3D%27%237a2db0%27%20opacity%3D%270.92%27/%3E%3Cpolyline%20points%3D%27155%2C1090%20275%2C970%20395%2C1030%20515%2C870%20635%2C940%20735%2C800%27%20fill%3D%27none%27%20stroke%3D%27%2315d0c8%27%20stroke-width%3D%276%27%20stroke-linecap%3D%27round%27/%3E%3Ccircle%20cx%3D%27155%27%20cy%3D%271090%27%20r%3D%278%27%20fill%3D%27%23ffce6b%27/%3E%3Ccircle%20cx%3D%27275%27%20cy%3D%27970%27%20r%3D%278%27%20fill%3D%27%23ffce6b%27/%3E%3Ccircle%20cx%3D%27395%27%20cy%3D%271030%27%20r%3D%278%27%20fill%3D%27%23ffce6b%27/%3E%3Ccircle%20cx%3D%27515%27%20cy%3D%27870%27%20r%3D%278%27%20fill%3D%27%23ffce6b%27/%3E%3Ccircle%20cx%3D%27635%27%20cy%3D%27940%27%20r%3D%278%27%20fill%3D%27%23ffce6b%27/%3E%3Ccircle%20cx%3D%27735%27%20cy%3D%27800%27%20r%3D%278%27%20fill%3D%27%23ffce6b%27/%3E%3Crect%20width%3D%27800%27%20height%3D%27620%27%20fill%3D%27url%28%23d%29%27/%3E%3C/svg%3E\")","config":"url(\"data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20width%3D%27800%27%20height%3D%271400%27%20viewBox%3D%270%200%20800%201400%27%3E%3Cdefs%3E%3ClinearGradient%20id%3D%27s%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%230e1226%27/%3E%3Cstop%20offset%3D%270.5%27%20stop-color%3D%27%231a2140%27/%3E%3Cstop%20offset%3D%270.8%27%20stop-color%3D%27%232a3358%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%2346568c%27/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%27d%27%20x1%3D%270%27%20y1%3D%270%27%20x2%3D%270%27%20y2%3D%271%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.66%29%27/%3E%3Cstop%20offset%3D%270.55%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0.10%29%27/%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27rgba%288%2C3%2C16%2C0%29%27/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width%3D%27800%27%20height%3D%271400%27%20fill%3D%27url%28%23s%29%27/%3E%3Cpolygon%20points%3D%27450.0%2C1080.0%20413.0%2C1110.3%20429.9%2C1155.0%20382.7%2C1162.7%20375.0%2C1209.9%20330.3%2C1193.0%20300.0%2C1230.0%20269.7%2C1193.0%20225.0%2C1209.9%20217.3%2C1162.7%20170.1%2C1155.0%20187.0%2C1110.3%20150.0%2C1080.0%20187.0%2C1049.7%20170.1%2C1005.0%20217.3%2C997.3%20225.0%2C950.1%20269.7%2C967.0%20300.0%2C930.0%20330.3%2C967.0%20375.0%2C950.1%20382.7%2C997.3%20429.9%2C1005.0%20413.0%2C1049.7%27%20fill%3D%27%2333406e%27/%3E%3Ccircle%20cx%3D%27300%27%20cy%3D%271080%27%20r%3D%2763.0%27%20fill%3D%27%231a2140%27/%3E%3Cpolygon%20points%3D%27670.0%2C1220.0%20641.6%2C1246.5%20649.0%2C1284.7%20610.4%2C1289.4%20594.0%2C1324.6%20560.0%2C1305.8%20526.0%2C1324.6%20509.6%2C1289.4%20471.0%2C1284.7%20478.4%2C1246.5%20450.0%2C1220.0%20478.4%2C1193.5%20471.0%2C1155.3%20509.6%2C1150.6%20526.0%2C1115.4%20560.0%2C1134.2%20594.0%2C1115.4%20610.4%2C1150.6%20649.0%2C1155.3%20641.6%2C1193.5%27%20fill%3D%27%232a3358%27/%3E%3Ccircle%20cx%3D%27560%27%20cy%3D%271220%27%20r%3D%2746.199999999999996%27%20fill%3D%27%231a2140%27/%3E%3Cpolygon%20points%3D%27620.0%2C980.0%20598.6%2C1001.3%20601.3%2C1031.4%20571.2%2C1034.0%20553.9%2C1058.8%20529.2%2C1041.5%20500.0%2C1049.3%20492.2%2C1020.1%20464.8%2C1007.4%20477.6%2C980.0%20464.8%2C952.6%20492.2%2C939.9%20500.0%2C910.7%20529.2%2C918.5%20553.9%2C901.2%20571.2%2C926.0%20601.3%2C928.6%20598.6%2C958.7%27%20fill%3D%27%233a4570%27/%3E%3Ccircle%20cx%3D%27540%27%20cy%3D%27980%27%20r%3D%2733.6%27%20fill%3D%27%231a2140%27/%3E%3Crect%20width%3D%27800%27%20height%3D%27620%27%20fill%3D%27url%28%23d%29%27/%3E%3C/svg%3E\")"};
-if(typeof SCENES!=='undefined' && SCENES){ if(!SCENES.hoteis) SCENES.hoteis = SCENES.config; if(!SCENES.info) SCENES.info = SCENES.config; if(!SCENES.prep) SCENES.prep = SCENES.config; if(!SCENES.fontes) SCENES.fontes = SCENES.config; }
+if(typeof SCENES!=='undefined' && SCENES){ if(!SCENES.hoteis) SCENES.hoteis = SCENES.config; if(!SCENES.info) SCENES.info = SCENES.config; if(!SCENES.prep) SCENES.prep = SCENES.config; if(!SCENES.fontes) SCENES.fontes = SCENES.config; if(!SCENES.comida) SCENES.comida = SCENES.dia; }
 function showView(v){
-  ['dia','roteiro','mapa','saldos','lista','hoteis','resumo','info','prep','fontes','config'].forEach(x=>{
+  ['dia','roteiro','mapa','saldos','lista','hoteis','comida','resumo','info','prep','fontes','config'].forEach(x=>{
     document.getElementById('view-'+x).classList.toggle('hide', x!==v); });
   const sc=document.getElementById('scene'); if(sc && SCENES[v]) sc.style.backgroundImage=SCENES[v];
   // Sub-páginas de Config mantêm o botão Config ativo na barra
@@ -867,6 +879,7 @@ function showView(v){
   if(v==='saldos') renderSaldos();
   if(v==='lista') showShopMenu();
   if(v==='hoteis') renderHoteis();
+  if(v==='comida') renderComida();
   if(v==='resumo') renderResumo();
   if(v==='info') renderInfo();
   if(v==='prep') renderPrep();
@@ -1039,6 +1052,165 @@ function renderRoteiro(){
 }
 function toggleRt(date){ rtOpen[date]=!rtOpen[date]; renderRoteiro(); }
 function goToDay(date){ curDay=date; showView('dia'); }
+
+/* ---------------- Render: Comida (sugestões por cidade) ---------------- */
+const FOOD_CHARLEYS = [
+  {city:'Las Vegas',        loc:'South Las Vegas Blvd (na Strip)'},
+  {city:'Denver',           loc:'Colorado Mills Mall (Lakewood)'},
+  {city:'Albuquerque',      loc:'Coronado Center, 6600 Menaul Blvd NE'},
+  {city:'Dallas / Fort Worth', loc:'Dallas Galleria, 13350 N Dallas Pkwy'},
+  {city:'Tulsa',            loc:'Woodland Hills Mall, 7021 S Memorial Dr (almoço do dia 12)'},
+  {city:'Salt Lake City',   loc:'Valley Fair Mall, 3601 S Constitution Blvd'},
+  {city:'Sacramento',       loc:'Arden Fair, 1689 Arden Way (almoço do dia 20)'},
+  {city:'San Francisco',    loc:'845 Market St (centro)'},
+  {city:'Anaheim / Los Angeles', loc:'265 S Euclid St (sua base em Anaheim)'},
+];
+const FOOD_SUGGESTIONS = [
+  {date:'2026-10-03', city:'Las Vegas', note:'Chegada em Las Vegas ~11:20 (sábado). Tarde e noite livres na Strip.',
+    cafe:'', almoco:`<b>In-N-Out Burger</b> — o hambúrguer clássico da Costa Oeste, peça "animal style".`,
+    janta:`<b>Golden Steer Steakhouse</b> — bife clássico da era Rat Pack (Sinatra jantava aqui). Alt.: <b>Battista's Hole in the Wall</b> (italiano) ou <b>Capriotti's</b> (sanduíche "Bobbie", nascido em Vegas).`,
+    charleys:'South Las Vegas Blvd (na Strip)'},
+  {date:'2026-10-04', city:'Williams, AZ', note:'🏁 Dia da corrida: South Point 400 (NASCAR) no Las Vegas Motor Speedway, 14:30. Vocês saem no fim da tarde rumo a Williams (233 mi) — chegada à noite.',
+    cafe:`<b>The Peppermill</b> (Las Vegas) — café retrô e reforçado antes da corrida.`,
+    almoco:`<b>Las Vegas Motor Speedway</b> — comida de arquibancada no autódromo (hambúrguer, cachorro-quente, BBQ) antes/durante a corrida, ou algo rápido na saída em North Las Vegas.`,
+    janta:`<b>Cruisers Route 66 Café</b> ou <b>Rod's Steak House</b> (Williams — confira horários, chegada à noite). A caminho dá para jantar em Kingman no <b>Mr. D'z Route 66 Diner</b>. (O Delgadillo's Snow Cap, em Seligman, fecha no fim da tarde — só se passarem de dia.)`,
+    charleys:''},
+  {date:'2026-10-05', city:'Bryce Canyon City, UT', note:'',
+    cafe:`<b>Pine Country Restaurant</b> (Williams) — café reforçado e tortas caseiras.`,
+    almoco:`Grand Canyon / Page — almoço prático no caminho dos parques.`,
+    janta:`<b>Ebenezer's Barn & Grill</b> (Ruby's Inn) — costela e bife num jantar western com música. Alt.: <b>Bryce Canyon Pines</b>.`,
+    charleys:''},
+  {date:'2026-10-06', city:'Page, AZ', note:'',
+    cafe:`Café no lodge em Bryce (dia curto, sem pressa).`,
+    almoco:`<b>Kanab, UT</b> — hambúrguer rápido entre Zion e Page.`,
+    janta:`<b>Big John's Texas BBQ</b> (costela/brisket). Alt.: <b>Bonkers Steakhouse</b> ou <b>Strombolli's</b> (pizza/calzone).`,
+    charleys:''},
+  {date:'2026-10-07', city:'Moab, UT', note:'Dia longo (521 mi): saída cedo, chegada tarde.',
+    cafe:`<b>Ranch House Grille</b> (Page) — panquecas, ovos e bacon.`,
+    almoco:`<b>Steamworks Brewing</b> (Durango, CO) — burgers e cerveja. Alt.: <b>Serious Texas Bar-B-Q</b>.`,
+    janta:`<b>The Blu Pig</b> (BBQ com blues) ou <b>Susie's Branding Iron</b> (bife). Pizza: <b>Pasta Jay's</b> ou <b>Zax</b>.`,
+    charleys:''},
+  {date:'2026-10-08', city:'Denver, CO', note:'',
+    cafe:`<b>Moab Diner</b> — café clássico e milkshake.`,
+    almoco:`<b>Rockslide Brewery</b> (Grand Junction) ou <b>Glenwood Canyon Brewpub</b> — burgers e cerveja.`,
+    janta:`<b>Buckhorn Exchange</b> — steakhouse histórico do velho oeste (desde 1893). Alt.: <b>Cherry Cricket</b> (hambúrguer icônico), <b>Blue Pan Pizza</b> ou <b>GQue BBQ</b>.`,
+    charleys:'Colorado Mills Mall (Lakewood, na chegada)'},
+  {date:'2026-10-09', city:'Albuquerque, NM', note:'Dia longo (469 mi).',
+    cafe:`<b>Snooze, an A.M. Eatery</b> (Denver) — café forte antes do Pikes Peak.`,
+    almoco:`<b>Bird Dog BBQ</b> ou <b>The Skirted Heifer</b> (hambúrguer com "saia" de queijo) — Colorado Springs, perto do Garden of the Gods.`,
+    janta:`<b>Dog House Drive In</b> — o cachorro-quente/chili da série Breaking Bad, já na sua lista. Alt.: <b>Rudy's "Country Store" BBQ</b>.`,
+    charleys:'Coronado Center, 6600 Menaul Blvd NE'},
+  {date:'2026-10-10', city:'Wichita Falls, TX', note:'Dia longo (511 mi).',
+    cafe:`<b>Frontier Restaurant</b> (Albuquerque) — o famoso rolinho de canela com ovos e bacon.`,
+    almoco:`<b>The Big Texan Steak Ranch</b> (Amarillo) — já na sua lista; o desafio do bife de 72oz.`,
+    janta:`<b>Texas Best BBQ & Burgers</b> ou <b>McBride Land & Cattle Co.</b> (steakhouse).`,
+    charleys:''},
+  {date:'2026-10-11', city:'Dallas, TX', note:'Dia curto (140 mi).',
+    cafe:`Café tranquilo no hotel em Wichita Falls.`,
+    almoco:`<b>Cattlemen's Steak House</b> — bife clássico no Fort Worth Stockyards, exatamente na sua parada.`,
+    janta:`<b>Pecan Lodge</b> (Deep Ellum) — um dos BBQ mais famosos do Texas. Alt.: <b>Rodeo Goat</b> (hambúrgueres).`,
+    charleys:'Dallas Galleria, 13350 N Dallas Pkwy'},
+  {date:'2026-10-12', city:'Bentonville, AR', note:'',
+    cafe:`Café rápido em Dallas antes de subir para Oklahoma.`,
+    almoco:`<b>Burn Co Barbeque</b> (Tulsa) — brisket premiado. Ou um hambúrguer.`,
+    janta:`<b>Fred's Hickory Inn</b> — instituição local de costela e bife. Alt.: <b>Wright's Barbecue</b> (excelente brisket, ali perto).`,
+    charleys:'Tulsa — Woodland Hills Mall, 7021 S Memorial Dr (cai no almoço)'},
+  {date:'2026-10-13', city:'Kansas City, MO', note:'',
+    cafe:`Café no hotel em Bentonville.`,
+    almoco:`<b>Lake of the Ozarks</b> — grill à beira do lago (burger/sanduíche).`,
+    janta:`<b>Joe's Kansas City Bar-B-Que</b> — já na sua lista; um dos melhores BBQ dos EUA (peça o Z-Man). Alt.: <b>Arthur Bryant's</b> ou <b>Q39</b>.`,
+    charleys:''},
+  {date:'2026-10-14', city:'Chamberlain, SD', note:'Dia longo (504 mi).',
+    cafe:`Café rápido em Kansas City.`,
+    almoco:`<b>JL Beers</b> (Sioux Falls) — hambúrgueres e cervejas.`,
+    janta:`<b>The Smoking Mule</b> — BBQ e bifes. Alt. clássica: <b>Al's Oasis</b> (Oacoma, do outro lado do rio).`,
+    charleys:''},
+  {date:'2026-10-15', city:'Gillette, WY', note:'',
+    cafe:`Café no hotel em Chamberlain.`,
+    almoco:`<b>Wall Drug Store</b> — parada lendária: sanduíche de "hot beef", rosquinhas e o famoso café.`,
+    janta:`<b>Rib & Chop House</b> (costela/prime rib) ou <b>The Railyard</b>.`,
+    charleys:''},
+  {date:'2026-10-16', city:'Yellowstone, WY', note:'',
+    cafe:`Café reforçado em Gillette.`,
+    almoco:`<b>Cassie's Supper Club</b> (Cody) — bifes e prime rib, clássico do velho oeste. Alt.: <b>Legacy Butcher & Burger</b>.`,
+    janta:`Dentro do parque — reserve no lodge (<b>Old Faithful Inn Dining Room</b> ou <b>Canyon Lodge</b>). Leve lanche extra.`,
+    charleys:''},
+  {date:'2026-10-17', city:'Jackson Hole, WY', note:'Dia curto (145 mi).',
+    cafe:`Café no lodge em Yellowstone.`,
+    almoco:`<b>Pinky G's Pizzeria</b> (Jackson) — pizza famosa (Diners, Drive-Ins & Dives). Alt.: <b>Liberty Burger</b>.`,
+    janta:`<b>Gun Barrel Steak & Game House</b> — steakhouse western. Alt.: <b>Snake River Brewing</b> (burgers e cerveja).`,
+    charleys:''},
+  {date:'2026-10-18', city:'Salt Lake City, UT', note:'',
+    cafe:`Café em Victor/Jackson antes de cruzar Idaho.`,
+    almoco:`Hambúrguer em <b>Idaho Falls</b>, perto do Idaho Potato Museum (Blackfoot).`,
+    janta:`<b>Crown Burgers</b> — instituição de Utah, o hambúrguer com pastrami. Alt.: <b>The Pie Pizzeria</b> ou <b>R&R BBQ</b>.`,
+    charleys:'Valley Fair Mall, 3601 S Constitution Blvd'},
+  {date:'2026-10-19', city:'Lake Tahoe, CA', note:'Dia mais longo (580 mi): saída cedo, chegada tarde.',
+    cafe:`Café cedo e rápido em Salt Lake City.`,
+    almoco:`<b>Peg's Glorified Ham n Eggs</b> (Reno) ou um hambúrguer para recarregar.`,
+    janta:`<b>Base Camp Pizza Co.</b> (Heavenly Village) ou <b>The Burger Lounge</b>. Vista do lago: <b>Riva Grill</b>.`,
+    charleys:''},
+  {date:'2026-10-20', city:'San Francisco, CA', note:'',
+    cafe:`Café à beira do lago em South Lake Tahoe.`,
+    almoco:`<b>Squeeze Inn</b> (Sacramento) — hambúrguer com "saia" de queijo crocante.`,
+    janta:`<b>House of Prime Rib</b> — icônico, reserve com antecedência. Perto de Pier 39/Lombard: <b>Tony's Pizza Napoletana</b>. Sanduíche: <b>Molinari Delicatessen</b>. Burger: <b>Super Duper</b>.`,
+    charleys:'Sacramento — Arden Fair (almoço); em SF: 845 Market St'},
+  {date:'2026-10-21', city:'Los Angeles (Anaheim)', note:'Dia longo (477 mi) descendo a costa (Big Sur).',
+    cafe:`Café rápido em San Francisco.`,
+    almoco:`<b>The Habit Burger Grill</b> (Santa Barbara) — a rede nasceu aqui; o "Charburger" na brasa. Em Solvang, um doce dinamarquês.`,
+    janta:`<b>In-N-Out Burger</b> (Anaheim) — obrigatório na Califórnia.`,
+    charleys:'Anaheim — 265 S Euclid St (sua base)'},
+  {date:'2026-10-22', city:'Los Angeles (Praias)', note:'Dia na cidade.',
+    cafe:`Café em Anaheim antes de subir para as praias.`,
+    almoco:`<b>Hinano Cafe</b> (Venice) — hambúrguer dive à beira-mar.`,
+    janta:`<b>Father's Office</b> (Santa Monica) — a "Office Burger", das mais premiadas de LA.`,
+    charleys:''},
+  {date:'2026-10-23', city:'Los Angeles (Cidade)', note:'Dia na cidade.',
+    cafe:`Café em Anaheim/LA antes de Hollywood.`,
+    almoco:`<b>Philippe The Original</b> (Downtown LA) — o sanduíche "French dip" desde 1908. Alt.: <b>Langer's Deli</b> (pastrami).`,
+    janta:`<b>Pizzeria Mozza</b> — das pizzas mais famosas de LA. Burger icônico: <b>In-N-Out</b> na Sunset Blvd.`,
+    charleys:''},
+  {date:'2026-10-24', city:'Las Vegas, NV', note:'',
+    cafe:`Café em Anaheim antes de pegar a I-15.`,
+    almoco:`<b>Peggy Sue's 50's Diner</b> (Yermo, ao lado de Calico) — hambúrgueres e milkshake num diner anos 50.`,
+    janta:`<b>Bavette's Steakhouse</b> (Park MGM) para uma noite especial, ou <b>Secret Pizza</b> (Cosmopolitan) para algo casual.`,
+    charleys:''},
+  {date:'2026-10-25', city:'Las Vegas, NV', note:'',
+    cafe:`Café no hotel antes de Valley of Fire e Red Rock.`,
+    almoco:`<b>Capriotti's</b> — o sanduíche "Bobbie" (peru, molho e recheio), rede nascida em Vegas.`,
+    janta:`<b>Gordon Ramsay Burger</b> (Planet Hollywood) ou <b>Grimaldi's</b> (pizza de forno a lenha).`,
+    charleys:''},
+  {date:'2026-10-26', city:'Las Vegas, NV', note:'',
+    cafe:`Café antes do dia na Fremont Street e Sphere.`,
+    almoco:`Fremont Street — hambúrguer ou fatia rápida entre as atrações.`,
+    janta:`<b>Evel Pie</b> — pizzaria temática do Evel Knievel na Fremont. Steak clássico: <b>Golden Steer</b> (se ainda não foram).`,
+    charleys:''},
+];
+function foodRow(icon,lbl,html){
+  if(!html) return '';
+  return `<div class="stop" style="align-items:flex-start"><span class="tm" style="min-width:26px">${icon}</span><span class="pl"><span class="small muted" style="text-transform:uppercase;letter-spacing:.4px;font-weight:700">${lbl}</span><br>${html}</span></div>`;
+}
+function renderComida(){
+  const box=document.getElementById('comidaList'); if(!box) return;
+  const charleysCard = `<div class="card" style="border:1px solid #6b3a2a">
+    <div style="font-weight:700;color:var(--gold)">🥩 Charleys na rota <span class="small muted">(um por cidade grande)</span></div>
+    <div style="margin-top:6px">${FOOD_CHARLEYS.map(c=>`<div class="stop"><span class="tm" style="min-width:26px">🥩</span><span class="pl"><b>${escapeHtml(c.city)}</b> — ${escapeHtml(c.loc)}</span></div>`).join('')}</div>
+  </div>`;
+  const days = FOOD_SUGGESTIONS.map(d=>{
+    const note = d.note? `<div class="small" style="color:var(--gold);margin:2px 0 8px">📝 ${escapeHtml(d.note)}</div>`:'';
+    const ch = d.charleys? foodRow('🥩','Charleys',`<span style="color:var(--gold)">${escapeHtml(d.charleys)}</span>`):'';
+    return `<div class="card">
+      <div class="small muted">${fmtDate(d.date)} · ${weekday(d.date)}</div>
+      <div style="font-weight:700;color:var(--gold);font-size:16px;margin-bottom:2px">${escapeHtml(d.city)}</div>
+      ${note}
+      ${foodRow('☕','Café',d.cafe)}
+      ${foodRow('🍔','Almoço',d.almoco)}
+      ${foodRow('🍽️','Janta',d.janta)}
+      ${ch}
+    </div>`;
+  }).join('');
+  box.innerHTML = charleysCard + days;
+}
 
 /* editor de dia do roteiro */
 let rtEditing=null;
