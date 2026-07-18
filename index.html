@@ -1829,12 +1829,21 @@ function foodOverride(id){ return (S.foods||[]).find(f=>f.id===id); }
 function foodMerged(){
   const vezesOf=(o)=> o.vezes!=null ? (+o.vezes||0) : (o.comi?1:0);   // compat: quem já tinha "comi" vira 1 vez
   const seeds = FOOD_SEED
-    .filter(s=>{ const o=foodOverride(s.id); return !(o && o.hidden); })   // itens da lista original "excluídos" ficam ocultos
+    .filter(s=>{ const o=foodOverride(s.id); return !(o && (o.hidden || o.purged)); })   // itens excluídos (hidden) ou apagados de vez (purged) ficam ocultos
     .map(s=>{ const o=foodOverride(s.id)||{}; const v=vezesOf(o); const loc=o.locais||[]; return {id:s.id,name:s.name,reg:s.reg,tip:s.tip,vezes:v,comi:v>0||loc.length>0,note:o.note||'',locais:loc,custom:false}; });
   const customs = (S.foods||[]).filter(f=>f.custom).map(f=>{ const v=vezesOf(f); const loc=f.locais||[]; return {id:f.id,name:f.name,reg:f.reg||'',tip:f.tip||'',vezes:v,comi:v>0||loc.length>0,note:f.note||'',locais:loc,custom:true}; });
   return seeds.concat(customs);
 }
-function foodHiddenCount(){ return (S.foods||[]).filter(f=>f.hidden && FOOD_SEED.some(s=>s.id===f.id)).length; }
+// "hidden" = excluído e RESTAURÁVEL pelo botão. "purged" = apagado de vez (os 21 antigos), fora do botão.
+function foodHiddenCount(){ return (S.foods||[]).filter(f=>f.hidden && !f.purged && FOOD_SEED.some(s=>s.id===f.id)).length; }
+// roda 1x: marca como definitivos (purged) os itens que já estavam excluídos, pra o botão começar zerado
+function foodPurgeMigrateOnce(){
+  if(localStorage.getItem('foodPurged_v1')) return;
+  let changed=false;
+  (S.foods||[]).forEach(f=>{ if(f.hidden && !f.purged && FOOD_SEED.some(s=>s.id===f.id)){ f.purged=true; cloudPushFood(f); changed=true; } });
+  if(changed) save();
+  localStorage.setItem('foodPurged_v1','1');
+}
 function openFood(){
   foodDelArm=null;
   document.getElementById('shopMenu').classList.add('hide');
@@ -1878,10 +1887,12 @@ function renderFood(){
      <input placeholder="Nota (opcional)" value="${escapeAttr(f.note)}" onchange="foodSetNote('${f.id}',this.value)" style="width:100%;box-sizing:border-box;margin-top:8px;font-size:13px">
    </div>`;
   const el=document.getElementById('foodList');
+  const hiddenN=foodHiddenCount();
+  const restore = hiddenN ? `<button class="btn ghost sm" style="width:100%;margin-top:14px" onclick="foodRestoreHidden()">↩︎ Restaurar ${hiddenN} item(ns) excluído(s)</button>` : '';
   el.innerHTML =
     ((quero.length?`<div class="small muted" style="margin:6px 0 8px">🍽️ Quero provar (${quero.length})</div>`+quero.map(item).join(''):'')
    +(comi.length?`<div class="small muted" style="margin:16px 0 8px">✅ Já comi (${comi.length})</div>`+comi.map(item).join(''):'')
-   || '<div class="muted small">Lista vazia.</div>');
+   || '<div class="muted small">Lista vazia.</div>') + restore;
 }
 function foodEnsureDoc(id){
   let d=foodOverride(id);
@@ -1936,7 +1947,7 @@ function foodDelete(id){
   d.hidden=true; save(); cloudPushFood(d); renderFood(); renderLista(); toast('Removido da lista');
 }
 function foodRestoreHidden(){
-  (S.foods||[]).forEach(f=>{ if(f.hidden){ f.hidden=false; cloudPushFood(f); } });
+  (S.foods||[]).forEach(f=>{ if(f.hidden && !f.purged){ f.hidden=false; cloudPushFood(f); } });
   save(); renderFood(); renderLista();
 }
 
@@ -3430,6 +3441,7 @@ function cloudConnect(code){
   unsubFoods=tripRef().collection('foods').onSnapshot(qs=>{
     const arr=[]; qs.forEach(doc=>arr.push(doc.data()));
     S.foods=arr; save();
+    foodPurgeMigrateOnce();   // 1ª vez: fixa os já-excluídos como definitivos (botão restaurar começa zerado)
     if(!document.getElementById('view-lista').classList.contains('hide')) renderLista();
   }, ()=>{});
 }
