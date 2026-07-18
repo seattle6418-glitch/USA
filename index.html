@@ -1065,6 +1065,11 @@ const FOOD_CHARLEYS = [
   {city:'San Francisco', loc:'845 Market St (centro)'},
   {city:'Anaheim / Los Angeles', loc:'265 S Euclid St (sua base em Anaheim)'},
 ];
+const FOOD_BUCEES = [
+  {city:'Amarillo, TX', loc:'9900 E I-40 (dia 10 · a caminho de Wichita Falls, coladinho no Big Texan)'},
+  {city:'Fort Worth, TX', loc:'15901 N Freeway / I-35W (dia 11 · a caminho de Dallas)'},
+  {city:'Springfield, MO', loc:'I-44, saída 84 (dia 13 · trecho Bentonville → Lake of the Ozarks)'},
+];
 const FOOD_SUGGESTIONS = [
   {date:'2026-10-03', city:'Las Vegas', note:'Chegada em Las Vegas ~11:20 (sábado). Sem café da manhã na cidade — tarde e noite livres na Strip.',
     cafe:[],
@@ -1105,12 +1110,12 @@ const FOOD_SUGGESTIONS = [
     cafe:[`<b>Frontier Restaurant</b> (Albuquerque) — o famoso rolinho de canela com ovos e bacon.`,`<b>Weck's</b> (Albuquerque) — café da manhã farto.`,`<b>The Grove Café & Bakery</b> (Albuquerque) — brunch e padaria.`],
     almoco:[`<b>The Big Texan Steak Ranch</b> (Amarillo) — o desafio do bife de 72oz (já na sua lista).`,`<b>Tyler's Barbeque</b> (Amarillo) — brisket premiado.`,`<b>GoldenLight Cafe</b> (Amarillo) — burgers antigos da Route 66.`],
     janta:[`<b>Texas Best BBQ & Burgers</b> — brisket e hambúrguer.`,`<b>McBride Land & Cattle Co.</b> — steakhouse.`,`<b>Iron Horse Pub</b> — burgers e cerveja no centro.`],
-    charleys:''},
+    charleys:'', bucees:'Amarillo — 9900 E I-40 (parada perfeita, coladinho no Big Texan)'},
   {date:'2026-10-11', city:'Dallas, TX', note:'Dia curto (140 mi).',
     cafe:[`<b>Jimmy's Egg</b> (Wichita Falls) — omeletes personalizados.`,`<b>Sunrise & Shine Omelette Grill</b> (Wichita Falls) — café da manhã elogiado.`,`<b>Highway Café</b> (Wichita Falls) — café caseiro para pegar a estrada.`],
     almoco:[`<b>Cattlemen's Steak House</b> — bife clássico no Fort Worth Stockyards.`,`<b>Riscky's Barbeque</b> (Stockyards) — costela e brisket.`,`<b>Love Shack</b> (Fort Worth) — hambúrgueres do chef Tim Love.`],
     janta:[`<b>Pecan Lodge</b> (Deep Ellum) — um dos BBQ mais famosos do Texas.`,`<b>Rodeo Goat</b> — hambúrgueres artesanais.`,`<b>Terry Black's Barbecue</b> — costela e brisket.`],
-    charleys:'Dallas Galleria, 13350 N Dallas Pkwy'},
+    charleys:'Dallas Galleria, 13350 N Dallas Pkwy', bucees:'Fort Worth — 15901 N Freeway (I-35W), a caminho de Dallas'},
   {date:'2026-10-12', city:'Bentonville, AR', note:'',
     cafe:[`<b>The Original Pancake House</b> (Dallas) — panquecas e ovos.`,`<b>Café Brazil</b> (Dallas) — café da manhã 24h e bons cafés.`,`<b>Snooze, an A.M. Eatery</b> (Dallas) — brunch criativo.`],
     almoco:[`<b>Burn Co Barbeque</b> (Tulsa) — brisket premiado.`,`<b>Ron's Hamburgers & Chili</b> (Tulsa) — burgers e chili.`,`<b>Tally's Café</b> (Tulsa) — diner clássico da Route 66.`],
@@ -1120,7 +1125,7 @@ const FOOD_SUGGESTIONS = [
     cafe:[`<b>Buttered Biscuit</b> (Bentonville) — biscoitos caseiros e chicken & waffles.`,`<b>HomeGrown Bentonville</b> — café da manhã "scratch-made".`,`<b>First Watch</b> (Bentonville) — omeletes, panquecas e sucos.`],
     almoco:[`<b>Backwater Jack's</b> (Lake of the Ozarks) — grill à beira d'água.`,`<b>JB Hook's</b> (Lake of the Ozarks) — sanduíches e frutos do mar com vista.`,`<b>Dog Days</b> (Lake of the Ozarks) — burgers e petiscos na marina.`],
     janta:[`<b>Joe's Kansas City Bar-B-Que</b> — Z-Man e burnt ends (já na sua lista).`,`<b>Arthur Bryant's</b> — BBQ lendário de KC.`,`<b>Q39</b> — costela e brisket premiados.`],
-    charleys:''},
+    charleys:'', bucees:'Springfield, MO — I-44 saída 84, no trecho até o Lake of the Ozarks'},
   {date:'2026-10-14', city:'Chamberlain, SD', note:'Dia longo (504 mi).',
     cafe:[`<b>The Big Biscuit</b> (Kansas City) — café da manhã farto do Missouri.`,`<b>First Watch</b> (Kansas City) — omeletes e panquecas.`,`<b>You Say Tomato</b> (Kansas City) — brunch aconchegante.`],
     almoco:[`<b>JL Beers</b> (Sioux Falls) — hambúrgueres e cervejas.`,`<b>Phillips Avenue Diner</b> (Sioux Falls) — diner retrô, burgers e milkshake.`,`<b>Look's Marketplace</b> (Sioux Falls) — sanduíches e deli.`],
@@ -1198,8 +1203,13 @@ function renderComida(){
     <div style="font-weight:700;color:var(--gold)">🥩 Charleys na rota <span class="small muted">(um por cidade grande)</span></div>
     <div style="margin-top:6px">${FOOD_CHARLEYS.map(c=>`<div style="font-size:14px;margin:3px 0 3px 6px">🥩 <b>${escapeHtml(c.city)}</b> — ${escapeHtml(c.loc)}</div>`).join('')}</div>
   </div>`;
+  const buceesCard = `<div class="card" style="border:1px solid #aa3333">
+    <div style="font-weight:700;color:#ff5a5a">🦫 Buc-ee's na rota <span class="small muted">(pare sempre que der!)</span></div>
+    <div style="margin-top:6px">${FOOD_BUCEES.map(c=>`<div style="font-size:14px;margin:3px 0 3px 6px;color:#ff8a8a">🦫 <b style="color:#ff5a5a">${escapeHtml(c.city)}</b> — ${escapeHtml(c.loc)}</div>`).join('')}</div>
+  </div>`;
   const days = FOOD_SUGGESTIONS.map(d=>{
     const note = d.note? `<div class="small" style="color:var(--gold);margin:2px 0 6px">📝 ${escapeHtml(d.note)}</div>`:'';
+    const bu = d.bucees? `<div style="margin:8px 0 2px"><div class="small" style="color:#ff5a5a;font-weight:700;text-transform:uppercase;letter-spacing:.4px">🦫 Buc-ee's</div><div style="font-size:14px;margin:3px 0 0 6px;color:#ff8a8a">${escapeHtml(d.bucees)}</div></div>`:'';
     const ch = d.charleys? `<div style="margin:8px 0 2px"><div class="small" style="color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.4px">🥩 Charleys</div><div style="font-size:14px;margin:3px 0 0 6px">${escapeHtml(d.charleys)}</div></div>`:'';
     return `<div class="card">
       <div class="small muted">${fmtDate(d.date)} · ${weekday(d.date)}</div>
@@ -1208,10 +1218,11 @@ function renderComida(){
       ${foodRow('☕','Café da manhã',d.cafe)}
       ${foodRow('🍔','Almoço',d.almoco)}
       ${foodRow('🍽️','Janta',d.janta)}
+      ${bu}
       ${ch}
     </div>`;
   }).join('');
-  box.innerHTML = charleysCard + days;
+  box.innerHTML = charleysCard + buceesCard + days;
 }
 
 /* editor de dia do roteiro */
