@@ -791,8 +791,8 @@ const CATS = [
 const catById = id => CATS.find(c=>c.id===id) || CATS[CATS.length-1];
 
 /* ---------------- Roteiro padrão (da planilha) ---------------- */
-const ITIN_VERSION = 8;
-const DEFAULT_ITIN = [{"date":"2026-10-02","city":"Voo para Las Vegas","miles":null,"arrival":"","stops":[],"notes":"✈️ Voo United (conf. LEXHWF) — BSB 18:00 → GRU 19:50 (GOL) · GRU 22:20 → Chicago/ORD (UA844). Assentos 30B/30C no trecho p/ os EUA · 1ª mala grátis."},{"date":"2026-10-03","city":"Las Vegas","miles":0,"arrival":"Chega mais ou menos meio dia","stops":["Alamo Rent a Car — Aeroporto de Las Vegas (Harry Reid/LAS), 7135 Gilespie St, Las Vegas, NV 89119","Ross Dress for Less, 3771 Las Vegas Blvd S, Las Vegas, NV 89109"],"notes":"✈️ Chega Las Vegas 11:22 (UA2811, via Chicago). 🚗 Retirada do carro Alamo às 12:00 no aeroporto (voucher 898136368COUNT · cód. 6P7TK9N)."},{"date":"2026-10-04","city":"Williams","miles":233,"arrival":"","stops":["Las Vegas, NV","Hoover Dam, Hoover Dam Access Rd, Boulder City, NV 89005","Kingman, AZ 86401","Marshalls, 3127 Stockton Hill Rd, Kingman, AZ 86401","Hackberry General Store, 11255 E State Route 66, Kingman, AZ 86401","Seligman, AZ 86337","Williams, AZ 86046"],"notes":""},{"date":"2026-10-05","city":"Bryce Canyon City","miles":350,"arrival":"","stops":["Williams, AZ 86046","Grand Canyon Village, AZ 86023","Desert View Watchtower, Grand Canyon National Park, AZ 86023","Horseshoe Bend, Page, AZ 86040","Zion National Park, Springdale, UT 84767","Red Canyon Visitor Center, Scenic Byway 12, Panguitch, UT 84759","Bryce Canyon City, UT 84764"],"notes":""},{"date":"2026-10-06","city":"Page","miles":154,"arrival":"","stops":["Bryce Canyon City, UT 84764","Zion National Park, Springdale, UT 84767","Canyon Overlook Trailhead, Zion National Park, UT 84767","Toadstool Hoodoos Trailhead, US-89, Kanab, UT 84741","Page, AZ 86040","Antelope Canyon, Page, AZ 86040"],"notes":""},{"date":"2026-10-07","city":"Moab","miles":521,"arrival":"","stops":["Page, AZ 86040","Monument Valley Navajo Tribal Park, UT 84536","Forrest Gump Point, US-163, Mexican Hat, UT 84531","Goosenecks State Park, Mexican Hat, UT 84531","Four Corners Monument, Teec Nos Pos, AZ 86514","Durango, CO 81301","Silverton, CO 81433","TJ Maxx, 800 S Camino Del Rio, Durango, CO 81301","Ouray, CO 81427","Wilson Arch, US-191, Moab, UT 84532","Moab, UT 84532"],"notes":""},{"date":"2026-10-08","city":"Denver","miles":354,"arrival":"","stops":["Moab, UT 84532","Arches National Park, Moab, UT 84532","Dead Horse Point State Park, Moab, UT 84532","Grand Junction, CO 81501","Glenwood Springs, CO 81601","Denver, CO 80202","Ross Dress for Less, 1543 Stout St, Denver, CO 80202"],"notes":""},{"date":"2026-10-09","city":"Albuquerque","miles":469,"arrival":"","stops":["Denver, CO 80202","Pikes Peak Summit, Cascade, CO 80809","Colorado Springs, CO 80903","Garden of the Gods, Colorado Springs, CO 80904","Santa Fe, NM 87501","Loretto Chapel, 207 Old Santa Fe Trail, Santa Fe, NM 87501","Albuquerque, NM 87102","Marshalls, 9500 Montgomery Blvd NE, Albuquerque, NM 87111"],"notes":""},{"date":"2026-10-10","city":"Wichita Falls","miles":511,"arrival":"","stops":["Twisters (Los Pollos Hermanos) — 4275 Isleta Blvd SW, Albuquerque, NM 87105","Jesse's House — 322 16th St SW, Albuquerque, NM 87104","Dog House Drive In — 1216 Central Ave NW, Albuquerque, NM 87102","The Breaking Bad Store & Museum — 2047 S Plaza St NW, Albuquerque, NM 87104","Crossroads Motel — 1001 Central Ave NE, Albuquerque, NM 87106","Casa do Walter White — 3828 Piermont Dr NE, Albuquerque, NM 87111","Mister Car Wash (A1A Car Wash) — 9516 Snow Heights Cir NE, Albuquerque, NM 87112","Route 66 Midpoint Cafe, Adrian, TX 79001","Cadillac Ranch, 13651 I-40 Frontage Rd, Amarillo, TX 79124","Amarillo, TX 79101","The Big Texan Steak Ranch, 7701 I-40 Access Rd, Amarillo, TX 79118","Palo Duro Canyon State Park, Canyon, TX 79015","Wichita Falls, TX 76301","TJ Maxx, 3610 Call Field Rd, Wichita Falls, TX 76308"],"notes":""},{"date":"2026-10-11","city":"Dallas","miles":140,"arrival":"","stops":["Wichita Falls, TX 76301","Dallas, TX 75201","The Sixth Floor Museum at Dealey Plaza, 411 Elm St, Dallas, TX 75202","Fort Worth, TX 76102","Fort Worth Stockyards, 131 E Exchange Ave, Fort Worth, TX 76164","Ross Dress for Less, 8560 East Fwy, Fort Worth, TX 76120"],"notes":""},{"date":"2026-10-12","city":"Bentonville","miles":458,"arrival":"","stops":["Dallas, TX 75201","Tulsa, OK 74103","Blue Whale of Catoosa, 2680 OK-66, Catoosa, OK 74015","Marshalls, 7362 S Olympia Ave, Tulsa, OK 74132","Fort Smith, AR 72901","Bentonville, AR 72712","The Walmart Museum, 105 N Main St, Bentonville, AR 72712","Crystal Bridges Museum of American Art, 600 Museum Way, Bentonville, AR 72712"],"notes":""},{"date":"2026-10-13","city":"Kansas City","miles":417,"arrival":"","stops":["Bentonville, AR 72712","Lake of the Ozarks, Osage Beach, MO 65065","Ha Ha Tonka State Park, Camdenton, MO 65020","Jefferson City, MO 65101","Kansas City, MO 64106","Joe's Kansas City Bar-B-Que, 3002 W 47th Ave, Kansas City, KS 66103","TJ Maxx, 8600 Ward Pkwy, Kansas City, MO 64114"],"notes":""},{"date":"2026-10-14","city":"Chamberlain","miles":504,"arrival":"","stops":["Kansas City, MO 64106","Sioux Falls, SD 57104","Falls Park, 131 E Falls Park Dr, Sioux Falls, SD 57104","Marshalls, 2350 S Lorraine Pl, Sioux Falls, SD 57106","Chamberlain, SD 57325","Dignity of Earth & Sky, Chamberlain, SD 57325"],"notes":""},{"date":"2026-10-15","city":"Gillette","miles":387,"arrival":"","stops":["Chamberlain, SD 57325","Badlands National Park, Interior, SD 57750","Wall Drug Store, 510 Main St, Wall, SD 57790","Mount Rushmore National Memorial, Keystone, SD 57751","Crazy Horse Memorial, 12151 Ave of the Chiefs, Crazy Horse, SD 57730","Deadwood, SD 57732","Devils Tower National Monument, WY 82714","Gillette, WY 82716","Marshalls, 2610 S Douglas Hwy, Gillette, WY 82718"],"notes":""},{"date":"2026-10-16","city":"Yellowstone","miles":385,"arrival":"","stops":["Gillette, WY 82716","Ranchester, WY 82839","Shell Falls Interpretive Site, US-14, Shell, WY 82441","Cody, WY 82414","Canyon Village, Yellowstone National Park, WY 82190","Artist Point, Yellowstone National Park, WY 82190","Grand Prismatic Spring, Midway Geyser Basin, Yellowstone National Park, WY 82190","Old Faithful, Yellowstone National Park, WY 82190"],"notes":""},{"date":"2026-10-17","city":"Jackson Hole","miles":145,"arrival":"","stops":["Yellowstone National Park, WY 82190","West Thumb Geyser Basin, Yellowstone National Park, WY 82190","Grand Teton National Park, Moose, WY 83012","Oxbow Bend Turnout, Grand Teton National Park, Moran, Wyoming 83013","Mormon Row Historic District, Kelly, WY 83011","Jackson, WY 83001","Victor, ID 83455"],"notes":""},{"date":"2026-10-18","city":"Salt Lake City","miles":285,"arrival":"","stops":["Victor, ID 83455","Blackfoot, ID 83221","Idaho Potato Museum, 130 NW Main St, Blackfoot, ID 83221","Ross Dress for Less, 2406 S 25th E, Idaho Falls, ID 83404","Salt Lake City, UT 84101","Temple Square, Salt Lake City, UT 84150"],"notes":""},{"date":"2026-10-19","city":"Lake Tahoe","miles":580,"arrival":"","stops":["Salt Lake City, UT 84101","West Wendover, NV 89883","Bonneville Salt Flats, Wendover, UT 84083","Reno, NV 89501","South Lake Tahoe, CA 96150","TJ Maxx, 2015 Lake Tahoe Blvd, South Lake Tahoe, CA 96150"],"notes":""},{"date":"2026-10-20","city":"San Francisco","miles":188,"arrival":"","stops":["South Lake Tahoe, CA 96150","Emerald Bay State Park, South Lake Tahoe, CA 96150","Sacramento, CA 95814","San Francisco, CA 94103","Battery Spencer (Golden Gate view), Sausalito, CA 94965","Lombard Street, San Francisco, CA 94133","Pier 39, San Francisco, CA 94133","Alcatraz Island, San Francisco, CA 94133"],"notes":""},{"date":"2026-10-21","city":"Los Angeles (Anaheim)","miles":477,"arrival":"","stops":["San Francisco, CA 94103","Monterey, CA 93940","Bixby Creek Bridge, Big Sur, CA 93920","Solvang, CA 93463","Santa Barbara, CA 93101","Anaheim, CA 92802","Ross Dress for Less, 1670 W Katella Ave, Anaheim, CA 92802"],"notes":""},{"date":"2026-10-22","city":"Los Angeles (Praias)","miles":0,"arrival":"","stops":["Anaheim, CA 92802","Topanga, CA 90290","Malibu, CA 90265","El Matador State Beach, Malibu, CA 90265","Santa Monica, CA 90401","Venice Beach Boardwalk, Venice, CA 90291","Marshalls, 11270 Olympic Blvd, Los Angeles, CA 90064","Long Beach, CA 90802","Huntington Beach, CA 92648"],"notes":""},{"date":"2026-10-23","city":"Los Angeles (Cidade)","miles":0,"arrival":"","stops":["Huntington Beach, CA 92648","Crypto.com Arena, 1111 S Figueroa St, Los Angeles, CA 90015","Beverly Hills, CA 90210","Rodeo Drive, Beverly Hills, CA 90210","Urban Light, LACMA, 5905 Wilshire Blvd, Los Angeles, CA 90036","TJ Maxx, 8500 Beverly Blvd, Los Angeles, CA 90048","Hollywood Walk of Fame, Hollywood Blvd, Los Angeles, CA 90028","Griffith Observatory, 2800 E Observatory Rd, Los Angeles, CA 90027","Anaheim, CA 92802"],"notes":""},{"date":"2026-10-24","city":"Las Vegas","miles":270,"arrival":"","stops":["Anaheim, CA 92802","Calico Ghost Town, Yermo, CA 92398","Seven Magic Mountains, Las Vegas, NV 89054","Las Vegas, NV","Marshalls, 3785 Las Vegas Blvd S, Las Vegas, NV 89109"],"notes":""},{"date":"2026-10-25","city":"Las Vegas","miles":0,"arrival":"","stops":["Ross Dress for Less, 3771 Las Vegas Blvd S, Las Vegas, NV 89109","Valley of Fire State Park, Overton, NV 89040","Red Rock Canyon National Conservation Area, Las Vegas, NV 89161"],"notes":""},{"date":"2026-10-26","city":"Las Vegas","miles":0,"arrival":"","stops":["Fremont Street Experience, 425 Fremont St, Las Vegas, NV 89101","Sphere, 255 Sphere Way, Las Vegas, NV 89169"],"notes":""},{"date":"2026-10-27","city":"Las Vegas","miles":null,"arrival":"","stops":[],"notes":"🚗 Devolução do carro Alamo 12:00 no aeroporto (LAS). ✈️ Voo volta: LAS 11:15 → ORD (UA1583) · ORD 18:50 → GRU (UA845) chega 28/10 07:15 · GRU 08:55 → BSB 10:40."}];
+const ITIN_VERSION = 9;
+const DEFAULT_ITIN = [{"date":"2026-10-02","city":"Voo para Las Vegas","miles":null,"arrival":"","stops":[],"notes":"✈️ Voo United (conf. LEXHWF) — BSB 18:00 → GRU 19:50 (GOL) · GRU 22:20 → Chicago/ORD (UA844). Assentos 30B/30C no trecho p/ os EUA · 1ª mala grátis."},{"date":"2026-10-03","city":"Las Vegas","miles":0,"arrival":"Chega mais ou menos meio dia","stops":["Alamo Rent a Car — Aeroporto de Las Vegas (Harry Reid/LAS), 7135 Gilespie St, Las Vegas, NV 89119","Ross Dress for Less, 3771 Las Vegas Blvd S, Las Vegas, NV 89109"],"notes":"✈️ Chega Las Vegas 11:22 (UA2811, via Chicago). 🚗 Retirada do carro Alamo às 12:00 no aeroporto (voucher 898136368COUNT · cód. 6P7TK9N)."},{"date":"2026-10-04","city":"Williams","miles":233,"arrival":"","stops":["Las Vegas, NV","Hoover Dam, Hoover Dam Access Rd, Boulder City, NV 89005","Kingman, AZ 86401","Marshalls, 3127 Stockton Hill Rd, Kingman, AZ 86401","Williams, AZ 86046"],"notes":"🏁 South Point 400 (NASCAR) no Las Vegas Motor Speedway, 14:30. Saída de Vegas ~19h — dá para ver o Hoover Dam a caminho e a Marshalls de Kingman costuma ficar aberta até tarde. Hackberry General Store e Seligman ficam para outro dia (fecham no fim da tarde)."},{"date":"2026-10-05","city":"Bryce Canyon City","miles":350,"arrival":"","stops":["Williams, AZ 86046","Grand Canyon Village, AZ 86023","Desert View Watchtower, Grand Canyon National Park, AZ 86023","Horseshoe Bend, Page, AZ 86040","Zion National Park, Springdale, UT 84767","Red Canyon Visitor Center, Scenic Byway 12, Panguitch, UT 84759","Bryce Canyon City, UT 84764"],"notes":""},{"date":"2026-10-06","city":"Page","miles":154,"arrival":"","stops":["Bryce Canyon City, UT 84764","Zion National Park, Springdale, UT 84767","Canyon Overlook Trailhead, Zion National Park, UT 84767","Toadstool Hoodoos Trailhead, US-89, Kanab, UT 84741","Page, AZ 86040","Antelope Canyon, Page, AZ 86040"],"notes":""},{"date":"2026-10-07","city":"Moab","miles":521,"arrival":"","stops":["Page, AZ 86040","Monument Valley Navajo Tribal Park, UT 84536","Forrest Gump Point, US-163, Mexican Hat, UT 84531","Goosenecks State Park, Mexican Hat, UT 84531","Four Corners Monument, Teec Nos Pos, AZ 86514","Durango, CO 81301","Silverton, CO 81433","TJ Maxx, 800 S Camino Del Rio, Durango, CO 81301","Ouray, CO 81427","Wilson Arch, US-191, Moab, UT 84532","Moab, UT 84532"],"notes":""},{"date":"2026-10-08","city":"Denver","miles":354,"arrival":"","stops":["Moab, UT 84532","Arches National Park, Moab, UT 84532","Dead Horse Point State Park, Moab, UT 84532","Grand Junction, CO 81501","Glenwood Springs, CO 81601","Denver, CO 80202","Ross Dress for Less, 1543 Stout St, Denver, CO 80202"],"notes":""},{"date":"2026-10-09","city":"Albuquerque","miles":469,"arrival":"","stops":["Denver, CO 80202","Pikes Peak Summit, Cascade, CO 80809","Colorado Springs, CO 80903","Garden of the Gods, Colorado Springs, CO 80904","Santa Fe, NM 87501","Loretto Chapel, 207 Old Santa Fe Trail, Santa Fe, NM 87501","Albuquerque, NM 87102","Marshalls, 9500 Montgomery Blvd NE, Albuquerque, NM 87111"],"notes":""},{"date":"2026-10-10","city":"Wichita Falls","miles":511,"arrival":"","stops":["Twisters (Los Pollos Hermanos) — 4275 Isleta Blvd SW, Albuquerque, NM 87105","Jesse's House — 322 16th St SW, Albuquerque, NM 87104","Dog House Drive In — 1216 Central Ave NW, Albuquerque, NM 87102","The Breaking Bad Store & Museum — 2047 S Plaza St NW, Albuquerque, NM 87104","Crossroads Motel — 1001 Central Ave NE, Albuquerque, NM 87106","Casa do Walter White — 3828 Piermont Dr NE, Albuquerque, NM 87111","Mister Car Wash (A1A Car Wash) — 9516 Snow Heights Cir NE, Albuquerque, NM 87112","Route 66 Midpoint Cafe, Adrian, TX 79001","Cadillac Ranch, 13651 I-40 Frontage Rd, Amarillo, TX 79124","Amarillo, TX 79101","The Big Texan Steak Ranch, 7701 I-40 Access Rd, Amarillo, TX 79118","Palo Duro Canyon State Park, Canyon, TX 79015","Wichita Falls, TX 76301","TJ Maxx, 3610 Call Field Rd, Wichita Falls, TX 76308"],"notes":""},{"date":"2026-10-11","city":"Dallas","miles":140,"arrival":"","stops":["Wichita Falls, TX 76301","Dallas, TX 75201","The Sixth Floor Museum at Dealey Plaza, 411 Elm St, Dallas, TX 75202","Fort Worth, TX 76102","Fort Worth Stockyards, 131 E Exchange Ave, Fort Worth, TX 76164","Ross Dress for Less, 8560 East Fwy, Fort Worth, TX 76120"],"notes":""},{"date":"2026-10-12","city":"Bentonville","miles":458,"arrival":"","stops":["Dallas, TX 75201","Tulsa, OK 74103","Blue Whale of Catoosa, 2680 OK-66, Catoosa, OK 74015","Marshalls, 7362 S Olympia Ave, Tulsa, OK 74132","Fort Smith, AR 72901","Bentonville, AR 72712","The Walmart Museum, 105 N Main St, Bentonville, AR 72712","Crystal Bridges Museum of American Art, 600 Museum Way, Bentonville, AR 72712"],"notes":""},{"date":"2026-10-13","city":"Kansas City","miles":417,"arrival":"","stops":["Bentonville, AR 72712","Lake of the Ozarks, Osage Beach, MO 65065","Ha Ha Tonka State Park, Camdenton, MO 65020","Jefferson City, MO 65101","Kansas City, MO 64106","Joe's Kansas City Bar-B-Que, 3002 W 47th Ave, Kansas City, KS 66103","TJ Maxx, 8600 Ward Pkwy, Kansas City, MO 64114"],"notes":""},{"date":"2026-10-14","city":"Chamberlain","miles":504,"arrival":"","stops":["Kansas City, MO 64106","Sioux Falls, SD 57104","Falls Park, 131 E Falls Park Dr, Sioux Falls, SD 57104","Marshalls, 2350 S Lorraine Pl, Sioux Falls, SD 57106","Chamberlain, SD 57325","Dignity of Earth & Sky, Chamberlain, SD 57325"],"notes":""},{"date":"2026-10-15","city":"Gillette","miles":387,"arrival":"","stops":["Chamberlain, SD 57325","Badlands National Park, Interior, SD 57750","Wall Drug Store, 510 Main St, Wall, SD 57790","Mount Rushmore National Memorial, Keystone, SD 57751","Crazy Horse Memorial, 12151 Ave of the Chiefs, Crazy Horse, SD 57730","Deadwood, SD 57732","Devils Tower National Monument, WY 82714","Gillette, WY 82716","Marshalls, 2610 S Douglas Hwy, Gillette, WY 82718"],"notes":""},{"date":"2026-10-16","city":"Yellowstone","miles":385,"arrival":"","stops":["Gillette, WY 82716","Ranchester, WY 82839","Shell Falls Interpretive Site, US-14, Shell, WY 82441","Cody, WY 82414","Canyon Village, Yellowstone National Park, WY 82190","Artist Point, Yellowstone National Park, WY 82190","Grand Prismatic Spring, Midway Geyser Basin, Yellowstone National Park, WY 82190","Old Faithful, Yellowstone National Park, WY 82190"],"notes":""},{"date":"2026-10-17","city":"Jackson Hole","miles":145,"arrival":"","stops":["Yellowstone National Park, WY 82190","West Thumb Geyser Basin, Yellowstone National Park, WY 82190","Grand Teton National Park, Moose, WY 83012","Oxbow Bend Turnout, Grand Teton National Park, Moran, Wyoming 83013","Mormon Row Historic District, Kelly, WY 83011","Jackson, WY 83001","Victor, ID 83455"],"notes":""},{"date":"2026-10-18","city":"Salt Lake City","miles":285,"arrival":"","stops":["Victor, ID 83455","Blackfoot, ID 83221","Idaho Potato Museum, 130 NW Main St, Blackfoot, ID 83221","Ross Dress for Less, 2406 S 25th E, Idaho Falls, ID 83404","Salt Lake City, UT 84101","Temple Square, Salt Lake City, UT 84150"],"notes":""},{"date":"2026-10-19","city":"Lake Tahoe","miles":580,"arrival":"","stops":["Salt Lake City, UT 84101","West Wendover, NV 89883","Bonneville Salt Flats, Wendover, UT 84083","Reno, NV 89501","South Lake Tahoe, CA 96150","TJ Maxx, 2015 Lake Tahoe Blvd, South Lake Tahoe, CA 96150"],"notes":""},{"date":"2026-10-20","city":"San Francisco","miles":188,"arrival":"","stops":["South Lake Tahoe, CA 96150","Emerald Bay State Park, South Lake Tahoe, CA 96150","Sacramento, CA 95814","San Francisco, CA 94103","Battery Spencer (Golden Gate view), Sausalito, CA 94965","Lombard Street, San Francisco, CA 94133","Pier 39, San Francisco, CA 94133","Alcatraz Island, San Francisco, CA 94133"],"notes":""},{"date":"2026-10-21","city":"Los Angeles (Anaheim)","miles":477,"arrival":"","stops":["San Francisco, CA 94103","Monterey, CA 93940","Bixby Creek Bridge, Big Sur, CA 93920","Solvang, CA 93463","Santa Barbara, CA 93101","Anaheim, CA 92802","Ross Dress for Less, 1670 W Katella Ave, Anaheim, CA 92802"],"notes":""},{"date":"2026-10-22","city":"Los Angeles (Praias)","miles":0,"arrival":"","stops":["Anaheim, CA 92802","Topanga, CA 90290","Malibu, CA 90265","El Matador State Beach, Malibu, CA 90265","Santa Monica, CA 90401","Venice Beach Boardwalk, Venice, CA 90291","Marshalls, 11270 Olympic Blvd, Los Angeles, CA 90064","Long Beach, CA 90802","Huntington Beach, CA 92648"],"notes":""},{"date":"2026-10-23","city":"Los Angeles (Cidade)","miles":0,"arrival":"","stops":["Huntington Beach, CA 92648","Crypto.com Arena, 1111 S Figueroa St, Los Angeles, CA 90015","Beverly Hills, CA 90210","Rodeo Drive, Beverly Hills, CA 90210","Urban Light, LACMA, 5905 Wilshire Blvd, Los Angeles, CA 90036","TJ Maxx, 8500 Beverly Blvd, Los Angeles, CA 90048","Hollywood Walk of Fame, Hollywood Blvd, Los Angeles, CA 90028","Griffith Observatory, 2800 E Observatory Rd, Los Angeles, CA 90027","Anaheim, CA 92802"],"notes":""},{"date":"2026-10-24","city":"Las Vegas","miles":270,"arrival":"","stops":["Anaheim, CA 92802","Calico Ghost Town, Yermo, CA 92398","Seven Magic Mountains, Las Vegas, NV 89054","Las Vegas, NV","Marshalls, 3785 Las Vegas Blvd S, Las Vegas, NV 89109"],"notes":""},{"date":"2026-10-25","city":"Las Vegas","miles":0,"arrival":"","stops":["Ross Dress for Less, 3771 Las Vegas Blvd S, Las Vegas, NV 89109","Valley of Fire State Park, Overton, NV 89040","Red Rock Canyon National Conservation Area, Las Vegas, NV 89161"],"notes":""},{"date":"2026-10-26","city":"Las Vegas","miles":0,"arrival":"","stops":["Fremont Street Experience, 425 Fremont St, Las Vegas, NV 89101","Sphere, 255 Sphere Way, Las Vegas, NV 89169"],"notes":""},{"date":"2026-10-27","city":"Las Vegas","miles":null,"arrival":"","stops":[],"notes":"🚗 Devolução do carro Alamo 12:00 no aeroporto (LAS). ✈️ Voo volta: LAS 11:15 → ORD (UA1583) · ORD 18:50 → GRU (UA845) chega 28/10 07:15 · GRU 08:55 → BSB 10:40."}];
 
 /* ---------------- Estado ---------------- */
 const KEY='roadtripData_v3';
@@ -1055,155 +1055,157 @@ function goToDay(date){ curDay=date; showView('dia'); }
 
 /* ---------------- Render: Comida (sugestões por cidade) ---------------- */
 const FOOD_CHARLEYS = [
-  {city:'Las Vegas',        loc:'South Las Vegas Blvd (na Strip)'},
-  {city:'Denver',           loc:'Colorado Mills Mall (Lakewood)'},
-  {city:'Albuquerque',      loc:'Coronado Center, 6600 Menaul Blvd NE'},
+  {city:'Las Vegas', loc:'South Las Vegas Blvd (na Strip)'},
+  {city:'Denver', loc:'Colorado Mills Mall (Lakewood)'},
+  {city:'Albuquerque', loc:'Coronado Center, 6600 Menaul Blvd NE'},
   {city:'Dallas / Fort Worth', loc:'Dallas Galleria, 13350 N Dallas Pkwy'},
-  {city:'Tulsa',            loc:'Woodland Hills Mall, 7021 S Memorial Dr (almoço do dia 12)'},
-  {city:'Salt Lake City',   loc:'Valley Fair Mall, 3601 S Constitution Blvd'},
-  {city:'Sacramento',       loc:'Arden Fair, 1689 Arden Way (almoço do dia 20)'},
-  {city:'San Francisco',    loc:'845 Market St (centro)'},
+  {city:'Tulsa', loc:'Woodland Hills Mall, 7021 S Memorial Dr (almoço do dia 12)'},
+  {city:'Salt Lake City', loc:'Valley Fair Mall, 3601 S Constitution Blvd'},
+  {city:'Sacramento', loc:'Arden Fair, 1689 Arden Way (almoço do dia 20)'},
+  {city:'San Francisco', loc:'845 Market St (centro)'},
   {city:'Anaheim / Los Angeles', loc:'265 S Euclid St (sua base em Anaheim)'},
 ];
 const FOOD_SUGGESTIONS = [
-  {date:'2026-10-03', city:'Las Vegas', note:'Chegada em Las Vegas ~11:20 (sábado). Tarde e noite livres na Strip.',
-    cafe:'', almoco:`<b>In-N-Out Burger</b> — o hambúrguer clássico da Costa Oeste, peça "animal style".`,
-    janta:`<b>Golden Steer Steakhouse</b> — bife clássico da era Rat Pack (Sinatra jantava aqui). Alt.: <b>Battista's Hole in the Wall</b> (italiano) ou <b>Capriotti's</b> (sanduíche "Bobbie", nascido em Vegas).`,
+  {date:'2026-10-03', city:'Las Vegas', note:'Chegada em Las Vegas ~11:20 (sábado). Sem café da manhã na cidade — tarde e noite livres na Strip.',
+    cafe:[],
+    almoco:[`<b>In-N-Out Burger</b> — hambúrguer clássico da Costa Oeste, peça "animal style".`,`<b>Shake Shack</b> (Strip) — smash burger e batata crinkle.`,`<b>Gordon Ramsay Burger</b> (Planet Hollywood) — burgers do chef.`],
+    janta:[`<b>Golden Steer Steakhouse</b> — bife clássico da era Rat Pack (Sinatra jantava aqui).`,`<b>Battista's Hole in the Wall</b> — italiano tradicional com vinho à vontade.`,`<b>Capriotti's</b> — sanduíche "Bobbie" (peru), rede nascida em Vegas.`],
     charleys:'South Las Vegas Blvd (na Strip)'},
-  {date:'2026-10-04', city:'Williams, AZ', note:'🏁 Dia da corrida: South Point 400 (NASCAR) no Las Vegas Motor Speedway, 14:30. Vocês saem no fim da tarde rumo a Williams (233 mi) — chegada à noite.',
-    cafe:`<b>The Peppermill</b> (Las Vegas) — café retrô e reforçado antes da corrida.`,
-    almoco:`<b>Las Vegas Motor Speedway</b> — comida de arquibancada no autódromo (hambúrguer, cachorro-quente, BBQ) antes/durante a corrida, ou algo rápido na saída em North Las Vegas.`,
-    janta:`<b>Cruisers Route 66 Café</b> ou <b>Rod's Steak House</b> (Williams — confira horários, chegada à noite). A caminho dá para jantar em Kingman no <b>Mr. D'z Route 66 Diner</b>. (O Delgadillo's Snow Cap, em Seligman, fecha no fim da tarde — só se passarem de dia.)`,
+  {date:'2026-10-04', city:'Williams, AZ', note:'🏁 Dia da corrida: South Point 400 (NASCAR) no Las Vegas Motor Speedway, 14:30. Saída de Vegas ~19h (dá para ver o Hoover Dam a caminho) — chegada a Williams à noite.',
+    cafe:[`<b>The Peppermill</b> (Las Vegas) — café retrô e reforçado na Strip.`,`<b>Hash House A Go Go</b> — porções gigantes de "twisted farm food".`,`<b>Egg Works</b> — ovos, panquecas e omeletes, clássico local.`],
+    almoco:[`<b>Las Vegas Motor Speedway</b> — comida de arquibancada (hambúrguer, cachorro-quente, BBQ) durante a corrida.`,`<b>In-N-Out</b> (North Las Vegas) — perto do autódromo, rápido.`,`<b>Dickey's Barbecue Pit</b> (North Las Vegas) — brisket/pulled pork a caminho.`],
+    janta:[`<b>Cruisers Route 66 Café</b> (Williams) — costela e burgers (confira horário).`,`<b>Rod's Steak House</b> (Williams) — steakhouse desde 1946 (fecha ~21h).`,`<b>Mr. D'z Route 66 Diner</b> (Kingman, a caminho) — burgers e milkshake.`],
     charleys:''},
   {date:'2026-10-05', city:'Bryce Canyon City, UT', note:'',
-    cafe:`<b>Pine Country Restaurant</b> (Williams) — café reforçado e tortas caseiras.`,
-    almoco:`Grand Canyon / Page — almoço prático no caminho dos parques.`,
-    janta:`<b>Ebenezer's Barn & Grill</b> (Ruby's Inn) — costela e bife num jantar western com música. Alt.: <b>Bryce Canyon Pines</b>.`,
+    cafe:[`<b>Pine Country Restaurant</b> (Williams) — café reforçado e tortas caseiras.`,`<b>Grand Canyon Coffee & Café</b> (Williams) — café da manhã e bons cafés.`,`<b>Anna's Canyon Café</b> (Williams) — omeletes e panquecas caseiras.`],
+    almoco:[`<b>Grand Canyon Village</b> — food court do Bright Angel/Maswik, prático dentro do parque.`,`<b>We Cook Pizza & Pasta</b> (Tusayan) — pizza na entrada do Grand Canyon.`,`<b>Big John's Texas BBQ</b> (Page) — costela/brisket, se passarem por Page.`],
+    janta:[`<b>Ebenezer's Barn & Grill</b> (Ruby's Inn) — costela e bife com música western.`,`<b>Cowboy's Buffet & Steak Room</b> (Ruby's Inn) — buffet e bifes.`,`<b>Bryce Canyon Pines</b> — comida caseira e a famosa torta.`],
     charleys:''},
-  {date:'2026-10-06', city:'Page, AZ', note:'',
-    cafe:`Café no lodge em Bryce (dia curto, sem pressa).`,
-    almoco:`<b>Kanab, UT</b> — hambúrguer rápido entre Zion e Page.`,
-    janta:`<b>Big John's Texas BBQ</b> (costela/brisket). Alt.: <b>Bonkers Steakhouse</b> ou <b>Strombolli's</b> (pizza/calzone).`,
+  {date:'2026-10-06', city:'Page, AZ', note:'Dia curto — sem pressa.',
+    cafe:[`<b>Cowboy's Buffet & Steak Room</b> (Ruby's Inn) — buffet de café da manhã.`,`<b>Bryce Canyon Pines Restaurant</b> — café caseiro a caminho.`,`Café no <b>Riverside Ranch</b> (Hatch), onde vocês dormem.`],
+    almoco:[`<b>Houston's Trail's End</b> (Kanab) — comida western, bifes e burgers.`,`<b>Wild Thyme Café</b> (Kanab) — burgers e sanduíches.`,`<b>Big John's Texas BBQ</b> (Page) — costela/brisket ao chegar.`],
+    janta:[`<b>Big John's Texas BBQ</b> — costela e brisket.`,`<b>Bonkers Restaurant & Steakhouse</b> — bifes e italiano.`,`<b>Strombolli's</b> — pizza e calzone.`],
     charleys:''},
   {date:'2026-10-07', city:'Moab, UT', note:'Dia longo (521 mi): saída cedo, chegada tarde.',
-    cafe:`<b>Ranch House Grille</b> (Page) — panquecas, ovos e bacon.`,
-    almoco:`<b>Steamworks Brewing</b> (Durango, CO) — burgers e cerveja. Alt.: <b>Serious Texas Bar-B-Q</b>.`,
-    janta:`<b>The Blu Pig</b> (BBQ com blues) ou <b>Susie's Branding Iron</b> (bife). Pizza: <b>Pasta Jay's</b> ou <b>Zax</b>.`,
+    cafe:[`<b>Ranch House Grille</b> (Page) — panquecas, ovos e bacon.`,`<b>Rustic Thistle</b> (Page) — café da manhã elogiado.`,`<b>Canyon Crepes Café</b> (Page) — crepes doces e salgados.`],
+    almoco:[`<b>Steamworks Brewing</b> (Durango) — burgers e cerveja.`,`<b>Serious Texas Bar-B-Q</b> (Durango) — brisket e pulled pork.`,`<b>El Moro Tavern</b> (Durango) — sanduíches e pratos de boteco.`],
+    janta:[`<b>The Blu Pig</b> — BBQ com blues ao vivo.`,`<b>Susie's Branding Iron</b> — bife e chicken fried steak.`,`<b>Pasta Jay's</b> — massas e pizza (aberto até mais tarde).`],
     charleys:''},
   {date:'2026-10-08', city:'Denver, CO', note:'',
-    cafe:`<b>Moab Diner</b> — café clássico e milkshake.`,
-    almoco:`<b>Rockslide Brewery</b> (Grand Junction) ou <b>Glenwood Canyon Brewpub</b> — burgers e cerveja.`,
-    janta:`<b>Buckhorn Exchange</b> — steakhouse histórico do velho oeste (desde 1893). Alt.: <b>Cherry Cricket</b> (hambúrguer icônico), <b>Blue Pan Pizza</b> ou <b>GQue BBQ</b>.`,
+    cafe:[`<b>Jailhouse Café</b> (Moab) — café da manhã famoso (ginger pancakes).`,`<b>Moab Diner</b> — clássico com milkshake.`,`<b>Love Muffin Café</b> (Moab) — sanduíches de café e bolos.`],
+    almoco:[`<b>Rockslide Brewery</b> (Grand Junction) — burgers e cerveja.`,`<b>Glenwood Canyon Brewpub</b> (Glenwood Springs) — burgers e brisket.`,`<b>Smoke Modern BBQ</b> (Glenwood Springs) — costela e brisket.`],
+    janta:[`<b>Buckhorn Exchange</b> — steakhouse histórico do velho oeste (desde 1893).`,`<b>Cherry Cricket</b> — hambúrguer icônico de Denver.`,`<b>Blue Pan Pizza</b> — pizza premiada (Detroit e NY style).`],
     charleys:'Colorado Mills Mall (Lakewood, na chegada)'},
   {date:'2026-10-09', city:'Albuquerque, NM', note:'Dia longo (469 mi).',
-    cafe:`<b>Snooze, an A.M. Eatery</b> (Denver) — café forte antes do Pikes Peak.`,
-    almoco:`<b>Bird Dog BBQ</b> ou <b>The Skirted Heifer</b> (hambúrguer com "saia" de queijo) — Colorado Springs, perto do Garden of the Gods.`,
-    janta:`<b>Dog House Drive In</b> — o cachorro-quente/chili da série Breaking Bad, já na sua lista. Alt.: <b>Rudy's "Country Store" BBQ</b>.`,
+    cafe:[`<b>Snooze, an A.M. Eatery</b> (Denver) — brunch criativo.`,`<b>Sam's No. 3</b> (Denver) — diner enorme, café clássico.`,`<b>The Delectable Egg</b> (Denver) — omeletes e panquecas no centro.`],
+    almoco:[`<b>The Skirted Heifer</b> (Colorado Springs) — hambúrguer com "saia" de queijo.`,`<b>Bird Dog BBQ</b> (Colorado Springs) — costela e pulled pork.`,`<b>Phantom Canyon Brewing</b> (Colorado Springs) — burgers e cerveja.`],
+    janta:[`<b>Dog House Drive In</b> — cachorro-quente/chili de Breaking Bad (já na sua lista).`,`<b>Rudy's "Country Store" BBQ</b> — brisket e costela texana.`,`<b>Nexus Brewery</b> — burgers e frango frito com cerveja artesanal.`],
     charleys:'Coronado Center, 6600 Menaul Blvd NE'},
   {date:'2026-10-10', city:'Wichita Falls, TX', note:'Dia longo (511 mi).',
-    cafe:`<b>Frontier Restaurant</b> (Albuquerque) — o famoso rolinho de canela com ovos e bacon.`,
-    almoco:`<b>The Big Texan Steak Ranch</b> (Amarillo) — já na sua lista; o desafio do bife de 72oz.`,
-    janta:`<b>Texas Best BBQ & Burgers</b> ou <b>McBride Land & Cattle Co.</b> (steakhouse).`,
+    cafe:[`<b>Frontier Restaurant</b> (Albuquerque) — o famoso rolinho de canela com ovos e bacon.`,`<b>Weck's</b> (Albuquerque) — café da manhã farto.`,`<b>The Grove Café & Bakery</b> (Albuquerque) — brunch e padaria.`],
+    almoco:[`<b>The Big Texan Steak Ranch</b> (Amarillo) — o desafio do bife de 72oz (já na sua lista).`,`<b>Tyler's Barbeque</b> (Amarillo) — brisket premiado.`,`<b>GoldenLight Cafe</b> (Amarillo) — burgers antigos da Route 66.`],
+    janta:[`<b>Texas Best BBQ & Burgers</b> — brisket e hambúrguer.`,`<b>McBride Land & Cattle Co.</b> — steakhouse.`,`<b>Iron Horse Pub</b> — burgers e cerveja no centro.`],
     charleys:''},
   {date:'2026-10-11', city:'Dallas, TX', note:'Dia curto (140 mi).',
-    cafe:`Café tranquilo no hotel em Wichita Falls.`,
-    almoco:`<b>Cattlemen's Steak House</b> — bife clássico no Fort Worth Stockyards, exatamente na sua parada.`,
-    janta:`<b>Pecan Lodge</b> (Deep Ellum) — um dos BBQ mais famosos do Texas. Alt.: <b>Rodeo Goat</b> (hambúrgueres).`,
+    cafe:[`<b>Jimmy's Egg</b> (Wichita Falls) — omeletes personalizados.`,`<b>Sunrise & Shine Omelette Grill</b> (Wichita Falls) — café da manhã elogiado.`,`<b>Highway Café</b> (Wichita Falls) — café caseiro para pegar a estrada.`],
+    almoco:[`<b>Cattlemen's Steak House</b> — bife clássico no Fort Worth Stockyards.`,`<b>Riscky's Barbeque</b> (Stockyards) — costela e brisket.`,`<b>Love Shack</b> (Fort Worth) — hambúrgueres do chef Tim Love.`],
+    janta:[`<b>Pecan Lodge</b> (Deep Ellum) — um dos BBQ mais famosos do Texas.`,`<b>Rodeo Goat</b> — hambúrgueres artesanais.`,`<b>Terry Black's Barbecue</b> — costela e brisket.`],
     charleys:'Dallas Galleria, 13350 N Dallas Pkwy'},
   {date:'2026-10-12', city:'Bentonville, AR', note:'',
-    cafe:`Café rápido em Dallas antes de subir para Oklahoma.`,
-    almoco:`<b>Burn Co Barbeque</b> (Tulsa) — brisket premiado. Ou um hambúrguer.`,
-    janta:`<b>Fred's Hickory Inn</b> — instituição local de costela e bife. Alt.: <b>Wright's Barbecue</b> (excelente brisket, ali perto).`,
+    cafe:[`<b>The Original Pancake House</b> (Dallas) — panquecas e ovos.`,`<b>Café Brazil</b> (Dallas) — café da manhã 24h e bons cafés.`,`<b>Snooze, an A.M. Eatery</b> (Dallas) — brunch criativo.`],
+    almoco:[`<b>Burn Co Barbeque</b> (Tulsa) — brisket premiado.`,`<b>Ron's Hamburgers & Chili</b> (Tulsa) — burgers e chili.`,`<b>Tally's Café</b> (Tulsa) — diner clássico da Route 66.`],
+    janta:[`<b>Fred's Hickory Inn</b> — costela e bife, instituição local.`,`<b>Wright's Barbecue</b> (Johnson, perto) — brisket excelente.`,`<b>Bentonville Butcher & Pint</b> — bifes e hambúrguer com cerveja.`],
     charleys:'Tulsa — Woodland Hills Mall, 7021 S Memorial Dr (cai no almoço)'},
   {date:'2026-10-13', city:'Kansas City, MO', note:'',
-    cafe:`Café no hotel em Bentonville.`,
-    almoco:`<b>Lake of the Ozarks</b> — grill à beira do lago (burger/sanduíche).`,
-    janta:`<b>Joe's Kansas City Bar-B-Que</b> — já na sua lista; um dos melhores BBQ dos EUA (peça o Z-Man). Alt.: <b>Arthur Bryant's</b> ou <b>Q39</b>.`,
+    cafe:[`<b>Buttered Biscuit</b> (Bentonville) — biscoitos caseiros e chicken & waffles.`,`<b>HomeGrown Bentonville</b> — café da manhã "scratch-made".`,`<b>First Watch</b> (Bentonville) — omeletes, panquecas e sucos.`],
+    almoco:[`<b>Backwater Jack's</b> (Lake of the Ozarks) — grill à beira d'água.`,`<b>JB Hook's</b> (Lake of the Ozarks) — sanduíches e frutos do mar com vista.`,`<b>Dog Days</b> (Lake of the Ozarks) — burgers e petiscos na marina.`],
+    janta:[`<b>Joe's Kansas City Bar-B-Que</b> — Z-Man e burnt ends (já na sua lista).`,`<b>Arthur Bryant's</b> — BBQ lendário de KC.`,`<b>Q39</b> — costela e brisket premiados.`],
     charleys:''},
   {date:'2026-10-14', city:'Chamberlain, SD', note:'Dia longo (504 mi).',
-    cafe:`Café rápido em Kansas City.`,
-    almoco:`<b>JL Beers</b> (Sioux Falls) — hambúrgueres e cervejas.`,
-    janta:`<b>The Smoking Mule</b> — BBQ e bifes. Alt. clássica: <b>Al's Oasis</b> (Oacoma, do outro lado do rio).`,
+    cafe:[`<b>The Big Biscuit</b> (Kansas City) — café da manhã farto do Missouri.`,`<b>First Watch</b> (Kansas City) — omeletes e panquecas.`,`<b>You Say Tomato</b> (Kansas City) — brunch aconchegante.`],
+    almoco:[`<b>JL Beers</b> (Sioux Falls) — hambúrgueres e cervejas.`,`<b>Phillips Avenue Diner</b> (Sioux Falls) — diner retrô, burgers e milkshake.`,`<b>Look's Marketplace</b> (Sioux Falls) — sanduíches e deli.`],
+    janta:[`<b>The Smoking Mule</b> — BBQ e bifes.`,`<b>Al's Oasis</b> (Oacoma) — restaurante western clássico.`,`<b>Cedar Shore Resort Grill</b> — pratos americanos com vista do rio.`],
     charleys:''},
   {date:'2026-10-15', city:'Gillette, WY', note:'',
-    cafe:`Café no hotel em Chamberlain.`,
-    almoco:`<b>Wall Drug Store</b> — parada lendária: sanduíche de "hot beef", rosquinhas e o famoso café.`,
-    janta:`<b>Rib & Chop House</b> (costela/prime rib) ou <b>The Railyard</b>.`,
+    cafe:[`<b>Main St Café & Market</b> (Chamberlain) — café da manhã caseiro.`,`<b>Al's Oasis</b> (Oacoma) — café farto e famosas tortas.`,`Café no <b>Super 8</b>, onde vocês dormem.`],
+    almoco:[`<b>Wall Drug Store</b> — sanduíche de "hot beef", rosquinhas e donuts.`,`<b>Badlands Saloon & Grille</b> (Wall) — burgers e bifes.`,`<b>Cactus Café & Lounge</b> (Wall) — pratos americanos.`],
+    janta:[`<b>Rib & Chop House</b> — costela e prime rib.`,`<b>The Railyard</b> — cozinha americana.`,`<b>Prime Rib Restaurant & Wine Cellar</b> — bifes e prime rib.`],
     charleys:''},
   {date:'2026-10-16', city:'Yellowstone, WY', note:'',
-    cafe:`Café reforçado em Gillette.`,
-    almoco:`<b>Cassie's Supper Club</b> (Cody) — bifes e prime rib, clássico do velho oeste. Alt.: <b>Legacy Butcher & Burger</b>.`,
-    janta:`Dentro do parque — reserve no lodge (<b>Old Faithful Inn Dining Room</b> ou <b>Canyon Lodge</b>). Leve lanche extra.`,
+    cafe:[`<b>Lula Belle's Café</b> (Gillette) — café da manhã clássico no centro.`,`<b>The Local</b> (Gillette) — café e brunch.`,`Café no <b>Alamo Inn</b>, onde vocês dormem.`],
+    almoco:[`<b>Cassie's Supper Club</b> (Cody) — bifes e prime rib.`,`<b>Legacy Butcher & Burger</b> (Cody) — açougue + hambúrguer premium.`,`<b>Pat O'Hara Brewing</b> (Cody) — burgers e cerveja.`],
+    janta:[`<b>Obsidian Dining Room</b> (Old Faithful Snow Lodge) — onde vocês dormem.`,`<b>Old Faithful Inn Dining Room</b> — jantar histórico (reserve).`,`<b>Geyser Grill</b> — opção rápida perto do Old Faithful.`],
     charleys:''},
   {date:'2026-10-17', city:'Jackson Hole, WY', note:'Dia curto (145 mi).',
-    cafe:`Café no lodge em Yellowstone.`,
-    almoco:`<b>Pinky G's Pizzeria</b> (Jackson) — pizza famosa (Diners, Drive-Ins & Dives). Alt.: <b>Liberty Burger</b>.`,
-    janta:`<b>Gun Barrel Steak & Game House</b> — steakhouse western. Alt.: <b>Snake River Brewing</b> (burgers e cerveja).`,
+    cafe:[`<b>Obsidian Dining Room</b> (Old Faithful Snow Lodge) — café no lodge.`,`<b>Geyser Grill</b> — café rápido perto do Old Faithful.`,`Pegue algo antes de descer pelo Grand Teton.`],
+    almoco:[`<b>Pinky G's Pizzeria</b> (Jackson) — pizza famosa (Diners, Drive-Ins & Dives).`,`<b>Liberty Burger</b> (Jackson) — hambúrgueres artesanais.`,`<b>Hand Fire Pizza</b> (Jackson) — pizza a lenha num cinema antigo.`],
+    janta:[`<b>Gun Barrel Steak & Game House</b> — steakhouse western.`,`<b>Snake River Brewing</b> — burgers e cerveja artesanal.`,`<b>Local Restaurant & Bar</b> — bifes e hambúrguer no centro.`],
     charleys:''},
   {date:'2026-10-18', city:'Salt Lake City, UT', note:'',
-    cafe:`Café em Victor/Jackson antes de cruzar Idaho.`,
-    almoco:`Hambúrguer em <b>Idaho Falls</b>, perto do Idaho Potato Museum (Blackfoot).`,
-    janta:`<b>Crown Burgers</b> — instituição de Utah, o hambúrguer com pastrami. Alt.: <b>The Pie Pizzeria</b> ou <b>R&R BBQ</b>.`,
+    cafe:[`<b>Persephone Bakery</b> (Jackson) — croissants e café da manhã.`,`<b>Jedediah's House of Sourdough</b> (Jackson) — panquecas de sourdough famosas.`,`<b>The Bunnery</b> (Jackson) — café da manhã caseiro.`],
+    almoco:[`<b>Big Jud's</b> (Idaho Falls) — hambúrguer gigante famoso.`,`<b>The Snakebite Restaurant</b> (Idaho Falls) — burgers e bifes.`,`<b>Smokin' Fins</b> (Idaho Falls) — costela e burgers.`],
+    janta:[`<b>Crown Burgers</b> — hambúrguer com pastrami, instituição de Utah.`,`<b>The Pie Pizzeria</b> — pizza artesanal (desde 1980).`,`<b>R&R BBQ</b> — brisket e costela.`],
     charleys:'Valley Fair Mall, 3601 S Constitution Blvd'},
   {date:'2026-10-19', city:'Lake Tahoe, CA', note:'Dia mais longo (580 mi): saída cedo, chegada tarde.',
-    cafe:`Café cedo e rápido em Salt Lake City.`,
-    almoco:`<b>Peg's Glorified Ham n Eggs</b> (Reno) ou um hambúrguer para recarregar.`,
-    janta:`<b>Base Camp Pizza Co.</b> (Heavenly Village) ou <b>The Burger Lounge</b>. Vista do lago: <b>Riva Grill</b>.`,
+    cafe:[`<b>Penny Ann's Café</b> (Salt Lake City) — "heavenly hotcakes".`,`<b>The Park Café</b> (Salt Lake City) — omeletes ao lado do Liberty Park.`,`<b>Ruth's Diner</b> (Salt Lake City) — diner histórico (mile-high biscuits).`],
+    almoco:[`<b>Peg's Glorified Ham n Eggs</b> (Reno) — brunch farto.`,`<b>Great Basin Brewing</b> (Reno) — burgers e cerveja.`,`Parada rápida (burger) em <b>West Wendover</b> logo após as salinas.`],
+    janta:[`<b>Base Camp Pizza Co.</b> (Heavenly Village) — pizza artesanal.`,`<b>The Burger Lounge</b> — hambúrgueres na cidade.`,`<b>Riva Grill</b> — pratos americanos à beira do lago.`],
     charleys:''},
   {date:'2026-10-20', city:'San Francisco, CA', note:'',
-    cafe:`Café à beira do lago em South Lake Tahoe.`,
-    almoco:`<b>Squeeze Inn</b> (Sacramento) — hambúrguer com "saia" de queijo crocante.`,
-    janta:`<b>House of Prime Rib</b> — icônico, reserve com antecedência. Perto de Pier 39/Lombard: <b>Tony's Pizza Napoletana</b>. Sanduíche: <b>Molinari Delicatessen</b>. Burger: <b>Super Duper</b>.`,
+    cafe:[`<b>The Red Hut Café</b> (South Lake Tahoe) — café da manhã icônico.`,`<b>Heidi's Pancake House</b> (South Lake Tahoe) — panquecas e waffles.`,`<b>Ernie's Coffee Shop</b> (South Lake Tahoe) — diner clássico local.`],
+    almoco:[`<b>Squeeze Inn</b> (Sacramento) — hambúrguer com "saia" de queijo crocante.`,`<b>Jim-Denny's</b> (Sacramento) — diner histórico do centro.`,`<b>Willie's Burgers</b> (Sacramento) — burgers e chili fries.`],
+    janta:[`<b>House of Prime Rib</b> — prime rib icônico (reserve).`,`<b>Tony's Pizza Napoletana</b> (North Beach) — perto de Pier 39/Lombard.`,`<b>Molinari Delicatessen</b> (North Beach) — sanduíche italiano lendário.`],
     charleys:'Sacramento — Arden Fair (almoço); em SF: 845 Market St'},
   {date:'2026-10-21', city:'Los Angeles (Anaheim)', note:'Dia longo (477 mi) descendo a costa (Big Sur).',
-    cafe:`Café rápido em San Francisco.`,
-    almoco:`<b>The Habit Burger Grill</b> (Santa Barbara) — a rede nasceu aqui; o "Charburger" na brasa. Em Solvang, um doce dinamarquês.`,
-    janta:`<b>In-N-Out Burger</b> (Anaheim) — obrigatório na Califórnia.`,
+    cafe:[`<b>Mama's on Washington Square</b> (North Beach) — café da manhã famoso (fila).`,`<b>Sears Fine Food</b> — as "18 silver dollar pancakes".`,`<b>Brenda's French Soul Food</b> — beignets e ovos.`],
+    almoco:[`<b>The Habit Burger Grill</b> (Santa Barbara) — o "Charburger" original.`,`<b>Cold Spring Tavern</b> (Santa Barbara) — sanduíche de tri-tip lendário.`,`<b>Solvang Bakery</b> (Solvang) — um doce dinamarquês na parada.`],
+    janta:[`<b>In-N-Out Burger</b> (Anaheim) — obrigatório na Califórnia.`,`<b>The Old Spaghetti Factory</b> (Anaheim) — massas em família.`,`<b>Pizza Press</b> (Anaheim) — pizza montada na hora.`],
     charleys:'Anaheim — 265 S Euclid St (sua base)'},
   {date:'2026-10-22', city:'Los Angeles (Praias)', note:'Dia na cidade.',
-    cafe:`Café em Anaheim antes de subir para as praias.`,
-    almoco:`<b>Hinano Cafe</b> (Venice) — hambúrguer dive à beira-mar.`,
-    janta:`<b>Father's Office</b> (Santa Monica) — a "Office Burger", das mais premiadas de LA.`,
+    cafe:[`<b>The Original Pancake House</b> (Anaheim) — panquecas clássicas.`,`<b>Mimi's Café</b> (Anaheim) — café da manhã franco-americano.`,`<b>IHOP</b> (perto da Disneyland) — opção rápida e reforçada.`],
+    almoco:[`<b>Hinano Café</b> (Venice) — hambúrguer dive à beira-mar.`,`<b>The Win-Dow</b> (Venice) — smash burgers na janela.`,`<b>Big Dean's Ocean Front Café</b> (Santa Monica) — burgers com vista do píer.`],
+    janta:[`<b>Father's Office</b> (Santa Monica) — a "Office Burger" premiada.`,`<b>Bay Cities Italian Deli</b> (Santa Monica) — o sanduíche "Godmother".`,`<b>The Misfit</b> (Santa Monica) — pratos americanos e burgers.`],
     charleys:''},
   {date:'2026-10-23', city:'Los Angeles (Cidade)', note:'Dia na cidade.',
-    cafe:`Café em Anaheim/LA antes de Hollywood.`,
-    almoco:`<b>Philippe The Original</b> (Downtown LA) — o sanduíche "French dip" desde 1908. Alt.: <b>Langer's Deli</b> (pastrami).`,
-    janta:`<b>Pizzeria Mozza</b> — das pizzas mais famosas de LA. Burger icônico: <b>In-N-Out</b> na Sunset Blvd.`,
+    cafe:[`<b>The Original Pancake House</b> (Anaheim) — panquecas clássicas.`,`<b>Mimi's Café</b> (Anaheim) — café da manhã franco-americano.`,`<b>Denny's</b> (perto da Disneyland) — café rápido 24h.`],
+    almoco:[`<b>Philippe The Original</b> (Downtown LA) — o "French dip" desde 1908.`,`<b>Langer's Deli</b> (Downtown LA) — o melhor pastrami de LA.`,`<b>Grand Central Market</b> (Downtown LA) — várias barracas (burger, sanduíche).`],
+    janta:[`<b>Pizzeria Mozza</b> — das pizzas mais famosas de LA.`,`<b>In-N-Out</b> (Sunset Blvd) — o burger icônico.`,`<b>Musso & Frank Grill</b> — steakhouse clássico de Hollywood (desde 1919).`],
     charleys:''},
   {date:'2026-10-24', city:'Las Vegas, NV', note:'',
-    cafe:`Café em Anaheim antes de pegar a I-15.`,
-    almoco:`<b>Peggy Sue's 50's Diner</b> (Yermo, ao lado de Calico) — hambúrgueres e milkshake num diner anos 50.`,
-    janta:`<b>Bavette's Steakhouse</b> (Park MGM) para uma noite especial, ou <b>Secret Pizza</b> (Cosmopolitan) para algo casual.`,
+    cafe:[`<b>The Original Pancake House</b> (Anaheim) — antes de pegar a I-15.`,`<b>Mimi's Café</b> (Anaheim) — café da manhã reforçado.`,`Café rápido no hotel antes de sair.`],
+    almoco:[`<b>Peggy Sue's 50's Diner</b> (Yermo) — burgers e milkshake, ao lado de Calico.`,`<b>Slash X Ranch Café</b> (Barstow) — burgers do deserto.`,`<b>In-N-Out</b> (Barstow) — parada clássica na estrada.`],
+    janta:[`<b>Bavette's Steakhouse</b> (Park MGM) — bife para noite especial.`,`<b>Secret Pizza</b> (Cosmopolitan) — fatia casual escondida.`,`<b>Golden Steer Steakhouse</b> — clássico da era Rat Pack.`],
     charleys:''},
   {date:'2026-10-25', city:'Las Vegas, NV', note:'',
-    cafe:`Café no hotel antes de Valley of Fire e Red Rock.`,
-    almoco:`<b>Capriotti's</b> — o sanduíche "Bobbie" (peru, molho e recheio), rede nascida em Vegas.`,
-    janta:`<b>Gordon Ramsay Burger</b> (Planet Hollywood) ou <b>Grimaldi's</b> (pizza de forno a lenha).`,
+    cafe:[`<b>The Peppermill</b> — café retrô na Strip.`,`<b>Hash House A Go Go</b> — porções gigantes.`,`<b>Egg Works</b> — ovos, panquecas e omeletes.`],
+    almoco:[`<b>Capriotti's</b> — sanduíche "Bobbie", nascido em Vegas.`,`<b>In-N-Out</b> — hambúrguer clássico.`,`<b>Pizza Rock</b> (Downtown) — pizza premiada.`],
+    janta:[`<b>Gordon Ramsay Burger</b> (Planet Hollywood) — burgers do chef.`,`<b>Grimaldi's</b> — pizza de forno a lenha.`,`<b>Battista's Hole in the Wall</b> — italiano com vinho à vontade.`],
     charleys:''},
   {date:'2026-10-26', city:'Las Vegas, NV', note:'',
-    cafe:`Café antes do dia na Fremont Street e Sphere.`,
-    almoco:`Fremont Street — hambúrguer ou fatia rápida entre as atrações.`,
-    janta:`<b>Evel Pie</b> — pizzaria temática do Evel Knievel na Fremont. Steak clássico: <b>Golden Steer</b> (se ainda não foram).`,
+    cafe:[`<b>Babystacks Café</b> — panquecas e omeletes.`,`<b>The Cracked Egg</b> — café da manhã local.`,`Café no hotel antes de Fremont/Sphere.`],
+    almoco:[`<b>Evel Pie</b> (Fremont) — pizza temática do Evel Knievel.`,`<b>Park on Fremont</b> — burgers num pátio descolado.`,`<b>Heart Attack Grill</b> (Fremont) — hambúrgueres gigantes (tema).`],
+    janta:[`<b>Golden Steer Steakhouse</b> — bife clássico (se ainda não foram).`,`<b>Andiamo Steakhouse</b> (The D, Downtown) — bife e massas.`,`<b>Pizza Rock</b> (Downtown) — pizza premiada.`],
     charleys:''},
 ];
-function foodRow(icon,lbl,html){
-  if(!html) return '';
-  return `<div class="stop" style="align-items:flex-start"><span class="tm" style="min-width:26px">${icon}</span><span class="pl"><span class="small muted" style="text-transform:uppercase;letter-spacing:.4px;font-weight:700">${lbl}</span><br>${html}</span></div>`;
+function foodRow(icon,lbl,opts){
+  if(!opts||!opts.length) return '';
+  const items=opts.map(o=>`<div style="font-size:14px;margin:3px 0 3px 6px">• ${o}</div>`).join('');
+  return `<div style="margin:8px 0 4px"><div class="small muted" style="text-transform:uppercase;letter-spacing:.4px;font-weight:700">${icon} ${lbl}</div>${items}</div>`;
 }
 function renderComida(){
   const box=document.getElementById('comidaList'); if(!box) return;
   const charleysCard = `<div class="card" style="border:1px solid #6b3a2a">
     <div style="font-weight:700;color:var(--gold)">🥩 Charleys na rota <span class="small muted">(um por cidade grande)</span></div>
-    <div style="margin-top:6px">${FOOD_CHARLEYS.map(c=>`<div class="stop"><span class="tm" style="min-width:26px">🥩</span><span class="pl"><b>${escapeHtml(c.city)}</b> — ${escapeHtml(c.loc)}</span></div>`).join('')}</div>
+    <div style="margin-top:6px">${FOOD_CHARLEYS.map(c=>`<div style="font-size:14px;margin:3px 0 3px 6px">🥩 <b>${escapeHtml(c.city)}</b> — ${escapeHtml(c.loc)}</div>`).join('')}</div>
   </div>`;
   const days = FOOD_SUGGESTIONS.map(d=>{
-    const note = d.note? `<div class="small" style="color:var(--gold);margin:2px 0 8px">📝 ${escapeHtml(d.note)}</div>`:'';
-    const ch = d.charleys? foodRow('🥩','Charleys',`<span style="color:var(--gold)">${escapeHtml(d.charleys)}</span>`):'';
+    const note = d.note? `<div class="small" style="color:var(--gold);margin:2px 0 6px">📝 ${escapeHtml(d.note)}</div>`:'';
+    const ch = d.charleys? `<div style="margin:8px 0 2px"><div class="small" style="color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.4px">🥩 Charleys</div><div style="font-size:14px;margin:3px 0 0 6px">${escapeHtml(d.charleys)}</div></div>`:'';
     return `<div class="card">
       <div class="small muted">${fmtDate(d.date)} · ${weekday(d.date)}</div>
       <div style="font-weight:700;color:var(--gold);font-size:16px;margin-bottom:2px">${escapeHtml(d.city)}</div>
       ${note}
-      ${foodRow('☕','Café',d.cafe)}
+      ${foodRow('☕','Café da manhã',d.cafe)}
       ${foodRow('🍔','Almoço',d.almoco)}
       ${foodRow('🍽️','Janta',d.janta)}
       ${ch}
@@ -2654,9 +2656,7 @@ function seedStoresOnce(){
 // near = trecho de uma parada que já existe (ou de um ponto inserido antes) para posicionar na ordem da rota.
 // key  = nome curto para não duplicar (pula se o dia já tiver esse ponto).
 const TOURIST_STOPS = [
-  // 04/10 · Las Vegas -> Williams
-  {date:'2026-10-04', key:'Hackberry General Store', near:'Kingman', label:'Hackberry General Store, 11255 E State Route 66, Kingman, AZ 86401'},
-  {date:'2026-10-04', key:'Seligman', near:'Hackberry', label:'Seligman, AZ 86337'},
+  // 04/10 · Las Vegas -> Williams (dia da corrida NASCAR; saída ~19h — Hackberry e Seligman removidos por fecharem à noite)
   // 05/10 · Williams -> Bryce
   {date:'2026-10-05', key:'Desert View Watchtower', near:'Grand Canyon', label:'Desert View Watchtower, Grand Canyon National Park, AZ 86023'},
   {date:'2026-10-05', key:'Red Canyon', near:'Zion National Park', label:'Red Canyon Visitor Center, Scenic Byway 12, Panguitch, UT 84759'},
