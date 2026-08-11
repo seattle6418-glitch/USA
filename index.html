@@ -919,6 +919,7 @@ const HOTELS = [
   {ci:'2026-10-09', co:'2026-10-10', city:'Belen, NM (Albuquerque)',      name:'Baymont by Wyndham Belen NM',                   addr:'2110 Camino Del Llano, Belen, NM 87002',                total:941.71,  pago:941.71, due:0},
   {ci:'2026-10-10', co:'2026-10-11', city:'Wichita Falls, TX',            name:'Comfort Inn Wichita Falls North',               addr:'1317 Kenley Avenue, Wichita Falls, TX 76306',           total:519.69,  pago:519.69, due:0},
   {ci:'2026-10-11', co:'2026-10-12', city:'Garland, TX (Dallas)',         name:'La Quinta Inn & Suites by Wyndham Dallas Northeast-Arboretum', addr:'1310 Marketplace Dr, Garland, TX 75041',      total:481.97,  pago:481.97, due:0},
+  {ci:'2026-10-12', co:'2026-10-13', city:'Bentonville, AR',              name:'Comfort Suites Bentonville - Rogers',           addr:'2011 SE Walton Blvd, Bentonville, AR 72712',            total:486.22,  pago:486.22, due:0, cin:'15h', cout:'11h', ref:'72077803078565 (Hotels.com)', room:'Suíte, 1 cama King e sofá-cama, não fumantes · 2 adultos'},
   {ci:'2026-10-14', co:'2026-10-15', city:'Chamberlain, SD',              name:'Super 8 by Wyndham Chamberlain SD',             addr:'Box 36 Lakeview Heights, I-90 Exit 263, Chamberlain, SD 57325', total:414.92, pago:414.92, due:0},
   {ci:'2026-10-15', co:'2026-10-16', city:'Gillette, WY',                 name:'Alamo Inn & Suites',                            addr:'608 East 2nd Street, Gillette, WY 82716',               total:384.63,  pago:384.63, due:0},
   {ci:'2026-10-16', co:'2026-10-17', city:'Yellowstone, WY',              name:'Old Faithful Snow Lodge & Cabins',              addr:'2051 Snow Lodge Ave, Yellowstone National Park, WY 82190',total:1049.80,pago:1049.80,due:0},
@@ -2401,8 +2402,10 @@ function renderHoteis(){
         </div>
         <div style="white-space:nowrap">${nN?`<span class="milechip">${nN} ${nN>1?'noites':'noite'}</span>`:''}${tag}</div>
       </div>
-      <div class="small" style="margin-top:6px">📅 ${h.ci?fmtDate(h.ci):'—'} → ${h.co?fmtDate(h.co):'—'}</div>
+      <div class="small" style="margin-top:6px">📅 ${h.ci?fmtDate(h.ci):'—'} → ${h.co?fmtDate(h.co):'—'}${(h.cin||h.cout)?` <span class="muted">(check-in ${escapeHtml(h.cin||'—')} · check-out ${escapeHtml(h.cout||'—')})</span>`:''}</div>
       ${h.addr?`<div class="small muted" style="margin-top:2px">📍 ${escapeHtml(h.addr)}</div>`:''}
+      ${h.room?`<div class="small muted" style="margin-top:2px">🛏️ ${escapeHtml(h.room)}</div>`:''}
+      ${h.ref?`<div class="small muted" style="margin-top:2px">🔖 Reserva: ${escapeHtml(h.ref)}</div>`:''}
       <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:8px">
         <div>
           <div class="small muted">Pago: <b style="color:var(--accent2)">${brl(+h.pago||0)}</b></div>
