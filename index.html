@@ -2531,8 +2531,8 @@ const RESERVAS = {
   carro:{ locadora:'Alamo (via Rentcars)', voucher:'898136368COUNT', cod:'6P7TK9N', tel:'+18443707395', telfmt:'+1 844-370-7395',
     retirada:'03/10 12:00 — Aeroporto de Las Vegas (Harry Reid/LAS), 7135 Gilespie St', devolucao:'27/10 12:00 — mesmo local',
     veiculo:'Chevrolet Tahoe (ou similar) · SUV · km livre · 1 condutor adicional', valorUSD:1681.32 },
-  seguro:{ seguradora:'AIG Seguros do Brasil (Visa Infinite)', cert1:'16011-0001-69-269244065 (CER-6761951) — Francisco', cert2:'16011-0001-69-269244066 — Rita de Cássia Pires Souza',
-    vigencia:'19/03/2026 a 19/03/2027 · até 60 dias por viagem', cobertura:'Saúde no exterior US$ 175.000 · bagagem · cancelamento',
+  seguro:{ seguradora:'AIG Seguros do Brasil (Visa Infinite)', cert1:'16011-0001-69-2610147085 — bilhete EUA (Francisco e Renata)', cert2:'Viagem coberta: 02/10/2026 a 27/10/2026',
+    vigencia:'Bilhete válido de 18/08/2026 a 18/08/2027 · até 60 dias por viagem', cobertura:'Saúde no exterior US$ 175.000 · bagagem · cancelamento',
     telEUA:'+18003969665', telEUAfmt:'+1 800-396-9665 (EUA/Canadá, grátis)', telBR:'08008913679', telBRfmt:'0800 891 3679 (Brasil)', telColeto:'+13039671098', email:'Benefits@ap-visa.com' }
 };
 function renderReservas(){
@@ -2587,7 +2587,7 @@ function saveInfoNotes(){
 
 /* ---------------- Preparativos (checklist pré-viagem, dentro de config) ---------------- */
 const PREP_SEED = [
-  {id:'prep_esta', name:'ESTA aprovado e válido', tip:'Autorização de entrada (site oficial esta.cbp.dhs.gov). Confira a validade.'},
+  {id:'prep_visto', name:'Visto B1/B2 válido no passaporte', tip:'Brasileiro não usa ESTA: a entrada é com o visto B1/B2. Confira a validade.'},
   {id:'prep_passaporte', name:'Passaporte válido', tip:'Válido por toda a viagem (idealmente 6+ meses). Leve cópia/foto à parte.'},
   {id:'prep_reservas', name:'Reservas impressas (voo + hotéis)', tip:'A imigração pode pedir comprovante de hospedagem e passagem de volta.'},
   {id:'prep_cnh', name:'CNH válida', tip:'Sua habilitação brasileira, dentro da validade.'},
@@ -2601,7 +2601,7 @@ const PREP_SEED = [
   {id:'prep_offline', name:'Baixar mapas offline (Google Maps)', tip:'Trechos de Utah/Wyoming têm pouco sinal.'},
   {id:'prep_adaptador', name:'Adaptador e carregadores (110V)', tip:'Tomada tipo A/B nos EUA. Carregador de carro ajuda muito.'},
   {id:'prep_roupas', name:'Roupas pra clima variado', tip:'Deserto quente + Yellowstone/Tetons frio em outubro. Leve casaco!'},
-  {id:'prep_parques', name:'Passe dos parques (America the Beautiful)', tip:'US$ 80, cobre todos os parques nacionais da rota.'},
+  {id:'prep_parques', name:'Passe dos parques (America the Beautiful)', tip:'Non-Resident Annual Pass: US$ 250. Cobre todos os parques nacionais da rota.'},
   {id:'prep_app', name:'App da viagem nos 2 celulares', tip:'Logado com o e-mail e a senha, sincronizando.'},
 ];
 function prepOverride(id){ return (S.config.prep||[]).find(p=>p.id===id); }
