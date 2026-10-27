@@ -568,7 +568,7 @@
   <section id="view-config" class="hide">
     <div class="card" style="text-align:center;padding:10px">
       <div class="small muted">Versão do app</div>
-      <div style="font-weight:700;font-size:1.05em">v10 · 27/10/2026 — ✅ viagem concluída · 💵 extratos conferidos · 🏀 Lakers no dia 21</div>
+      <div style="font-weight:700;font-size:1.05em">v11 · 27/10/2026 — ✅ viagem concluída · 💵 extratos conferidos · 🏀 Lakers no dia 21 · ✏️ edição de gastos</div>
     </div>
     <div class="card">
       <h2>Viagem</h2>
@@ -653,7 +653,7 @@
 <div class="sheet" id="addSheet">
   <div class="inner">
     <div class="grab"></div>
-    <h2 style="margin:0 0 10px">Novo gasto</h2>
+    <h2 style="margin:0 0 10px" id="addTitle">Novo gasto</h2>
 
     <div class="ocrbox" id="ocrWrap">
       <label class="ocrbtn" id="ocrBtn">
@@ -709,6 +709,8 @@
       <button class="btn ghost" onclick="closeAdd()">Cancelar</button>
       <button class="btn green" style="flex:2" onclick="saveExpense()">Salvar gasto</button>
     </div>
+    <button class="btn ghost hide" id="btnDelExp" style="width:100%;margin-top:8px;color:#b3123f"
+            onclick="deleteExpense(editingId)">🗑️ Apagar este gasto</button>
   </div>
 </div>
 
@@ -1009,7 +1011,7 @@ function renderDay(){
         : `<span class="rcpt" style="display:flex;align-items:center;justify-content:center;font-size:18px" onclick="event.stopPropagation();openAttach('${e.id}')">📄</span>`)
       : '';
     const secondary = e.currency==='USD'? brl(toBRL(e)) : usd(toUSD(e));
-    return `<div class="exp" onclick="deleteExpense('${e.id}')">
+    return `<div class="exp" onclick="openEdit('${e.id}')">
       <div class="emo">${c.emo}</div>${thumb}
       <div class="info">
         <div class="t">${c.label}${sub}</div>
@@ -2980,7 +2982,11 @@ function updateHeader(){
 }
 
 /* ---------------- Add sheet ---------------- */
+let editingId=null;
 function openAdd(){
+  editingId=null;
+  document.getElementById('addTitle').textContent='Novo gasto';
+  document.getElementById('btnDelExp').classList.add('hide');
   draft={category:'comida', sub:'Almoço', currency:'USD',
          source:(S.config.sources[0]?S.config.sources[0].id:null), attach:null, gallons:null};
   buildCatGrid(); buildSourceChips(); setCur('USD');
@@ -2997,7 +3003,28 @@ function openAdd(){
   document.getElementById('addSheet').classList.add('open');
   setTimeout(()=>document.getElementById('inAmount').focus(),200);
 }
-function closeAdd(){ document.getElementById('addSheet').classList.remove('open'); }
+function openEdit(id){
+  const e=S.expenses.find(x=>x.id===id); if(!e) return;
+  editingId=id;
+  draft={category:e.category, sub:e.sub, currency:e.currency||'USD',
+         source:e.source, attach:e.attach||null, gallons:e.gallons||null};
+  buildCatGrid(); buildSourceChips(); setCur(draft.currency);
+  document.getElementById('addTitle').textContent='Editar gasto';
+  document.getElementById('btnDelExp').classList.remove('hide');
+  document.getElementById('inAmount').value=e.amount;
+  document.getElementById('inNote').value=e.note||'';
+  document.getElementById('inGallons').value=e.gallons||'';
+  document.getElementById('inDate').value=e.date;
+  ['ocrSpin','ocrProg','ocrHint'].forEach(i=>document.getElementById(i).classList.add('hide'));
+  document.getElementById('ocrCands').innerHTML='';
+  renderAttach();
+  selectCat(e.category);
+  if(e.sub) selectSub(e.sub);
+  selectSource(e.source);
+  updateConvHint();
+  document.getElementById('addSheet').classList.add('open');
+}
+function closeAdd(){ editingId=null; document.getElementById('addSheet').classList.remove('open'); }
 function buildCatGrid(){
   document.getElementById('catGrid').innerHTML=CATS.map(c=>
     `<div class="catbtn" data-c="${c.id}" onclick="selectCat('${c.id}')">
@@ -3049,13 +3076,25 @@ function saveExpense(){
     gallons: catById(draft.category).gallons ? (parseFloat(document.getElementById('inGallons').value)||null) : null,
     attach:draft.attach||null, createdAt:Date.now()
   };
+  if(editingId){
+    const cur=S.expenses.find(x=>x.id===editingId);
+    if(cur){
+      exp.id=cur.id; exp.createdAt=cur.createdAt;
+      Object.assign(cur, exp);
+      save(); cloudPushExpense(cur);
+      curDay=cur.date; closeAdd(); showView('dia'); renderDay(); toast('Gasto atualizado ✔️');
+      return;
+    }
+  }
   S.expenses.push(exp); save(); cloudPushExpense(exp);
   curDay=exp.date; closeAdd(); showView('dia'); toast('Gasto salvo ✔️');
 }
 function deleteExpense(id){
   const e=S.expenses.find(x=>x.id===id); if(!e) return;
   if(confirm('Apagar este gasto?\n'+catById(e.category).label+' — '+money(e.amount,e.currency))){
-    cloudDeleteExpense(id); S.expenses=S.expenses.filter(x=>x.id!==id); save(); renderDay(); toast('Removido');
+    cloudDeleteExpense(id); S.expenses=S.expenses.filter(x=>x.id!==id); save();
+    if(editingId===id) closeAdd();
+    renderDay(); toast('Removido');
   }
 }
 
